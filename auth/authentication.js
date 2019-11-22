@@ -8,7 +8,7 @@ passport.use(
     new localStrategy(
         { usernameField: "identification", passwordField: "password" },
         (identification, password, done) => {
-            User.findOne({ $or: [{ name: identification }, { email: identification }] }, function(
+            User.findOne({ $or: [{ name: identification }, { email: identification }] }, function (
                 err,
                 user
             ) {
@@ -18,7 +18,7 @@ passport.use(
                 if (!user) {
                     return done(null, false);
                 }
-                UserController.comparePassword(password, user.password, function(err, isMatch) {
+                UserController.comparePassword(password, user.password, function (err, isMatch) {
                     if (err) throw err;
                     if (isMatch) {
                         return done(null, user);
