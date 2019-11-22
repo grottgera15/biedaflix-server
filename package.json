@@ -1,0 +1,31 @@
+{
+  "name": "biedaflix-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./index.js",
+    "start": "node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Boladar/biedaflix-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Boladar/biedaflix-backend/issues"
+  },
+  "homepage": "https://github.com/Boladar/biedaflix-backend#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.12",
+    "passport": "^0.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+}
+}
