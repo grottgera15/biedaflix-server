@@ -4,11 +4,9 @@ import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,14 +19,21 @@ public class UserController {
         this.repository = repository;
     }
 
-    @RequestMapping(value = "/",method = RequestMethod.GET)
+    @RequestMapping(value = "/")
     public List<User> getAllUsers(){
         return repository.findAll();
     }
 
-    @RequestMapping(value="/{id}",method = RequestMethod.GET)
+    @RequestMapping(value="/{id}")
     public User getUserById(@PathVariable("id") ObjectId id){
         return repository.findUserById(id);
+    }
+
+    @PostMapping(value = "/")
+    public User createUser(@RequestBody User user){
+        user.setId(ObjectId.get());
+        repository.save(user);
+        return user;
     }
 
 }
