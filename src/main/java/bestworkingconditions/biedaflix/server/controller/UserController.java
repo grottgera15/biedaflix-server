@@ -30,8 +30,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/")
-    public User createUser(@RequestBody User user){
-        user.setId(ObjectId.get());
+    public User createUser(@Valid @RequestBody User user){
         repository.save(user);
         return user;
     }

@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.model;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,26 +7,26 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
 
     @Id
-    public ObjectId id;
+    public String id;
 
     public String email;
     public String password;
-    public boolean isValid;
+    public boolean accepted;
 
     public User() {
     }
 
-    public User(String email, String password, boolean isValid) {
+    public User(String email, String password, boolean accepted) {
         this.email = email;
         this.password = password;
-        this.isValid = isValid;
+        this.accepted = accepted;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -47,11 +46,11 @@ public class User {
         this.password = password;
     }
 
-    public boolean isValid() {
-        return isValid;
+    public boolean isAccepted() {
+        return accepted;
     }
 
-    public void setValid(boolean valid) {
-        isValid = valid;
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }
