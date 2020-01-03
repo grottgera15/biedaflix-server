@@ -13,9 +13,6 @@ public class User {
     public String password;
     public boolean accepted;
 
-    public User() {
-    }
-
     public User(String email, String password, boolean accepted) {
         this.email = email;
         this.password = password;
@@ -24,10 +21,6 @@ public class User {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getEmail() {

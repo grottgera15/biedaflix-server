@@ -2,7 +2,6 @@ package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +24,7 @@ public class UserController {
     }
 
     @RequestMapping(value="/{id}")
-    public User getUserById(@PathVariable("id") ObjectId id){
+    public User getUserById(@PathVariable("id") String id){
         return repository.findUserById(id);
     }
 
