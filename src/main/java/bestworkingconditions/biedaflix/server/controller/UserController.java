@@ -4,13 +4,13 @@ import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
     private final UserRepository repository;
@@ -22,17 +22,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @RequestMapping(value = "/")
-    public List<User> getAllUsers() {
-        return repository.findAll();
-    }
-
-    @RequestMapping(value = "/{id}")
-    public User getUserById(@PathVariable("id") String id) {
-        return repository.findUserById(id);
-    }
-
-    @PostMapping(value = "/")
+    @PostMapping(value = "/register")
     public User registerNewUser(@Valid @RequestBody User user) {
 
         String plainText = user.getPassword();
