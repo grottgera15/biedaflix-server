@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.service;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
