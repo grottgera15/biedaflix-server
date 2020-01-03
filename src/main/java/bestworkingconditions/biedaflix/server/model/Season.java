@@ -1,9 +1,11 @@
 package bestworkingconditions.biedaflix.server.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
-@Document(collection = "seasons")
+import java.util.List;
+
 public class Season {
     private int seasonNumber;
-
+    @DBRef
+    private List<Episode> episodes;
 }
