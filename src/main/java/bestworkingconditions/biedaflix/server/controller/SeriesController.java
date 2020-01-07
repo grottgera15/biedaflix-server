@@ -15,22 +15,24 @@ import java.util.List;
 @RestController
 public class SeriesController {
 
-    private  final SeriesRepository repository;
+    private final SeriesRepository repository;
 
     @Autowired
     public SeriesController(SeriesRepository repository) {this.repository = repository;}
 
     @GetMapping("/series")
-    public ResponseEntity<List<Series>> GetAll(){
+    public ResponseEntity<List<Series>> GetAll() {
         List<Series> availableSeries = repository.findAll();
         return ResponseEntity.ok(availableSeries);
     }
 
 
     @PostMapping("/series")
-    public ResponseEntity<Series> AddSeries(@Valid @RequestBody Series series){
+    public ResponseEntity<Series> AddSeries(@Valid @RequestBody Series series) {
         Series saved = repository.save(series);
         return ResponseEntity.ok(saved);
     }
+
+
 
 }
