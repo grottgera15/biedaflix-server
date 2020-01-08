@@ -32,11 +32,11 @@ public class EpisodeController {
         Episode newEpisode = new Episode(request.getEpisodeNumber(),request.getName(),request.getReleaseDate());
 
         Season currentSeason = null;
-        if(!series.getSeasons().contains(request.getSeasonNumber())){
+        if(series.getSeasons().stream().noneMatch(t -> t.getSeasonNumber() == request.getSeasonNumber())){
             currentSeason = new Season(request.getSeasonNumber());
             series.getSeasons().add(currentSeason);
         }else {
-            currentSeason = series.getSeasons().get(request.getSeasonNumber());
+            currentSeason = series.getSeasons().get(request.getSeasonNumber() - 1);
         }
 
         if(currentSeason.getEpisodes().stream().noneMatch(t -> t.getEpisodeNumber() == newEpisode.getEpisodeNumber())) {

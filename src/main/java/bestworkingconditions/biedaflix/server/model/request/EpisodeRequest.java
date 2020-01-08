@@ -1,19 +1,22 @@
 package bestworkingconditions.biedaflix.server.model.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class EpisodeRequest {
 
+    @NotNull
     @NotBlank(message = "seriesId must not be blank!")
     private String seriesId;
-    @NotBlank(message = "seasonNumber must not be blank!")
+    @NotNull
     private int seasonNumber;
-    @NotBlank(message = "episodeNumber must not be blank!")
+    @NotNull
     private int episodeNumber;
+    @NotNull
     @NotBlank(message = "name must not be blank!")
     private String name;
-
+    @NotNull
     private Date releaseDate;
 
     public EpisodeRequest() {

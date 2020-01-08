@@ -1,5 +1,6 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Season {
@@ -7,10 +8,12 @@ public class Season {
     private List<Episode> episodes;
 
     public Season() {
+        episodes = new ArrayList<>();
     }
 
     public Season(int seasonNumber) {
         this.seasonNumber = seasonNumber;
+        episodes = new ArrayList<>();
     }
 
     public int getSeasonNumber() {
