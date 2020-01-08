@@ -33,18 +33,24 @@ public class Episode {
     public Episode() {
     }
 
-    public Episode(String id, int episodeNumber, String name, Date releaseDate) {
-        Id = id;
+    public Episode(int episodeNumber, String name, Date releaseDate) {
         this.episodeNumber = episodeNumber;
         this.name = name;
         this.releaseDate = releaseDate;
+        this.available = false;
     }
 
-    public void addVideoQuality(VideoQuality quality, String path){
-        videoQualities.put(quality,path);
+    public Episode(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<VideoQuality, String> videoQualities, Map<SubtitlesLanguage, String> subtitles) {
+        Id = id;
+        this.episodeNumber = episodeNumber;
+        this.name = name;
+        this.available = available;
+        this.releaseDate = releaseDate;
+        this.videoQualities = videoQualities;
+        this.subtitles = subtitles;
     }
 
-    public void addSubtitles(SubtitlesLanguage language, String path){
-        subtitles.put(language,path);
+    public int getEpisodeNumber() {
+        return episodeNumber;
     }
 }

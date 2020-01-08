@@ -25,7 +25,7 @@ public class EpisodeRequest {
     public int getEpisodeNumber() {
         return episodeNumber;
     }
-    
+
     public String getSeriesId() {
         return seriesId;
     }

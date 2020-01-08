@@ -9,9 +9,8 @@ public class Season {
     public Season() {
     }
 
-    public Season(int seasonNumber, List<Episode> episodes) {
+    public Season(int seasonNumber) {
         this.seasonNumber = seasonNumber;
-        this.episodes = episodes;
     }
 
     public int getSeasonNumber() {
