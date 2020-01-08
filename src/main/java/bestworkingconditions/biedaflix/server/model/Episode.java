@@ -19,9 +19,6 @@ public class Episode {
         ENG;
     }
 
-    @Id
-    private String Id;
-
     private int episodeNumber;
     private String name;
     private boolean available;
@@ -40,8 +37,7 @@ public class Episode {
         this.available = false;
     }
 
-    public Episode(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<VideoQuality, String> videoQualities, Map<SubtitlesLanguage, String> subtitles) {
-        Id = id;
+    public Episode(int episodeNumber, String name, boolean available, Date releaseDate, Map<VideoQuality, String> videoQualities, Map<SubtitlesLanguage, String> subtitles) {
         this.episodeNumber = episodeNumber;
         this.name = name;
         this.available = available;
@@ -52,5 +48,25 @@ public class Episode {
 
     public int getEpisodeNumber() {
         return episodeNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
+    public Map<VideoQuality, String> getVideoQualities() {
+        return videoQualities;
+    }
+
+    public Map<SubtitlesLanguage, String> getSubtitles() {
+        return subtitles;
     }
 }

@@ -17,9 +17,20 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven{
+        url 'http://4thline.org/m2'
+    }
 }
 
 dependencies {
+
+    //torrent client
+    implementation 'com.github.atomashpolskiy:bt-core:1.9'
+    implementation 'com.github.atomashpolskiy:bt-http-tracker-client:1.9'
+    implementation 'com.github.atomashpolskiy:bt-dht:1.9'
+    implementation 'com.github.atomashpolskiy:bt-upnp:1.9'
+
+    compile group: 'org.fourthline.cling', name: 'cling-core', version: '2.1.2'
 
     compile 'io.jsonwebtoken:jjwt-api:0.10.7'
     runtime 'io.jsonwebtoken:jjwt-impl:0.10.7',
