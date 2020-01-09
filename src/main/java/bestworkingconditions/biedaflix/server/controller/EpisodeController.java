@@ -5,6 +5,7 @@ import bestworkingconditions.biedaflix.server.model.Season;
 import bestworkingconditions.biedaflix.server.model.Series;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
+import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,13 @@ import javax.validation.Valid;
 public class EpisodeController {
 
     private final SeriesRepository repository;
+    private final TorrentService torrentService;
 
     @Autowired
-    public EpisodeController(SeriesRepository repository) {this.repository = repository;}
+    public EpisodeController(SeriesRepository repository, TorrentService torrentService) {
+        this.repository = repository;
+        this.torrentService = torrentService;
+    }
 
     @PostMapping("/episode")
     public ResponseEntity<Series> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
