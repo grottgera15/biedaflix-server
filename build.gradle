@@ -24,14 +24,6 @@ repositories {
 
 dependencies {
 
-    //torrent client
-    implementation 'com.github.atomashpolskiy:bt-core:1.9'
-    implementation 'com.github.atomashpolskiy:bt-http-tracker-client:1.9'
-    implementation 'com.github.atomashpolskiy:bt-dht:1.9'
-    implementation 'com.github.atomashpolskiy:bt-upnp:1.9'
-
-    compile group: 'org.fourthline.cling', name: 'cling-core', version: '2.1.2'
-
     compile 'io.jsonwebtoken:jjwt-api:0.10.7'
     runtime 'io.jsonwebtoken:jjwt-impl:0.10.7',
             // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
