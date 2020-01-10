@@ -18,16 +18,19 @@ public class EpisodeRequest {
     private String name;
     @NotNull
     private Date releaseDate;
+    @NotBlank(message = "magnetLink must not be blank!")
+    private String magnetLink;
 
     public EpisodeRequest() {
     }
 
-    public EpisodeRequest(String seriesId, int seasonNumber, int episodeNumber, String name, Date releaseDate) {
+    public EpisodeRequest(@NotNull @NotBlank(message = "seriesId must not be blank!") String seriesId, @NotNull int seasonNumber, @NotNull int episodeNumber, @NotNull @NotBlank(message = "name must not be blank!") String name, @NotNull Date releaseDate, @NotBlank(message = "magnetLink must not be blank!") String magnetLink) {
         this.seriesId = seriesId;
         this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
         this.name = name;
         this.releaseDate = releaseDate;
+        this.magnetLink = magnetLink;
     }
 
     public int getEpisodeNumber() {
@@ -48,5 +51,9 @@ public class EpisodeRequest {
 
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public String getMagnetLink() {
+        return magnetLink;
     }
 }
