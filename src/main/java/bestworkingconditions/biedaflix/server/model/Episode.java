@@ -1,5 +1,5 @@
 package bestworkingconditions.biedaflix.server.model;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -20,6 +20,7 @@ public class Episode {
     }
 
     private int episodeNumber;
+
     private String name;
     private boolean available;
     private Date releaseDate;
@@ -69,4 +70,5 @@ public class Episode {
     public Map<SubtitlesLanguage, String> getSubtitles() {
         return subtitles;
     }
+
 }

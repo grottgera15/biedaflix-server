@@ -1,6 +1,8 @@
 package bestworkingconditions.biedaflix.server.service;
 
 
+import bestworkingconditions.biedaflix.server.model.Episode;
+import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,12 +16,14 @@ import org.springframework.web.client.RestTemplate;
 public class TorrentServiceImpl implements TorrentService {
 
     @Override
-    public void addTorrent(String magnet) {
+    public void addTorrent(EpisodeRequest episodeRequest) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String,String> map = new LinkedMultiValueMap<>();
-        map.add("urls",magnet);
+        map.add("urls", episodeRequest.getMagnetLink());
+        map.add("category","biedaflix");
+        map.add("rename", episodeRequest.getName());
 
         HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(map,headers);
 

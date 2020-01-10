@@ -50,15 +50,19 @@ public class EpisodeController {
 
         Season currentSeason = getRequestedSeasonOrCreate(series,request.getSeasonNumber());
 
+        if(currentSeason.getEpisodes().stream().anyMatch(t->t.getName() == request.getName()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given name already exists in database");
+
         if(currentSeason.getEpisodes().stream().noneMatch(t -> t.getEpisodeNumber() == newEpisode.getEpisodeNumber())) {
             currentSeason.getEpisodes().add(newEpisode);
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given number already exists in database!");
         }
 
-        torrentService.addTorrent(request.getMagnetLink());
-
         repository.save(series);
+
+        torrentService.addTorrent(request);
+
         return ResponseEntity.ok(series);
     }
 }
