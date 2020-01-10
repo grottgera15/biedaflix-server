@@ -44,7 +44,8 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Override
-    public void deleteTorrent(String torrentHash) {
-
+    public void deleteTorrent(String torrentHash,boolean deleteFiles) {
+        HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",torrentHash).
+                addKeyValuePair("deleteFiles",Boolean.toString(deleteFiles)).build();
     }
 }
