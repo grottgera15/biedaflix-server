@@ -28,6 +28,18 @@ public class EpisodeController {
         this.torrentService = torrentService;
     }
 
+    private Season getRequestedSeasonOrCreate(Series series, int seasonNumber){
+
+        for (Season s : series.getSeasons()){
+            if(s.getSeasonNumber() == seasonNumber)
+                return s;
+        }
+
+        Season newSeason = new Season(seasonNumber);
+        series.getSeasons().add(newSeason);
+        return newSeason;
+    }
+
     @PostMapping("/episode")
     public ResponseEntity<Series> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
         Series series = repository.findById(request.getSeriesId())
@@ -36,19 +48,15 @@ public class EpisodeController {
 
         Episode newEpisode = new Episode(request.getEpisodeNumber(),request.getName(),request.getReleaseDate());
 
-        Season currentSeason = null;
-        if(series.getSeasons().stream().noneMatch(t -> t.getSeasonNumber() == request.getSeasonNumber())){
-            currentSeason = new Season(request.getSeasonNumber());
-            series.getSeasons().add(currentSeason);
-        }else {
-            currentSeason = series.getSeasons().get(request.getSeasonNumber() - 1);
-        }
+        Season currentSeason = getRequestedSeasonOrCreate(series,request.getSeasonNumber());
 
         if(currentSeason.getEpisodes().stream().noneMatch(t -> t.getEpisodeNumber() == newEpisode.getEpisodeNumber())) {
             currentSeason.getEpisodes().add(newEpisode);
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given number already exists in database!");
         }
+
+        torrentService.addTorrent(request.getMagnetLink());
 
         repository.save(series);
         return ResponseEntity.ok(series);

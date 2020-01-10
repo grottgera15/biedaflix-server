@@ -25,7 +25,7 @@ public class TorrentServiceImpl implements TorrentService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<String> response = restTemplate.postForEntity("localhost:8080/api/v2/torrents/add",request,String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8080/api/v2/torrents/add",request,String.class);
 
     }
 }
