@@ -3,6 +3,7 @@ package bestworkingconditions.biedaflix.server.controller;
 import bestworkingconditions.biedaflix.server.model.Episode;
 import bestworkingconditions.biedaflix.server.model.Season;
 import bestworkingconditions.biedaflix.server.model.Series;
+import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.service.TorrentService;
@@ -41,7 +42,7 @@ public class EpisodeController {
     }
 
     @PostMapping("/episode")
-    public ResponseEntity<Series> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
+    public ResponseEntity<TorrentInfo> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
         Series series = repository.findById(request.getSeriesId())
                                                    .orElseThrow(() ->
                                                            new ResponseStatusException(HttpStatus.NOT_FOUND, "Series not found!"));
@@ -50,7 +51,7 @@ public class EpisodeController {
 
         Season currentSeason = getRequestedSeasonOrCreate(series,request.getSeasonNumber());
 
-        if(currentSeason.getEpisodes().stream().anyMatch(t->t.getName() == request.getName()))
+        if(currentSeason.getEpisodes().stream().anyMatch(t->t.getName().equals(request.getName())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given name already exists in database");
 
         if(currentSeason.getEpisodes().stream().noneMatch(t -> t.getEpisodeNumber() == newEpisode.getEpisodeNumber())) {
@@ -63,6 +64,8 @@ public class EpisodeController {
 
         torrentService.addTorrent(request);
 
-        return ResponseEntity.ok(series);
+        TorrentInfo info = torrentService.getTorrentInfo(request.getName());
+
+        return ResponseEntity.ok(info);
     }
 }
