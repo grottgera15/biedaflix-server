@@ -3,7 +3,9 @@ package bestworkingconditions.biedaflix.server.service;
 
 import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
+import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,11 @@ import java.util.Objects;
 
 @Service
 public class TorrentServiceImpl implements TorrentService {
+
+    private final TorrentUriRepository torrentUriRepository;
+
+    @Autowired
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository) {this.torrentUriRepository = torrentUriRepository;}
 
     @Override
     public void addTorrent(EpisodeRequest episodeRequest) {
