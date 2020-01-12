@@ -1,13 +1,12 @@
 package bestworkingconditions.biedaflix.server.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 @ConfigurationProperties(prefix = "torrent")
 public class TorrentProperties {
     private String clientUri;
     private String clientPort;
+    private String pathToResources;
 
     public String getClientUri() {
         return clientUri;
@@ -23,5 +22,13 @@ public class TorrentProperties {
 
     public void setClientPort(String clientPort) {
         this.clientPort = clientPort;
+    }
+
+    public String getPathToResources() {
+        return pathToResources;
+    }
+
+    public void setPathToResources(String pathToResources) {
+        this.pathToResources = pathToResources;
     }
 }
