@@ -5,7 +5,6 @@ import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class TorrentServiceImpl implements TorrentService {
@@ -37,12 +38,16 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Override
-    public TorrentInfo getTorrentInfo(@NotBlank String name) {
+    public List<TorrentInfo> getTorrentsInfo(@NotBlank String name) {
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("filter","all")
                                                                                           .addKeyValuePair("category","biedaflix").build();
         ResponseEntity<TorrentInfo[]> responseEntity  = new RestTemplate().getForEntity(torrentUriRepository.getUri("info"),TorrentInfo[].class,request);
-        return (Objects.requireNonNull(responseEntity.getBody()))[0];
+
+        if(responseEntity.getBody() != null)
+            return new ArrayList<>(Arrays.asList(responseEntity.getBody()));
+        else
+            return new ArrayList<>();
     }
 
     @Override

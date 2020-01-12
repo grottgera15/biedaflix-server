@@ -64,7 +64,7 @@ public class EpisodeController {
 
         torrentService.addTorrent(request);
 
-        TorrentInfo info = torrentService.getTorrentInfo(request.getName());
+        TorrentInfo info = torrentService.getTorrentsInfo(request.getName());
 
         return ResponseEntity.ok(info);
     }
