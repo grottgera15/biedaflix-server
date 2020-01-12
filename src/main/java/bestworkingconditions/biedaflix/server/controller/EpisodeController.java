@@ -10,6 +10,7 @@ import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,6 +68,12 @@ public class EpisodeController {
 
         List<TorrentInfo> info = torrentService.getTorrentsInfo();
 
+        return ResponseEntity.ok(info);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<List<TorrentInfo>> checkStatus(){
+        List<TorrentInfo> info = torrentService.getTorrentsInfo();
         return ResponseEntity.ok(info);
     }
 }

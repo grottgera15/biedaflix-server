@@ -29,6 +29,10 @@ public class TorrentServiceImpl implements TorrentService {
     @Scheduled(cron = "* 0/1 * * * ?")
     private void CheckTorrentsStatus(){
         List<TorrentInfo> status = getTorrentsInfo();
+
+        for( TorrentInfo info : status){
+         //   if(info.)
+        }
     }
 
     @Override
