@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class EpisodeController {
@@ -42,7 +43,7 @@ public class EpisodeController {
     }
 
     @PostMapping("/episode")
-    public ResponseEntity<TorrentInfo> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
+    public ResponseEntity<List<TorrentInfo>> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
         Series series = repository.findById(request.getSeriesId())
                                                    .orElseThrow(() ->
                                                            new ResponseStatusException(HttpStatus.NOT_FOUND, "Series not found!"));
@@ -64,7 +65,7 @@ public class EpisodeController {
 
         torrentService.addTorrent(request);
 
-        TorrentInfo info = torrentService.getTorrentsInfo(request.getName());
+        List<TorrentInfo> info = torrentService.getTorrentsInfo();
 
         return ResponseEntity.ok(info);
     }

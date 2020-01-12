@@ -8,6 +8,7 @@ import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +26,11 @@ public class TorrentServiceImpl implements TorrentService {
     @Autowired
     public TorrentServiceImpl(TorrentUriRepository torrentUriRepository) {this.torrentUriRepository = torrentUriRepository;}
 
+    @Scheduled(cron = "* 0/1 * * * ?")
+    private void CheckTorrentsStatus(){
+        List<TorrentInfo> status = getTorrentsInfo();
+    }
+
     @Override
     public void addTorrent(EpisodeRequest episodeRequest) {
 
@@ -38,7 +44,7 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Override
-    public List<TorrentInfo> getTorrentsInfo(@NotBlank String name) {
+    public List<TorrentInfo> getTorrentsInfo() {
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("filter","all")
                                                                                           .addKeyValuePair("category","biedaflix").build();

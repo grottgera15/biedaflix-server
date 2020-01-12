@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TorrentService {
     void addTorrent(EpisodeRequest request);
-    List<TorrentInfo> getTorrentsInfo(String name);
+    List<TorrentInfo> getTorrentsInfo();
     void deleteTorrent(String name, boolean deleteFiles);
 
 }
