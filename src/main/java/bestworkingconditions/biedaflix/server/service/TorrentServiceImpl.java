@@ -11,7 +11,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 import java.util.Objects;
 
 @Service

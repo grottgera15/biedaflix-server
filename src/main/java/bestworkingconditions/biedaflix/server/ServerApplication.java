@@ -1,9 +1,12 @@
 package bestworkingconditions.biedaflix.server;
 
+import bestworkingconditions.biedaflix.server.properties.TorrentProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
+@EnableConfigurationProperties(TorrentProperties.class)
 public class ServerApplication {
 
     public static void main(String[] args) {

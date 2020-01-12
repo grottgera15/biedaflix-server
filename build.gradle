@@ -27,6 +27,13 @@ dependencies {
             //'org.bouncycastle:bcprov-jdk15on:1.60',
             'io.jsonwebtoken:jjwt-jackson:0.10.7'
 
+    //hibernate validator
+    implementation 'org.hibernate:hibernate-validator:6.1.0.Final'
+
+    // configuration processor
+    compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.2.2.RELEASE'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-security'
