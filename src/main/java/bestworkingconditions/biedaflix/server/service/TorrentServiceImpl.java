@@ -31,9 +31,7 @@ public class TorrentServiceImpl implements TorrentService {
                 .addKeyValuePair("category","biedaflix")
                 .addKeyValuePair("rename",episodeRequest.getName()).build();
 
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8080/api/v2/torrents/add",request,String.class);
+        ResponseEntity<String> response = new RestTemplate().postForEntity(torrentUriRepository.getUri("add"),request,String.class);
 
     }
 
@@ -42,10 +40,7 @@ public class TorrentServiceImpl implements TorrentService {
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("filter","all")
                                                                                           .addKeyValuePair("category","biedaflix").build();
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<TorrentInfo[]> responseEntity  = restTemplate.postForEntity("http://localhost:8080/api/v2/torrents/info",request,TorrentInfo[].class);
+        ResponseEntity<TorrentInfo[]> responseEntity  = new RestTemplate().postForEntity(torrentUriRepository.getUri("info"),request,TorrentInfo[].class);
         return (Objects.requireNonNull(responseEntity.getBody()))[0];
     }
 
@@ -53,5 +48,7 @@ public class TorrentServiceImpl implements TorrentService {
     public void deleteTorrent(String torrentHash,boolean deleteFiles) {
         HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",torrentHash).
                 addKeyValuePair("deleteFiles",Boolean.toString(deleteFiles)).build();
+
+
     }
 }
