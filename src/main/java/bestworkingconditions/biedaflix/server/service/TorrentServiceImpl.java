@@ -101,6 +101,9 @@ public class TorrentServiceImpl implements TorrentService {
 
     @Override
     public void resumeTorrents(List<String> torrentHashes) {
+        String combineHashes = combineHashesForRequest(torrentHashes);
 
+        HttpEntity<> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combineHashes).build();
+        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("resume"),request,String.class);
     }
 }
