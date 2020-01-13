@@ -6,7 +6,7 @@ import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import java.util.List;
 
 public interface TorrentService {
-    void addTorrent(EpisodeRequest request);
+    void addTorrent(String seriesName,EpisodeRequest request);
     List<TorrentInfo> getTorrentsInfo();
     void deleteTorrent(String name, boolean deleteFiles);
     void pauseTorrents(List<String> torrentHashes);

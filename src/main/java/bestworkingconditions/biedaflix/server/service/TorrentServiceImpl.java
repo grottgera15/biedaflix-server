@@ -5,7 +5,6 @@ import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,23 +32,34 @@ public class TorrentServiceImpl implements TorrentService {
     @Scheduled(cron = "0 0/1 * * * ?")
     private void CheckTorrentsStatus(){
         List<TorrentInfo> status = getTorrentsInfo();
-
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
+
+       List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
         for( TorrentInfo info : status){
             if(info.getProgress() == 1.0){
-
+                finishedDownloading.add(info);
             }
         }
+
+        List<String> hashes = new ArrayList<>();
+        for (TorrentInfo info : finishedDownloading){
+            hashes.add(info.getHash());
+        }
+
+        pauseTorrents(hashes);
     }
 
     @Override
-    public void addTorrent(EpisodeRequest episodeRequest) {
+    public void addTorrent(String seriesName,EpisodeRequest episodeRequest) {
+
+        String seriesNameWithoutSpaces = seriesName.replaceAll("s\\s+", "");
+        String downloadName = seriesNameWithoutSpaces + "_S" + episodeRequest.getSeasonNumber() + "_E" + episodeRequest.getEpisodeNumber();
 
         HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder()
                 .addKeyValuePair("urls",episodeRequest.getMagnetLink())
                 .addKeyValuePair("category","biedaflix")
-                .addKeyValuePair("rename",episodeRequest.getName()).build();
+                .addKeyValuePair("rename",downloadName).build();
 
         ResponseEntity<String> response = new RestTemplate().postForEntity(torrentUriRepository.getUri("add"),request,String.class);
 
@@ -103,7 +113,7 @@ public class TorrentServiceImpl implements TorrentService {
     public void resumeTorrents(List<String> torrentHashes) {
         String combineHashes = combineHashesForRequest(torrentHashes);
 
-        HttpEntity<> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combineHashes).build();
+        HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combineHashes).build();
         ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("resume"),request,String.class);
     }
 }

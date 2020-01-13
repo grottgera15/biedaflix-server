@@ -6,14 +6,16 @@ public class TorrentInfo implements Serializable {
     private float progress;
     private float eta;
     private String hash;
+    private String name;
 
     public TorrentInfo() {
     }
 
-    public TorrentInfo(float progress, float eta, String hash) {
+    public TorrentInfo(float progress, float eta, String hash, String name) {
         this.progress = progress;
         this.eta = eta;
         this.hash = hash;
+        this.name = name;
     }
 
     public float getProgress() {
@@ -28,8 +30,16 @@ public class TorrentInfo implements Serializable {
         return hash;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "[p: " + progress + ", e:" + eta + "]";
+        return "[n:" + name +",p: " + progress + ", e:" + eta + "]";
     }
 }

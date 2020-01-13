@@ -64,7 +64,7 @@ public class EpisodeController {
 
         repository.save(series);
 
-        torrentService.addTorrent(request);
+        torrentService.addTorrent(series.getName(),request);
 
         List<TorrentInfo> info = torrentService.getTorrentsInfo();
 
