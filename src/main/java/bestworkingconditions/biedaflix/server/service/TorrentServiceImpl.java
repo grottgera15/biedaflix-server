@@ -5,6 +5,7 @@ import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,10 @@ public class TorrentServiceImpl implements TorrentService {
 
     @Override
     public void pauseTorrents(List<String> torrentHashes) {
+        String combinedHashes = combineHashesForRequest(torrentHashes);
 
+        HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combinedHashes).build();
+        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("pause"),request,String.class);
     }
 
     @Override
