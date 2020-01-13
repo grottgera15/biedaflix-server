@@ -29,7 +29,7 @@ public class TorrentServiceImpl implements TorrentService {
     @Autowired
     public TorrentServiceImpl(TorrentUriRepository torrentUriRepository) {this.torrentUriRepository = torrentUriRepository;}
 
-    @Scheduled(cron = "* 0/1 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     private void CheckTorrentsStatus(){
         List<TorrentInfo> status = getTorrentsInfo();
 
