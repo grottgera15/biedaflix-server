@@ -27,4 +27,9 @@ public class TorrentInfo implements Serializable {
     public String getHash() {
         return hash;
     }
+
+    @Override
+    public String toString() {
+        return "[p: " + progress + ", e:" + eta + "]";
+    }
 }

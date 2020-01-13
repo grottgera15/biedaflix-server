@@ -33,10 +33,12 @@ public class TorrentServiceImpl implements TorrentService {
     private void CheckTorrentsStatus(){
         List<TorrentInfo> status = getTorrentsInfo();
 
-        logger.info("SCHEDULED FUNCTION CALL");
+        logger.info("SCHEDULED FUNCTION CALL " + status.toString());
 
         for( TorrentInfo info : status){
-         //   if(info.)
+            if(info.getProgress() == 1.0){
+
+            }
         }
     }
 
@@ -72,5 +74,29 @@ public class TorrentServiceImpl implements TorrentService {
                                                                                           .build();
 
         ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("delete"),request, String.class);
+    }
+
+    private String combineHashesForRequest(List<String> torrentHashes){
+        StringBuilder responseBuilder = new StringBuilder();
+        for ( int i = 0; i < torrentHashes.size(); i++ ){
+            String hash = torrentHashes.get(i);
+
+            if(i != 0)
+                responseBuilder.append("|").append(hash);
+            else
+                responseBuilder.append(hash);
+        }
+
+        return responseBuilder.toString();
+    }
+
+    @Override
+    public void pauseTorrents(List<String> torrentHashes) {
+
+    }
+
+    @Override
+    public void resumeTorrents(List<String> torrentHashes) {
+
     }
 }
