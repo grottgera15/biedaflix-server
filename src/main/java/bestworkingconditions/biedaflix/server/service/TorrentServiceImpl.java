@@ -53,7 +53,7 @@ public class TorrentServiceImpl implements TorrentService {
     @Override
     public void addTorrent(String seriesName,EpisodeRequest episodeRequest) {
 
-        String seriesNameWithoutSpaces = seriesName.replaceAll("s\\s+", "");
+        String seriesNameWithoutSpaces = seriesName.replaceAll("\\s+", "");
         String downloadName = seriesNameWithoutSpaces + "_S" + episodeRequest.getSeasonNumber() + "_E" + episodeRequest.getEpisodeNumber();
 
         HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder()
