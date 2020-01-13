@@ -5,6 +5,8 @@ import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,12 +24,16 @@ public class TorrentServiceImpl implements TorrentService {
 
     private final TorrentUriRepository torrentUriRepository;
 
+    Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
+
     @Autowired
     public TorrentServiceImpl(TorrentUriRepository torrentUriRepository) {this.torrentUriRepository = torrentUriRepository;}
 
     @Scheduled(cron = "* 0/1 * * * ?")
     private void CheckTorrentsStatus(){
         List<TorrentInfo> status = getTorrentsInfo();
+
+        logger.info("SCHEDULED FUNCTION CALL");
 
         for( TorrentInfo info : status){
          //   if(info.)
