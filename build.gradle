@@ -17,6 +17,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven{
+        url "https://repo.spring.io/libs-milestone/"
+    }
 }
 
 dependencies {
@@ -38,7 +41,18 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    //implementation 'org.springframework.session:spring-session-core'
+
+    //spring content
+    // https://mvnrepository.com/artifact/com.github.paulcwarren/content-fs-spring-boot-starter
+    compile group: 'com.github.paulcwarren', name: 'content-fs-spring-boot-starter', version: '1.0.0.M4'
+    // https://mvnrepository.com/artifact/com.github.paulcwarren/spring-content-fs
+    //compile group: 'com.github.paulcwarren', name: 'spring-content-fs', version: '1.0.0.M4'
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-framework-bom
+    compile group: 'org.springframework', name: 'spring-framework-bom', version: '5.2.0.M2', ext: 'pom'
+
+
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
