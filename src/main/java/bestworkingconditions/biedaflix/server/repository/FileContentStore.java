@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 @StoreRestResource(path="files")
 public interface FileContentStore extends Store<String> {
-
 }

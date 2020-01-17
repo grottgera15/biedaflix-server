@@ -8,23 +8,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.net.URI;
 
 @Document(collection = "streamingServices")
-public class StreamingServiceSource implements FileResource{
+public class StreamingServiceSource extends FileResource{
 
     @Id
     private String id;
     private String name;
 
-    private @ContentId String contentID;
-    @MimeType private String mimeType;
-
     public StreamingServiceSource() {
-    }
-
-    public StreamingServiceSource(String id, String name, String contentID, String mimeType) {
-        this.id = id;
-        this.name = name;
-        this.contentID = contentID;
-        this.mimeType = mimeType;
     }
 
     public String getId() {
@@ -43,29 +33,13 @@ public class StreamingServiceSource implements FileResource{
         this.name = name;
     }
 
-    public String getContentID() {
-        return contentID;
-    }
-
-    public void setContentID(String contentID) {
-        this.contentID = contentID;
-    }
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
     @Override
     public URI getResourceURI() {
         return null;
     }
 
     @Override
-    public String getFileName() {
-        return name;
+    public String getFilePath() {
+        return  "/" + getClass().getSimpleName() + "/" + name ;
     }
 }

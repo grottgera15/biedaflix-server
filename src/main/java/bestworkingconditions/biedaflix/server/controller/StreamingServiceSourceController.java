@@ -2,7 +2,8 @@ package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
 import bestworkingconditions.biedaflix.server.model.response.StreamingServiceSourceResponse;
-import bestworkingconditions.biedaflix.server.repository.StreamingServiceSourceContentStore;
+import bestworkingconditions.biedaflix.server.repository.FileContentStore;
+import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.StreamingServiceSourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,11 +22,11 @@ import java.util.List;
 @RestController
 public class StreamingServiceSourceController {
 
-    private final StreamingServiceSourceContentStore contentStore;
+    private final FileResourceContentStore contentStore;
     private final StreamingServiceSourceRepository repository;
 
     @Autowired
-    public StreamingServiceSourceController(StreamingServiceSourceContentStore contentStore, StreamingServiceSourceRepository repository) {this.contentStore = contentStore;
+    public StreamingServiceSourceController(FileResourceContentStore contentStore, StreamingServiceSourceRepository repository) {this.contentStore = contentStore;
         this.repository = repository;
     }
 

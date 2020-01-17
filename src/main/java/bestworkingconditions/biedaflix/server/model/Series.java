@@ -1,6 +1,7 @@
 package bestworkingconditions.biedaflix.server.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -14,9 +15,11 @@ public class Series {
 
     private String name;
     private String description;
-    private String bannerVideo;
-    private String logo;
-    private String source;
+
+    private SeriesBanner bannerVideo;
+    private SeriesLogo logo;
+
+    private String streamingServiceId;
     private Boolean onGoing;
     private List<Season> seasons;
 
@@ -24,12 +27,15 @@ public class Series {
         seasons = new ArrayList<>();
     }
 
-    public Series(String name, String description, Boolean onGoing) {
+    public Series(String id, String name, String description, SeriesBanner bannerVideo, SeriesLogo logo, String streamingServiceId, Boolean onGoing, List<Season> seasons) {
+        this.id = id;
         this.name = name;
         this.description = description;
+        this.bannerVideo = bannerVideo;
+        this.logo = logo;
+        this.streamingServiceId = streamingServiceId;
         this.onGoing = onGoing;
-
-        seasons = new ArrayList<>();
+        this.seasons = seasons;
     }
 
     public String getId() {
@@ -52,28 +58,32 @@ public class Series {
         this.description = description;
     }
 
-    public String getBannerVideo() {
+    public SeriesBanner getBannerVideo() {
         return bannerVideo;
     }
 
-    public void setBannerVideo(String bannerVideo) {
+    public void setBannerVideo(SeriesBanner bannerVideo) {
         this.bannerVideo = bannerVideo;
     }
 
-    public String getLogo() {
+    public SeriesLogo getLogo() {
         return logo;
     }
 
-    public void setLogo(String logo) {
+    public void setLogo(SeriesLogo logo) {
         this.logo = logo;
     }
 
-    public String getSource() {
-        return source;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public String getStreamingServiceId() {
+        return streamingServiceId;
+    }
+
+    public void setStreamingServiceId(String streamingServiceId) {
+        this.streamingServiceId = streamingServiceId;
     }
 
     public Boolean getOnGoing() {

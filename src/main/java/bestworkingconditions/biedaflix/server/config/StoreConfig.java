@@ -1,7 +1,6 @@
 package bestworkingconditions.biedaflix.server.config;
 
 import bestworkingconditions.biedaflix.server.model.FileResource;
-import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.properties.StoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +64,7 @@ public class StoreConfig {
         return new FilesystemStoreConverter<FileResource, String>() {
             @Override
             public String convert(FileResource source) {
-                return  "/" + source.getClass().getSimpleName() + "/" + source.getFileName() ;
+                return source.getFilePath();
             }
         };
     }

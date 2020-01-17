@@ -1,9 +1,9 @@
 package bestworkingconditions.biedaflix.server.repository;
 
-import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
+import bestworkingconditions.biedaflix.server.model.FileResource;
 import org.springframework.content.commons.repository.ContentStore;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StreamingServiceSourceContentStore extends ContentStore<StreamingServiceSource,String> {
+public interface FileResourceContentStore extends ContentStore<FileResource,String> {
 }
