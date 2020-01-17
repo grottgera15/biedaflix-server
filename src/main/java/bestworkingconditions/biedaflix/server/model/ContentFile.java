@@ -13,6 +13,7 @@ public class ContentFile {
     @Id @ContentId
     private String contentID;
     @ContentLength private long contentLength;
+
     @MimeType private String mimeType;
 
     public ContentFile() {
