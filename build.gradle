@@ -45,12 +45,21 @@ dependencies {
     //spring content
     // https://mvnrepository.com/artifact/com.github.paulcwarren/content-fs-spring-boot-starter
     compile group: 'com.github.paulcwarren', name: 'content-fs-spring-boot-starter', version: '1.0.0.M4'
-    // https://mvnrepository.com/artifact/com.github.paulcwarren/spring-content-fs
-    //compile group: 'com.github.paulcwarren', name: 'spring-content-fs', version: '1.0.0.M4'
+    // https://mvnrepository.com/artifact/com.github.paulcwarren/content-rest-spring-boot-starter
+    compile group: 'com.github.paulcwarren', name: 'content-rest-spring-boot-starter', version: '1.0.0.M4'
+
 
     // https://mvnrepository.com/artifact/org.springframework/spring-framework-bom
-    compile group: 'org.springframework', name: 'spring-framework-bom', version: '5.2.0.M2', ext: 'pom'
+    compile group: 'org.springframework', name: 'spring-framework-bom', version: '5.2.3.RELEASE', ext: 'pom'
 
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+    // https://mvnrepository.com/artifact/javax.activation/javax.activation-api
+    compile group: 'javax.activation', name: 'javax.activation-api', version: '1.2.0'
+
+    // https://mvnrepository.com/artifact/com.sun.activation/javax.activation
+    compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
