@@ -30,4 +30,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
 /uploads/
+/files/

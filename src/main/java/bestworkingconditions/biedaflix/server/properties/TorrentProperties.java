@@ -2,7 +2,7 @@ package bestworkingconditions.biedaflix.server.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "torrent")
+@ConfigurationProperties(prefix = "biedaflix.torrent")
 public class TorrentProperties {
     private String clientUri;
     private String clientPort;
