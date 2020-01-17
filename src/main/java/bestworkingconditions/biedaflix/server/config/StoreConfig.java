@@ -1,14 +1,20 @@
 package bestworkingconditions.biedaflix.server.config;
 
+import bestworkingconditions.biedaflix.server.model.FileResource;
+import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.properties.StoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.content.fs.config.EnableFilesystemStores;
+import org.springframework.content.fs.config.FilesystemStoreConfigurer;
+import org.springframework.content.fs.config.FilesystemStoreConverter;
 import org.springframework.content.fs.io.FileSystemResourceLoader;
 import org.springframework.content.rest.config.ContentRestConfigurer;
 import org.springframework.content.rest.config.RestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.converter.ConverterRegistry;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -54,5 +60,25 @@ public class StoreConfig {
             }
         };
     }
+
+    public Converter<FileResource,String> fileResourceStringConverter(){
+        return new FilesystemStoreConverter<FileResource, String>() {
+            @Override
+            public String convert(FileResource source) {
+                return  "/" + source.getClass().getSimpleName() + "/" + source.getFileName() ;
+            }
+        };
+    }
+
+    @Bean
+    public FilesystemStoreConfigurer configurer(){
+        return new FilesystemStoreConfigurer() {
+            @Override
+            public void configureFilesystemStoreConverters(ConverterRegistry registry) {
+                registry.addConverter(fileResourceStringConverter());
+            }
+        };
+    }
+
 
 }

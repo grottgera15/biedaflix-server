@@ -5,8 +5,10 @@ import org.springframework.content.commons.annotations.MimeType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.net.URI;
+
 @Document(collection = "streamingServices")
-public class StreamingServiceSource {
+public class StreamingServiceSource implements FileResource{
 
     @Id
     private String id;
@@ -55,5 +57,15 @@ public class StreamingServiceSource {
 
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
+    }
+
+    @Override
+    public URI getResourceURI() {
+        return null;
+    }
+
+    @Override
+    public String getFileName() {
+        return name;
     }
 }
