@@ -1,20 +1,21 @@
 package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
+import bestworkingconditions.biedaflix.server.model.response.StreamingServiceSourceResponse;
 import bestworkingconditions.biedaflix.server.repository.StreamingServiceSourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.StreamingServiceSourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.content.commons.annotations.HandleBeforeUnassociate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class StreamingServiceSourceController {
@@ -40,5 +41,10 @@ public class StreamingServiceSourceController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/streamingSource")
+    public ResponseEntity<?> getListOfAllStreamingServiceSources(){
+        List<StreamingServiceSource> streamingServiceSources = repository.findAll();
+        throw new NotImplementedException();
+    }
 
 }
