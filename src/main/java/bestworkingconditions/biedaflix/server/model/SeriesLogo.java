@@ -5,8 +5,8 @@ import java.net.URI;
 
 public class SeriesLogo extends SeriesMediaFiles {
 
-    public SeriesLogo(String mimeType, @NotNull String seriesName) {
-        super(mimeType, seriesName);
+    public SeriesLogo(String extension, @NotNull String seriesName) {
+        super(extension, seriesName);
     }
 
     @Override
@@ -16,7 +16,6 @@ public class SeriesLogo extends SeriesMediaFiles {
 
     @Override
     public String getFilePath() {
-        return super.getFilePath() + "logo";
+        return super.getFilePath() + "logo" + "." + getFileExtension();
     }
-
 }

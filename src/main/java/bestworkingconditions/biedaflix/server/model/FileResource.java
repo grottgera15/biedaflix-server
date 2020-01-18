@@ -9,9 +9,7 @@ public abstract class FileResource {
 
     @ContentId
     protected String contentId;
-    @MimeType
-    protected String mimeType;
-
+    protected String fileExtension;
 
     public abstract URI getResourceURI();
     public abstract String getFilePath();
@@ -19,8 +17,8 @@ public abstract class FileResource {
     public FileResource() {
     }
 
-    public FileResource(String mimeType) {
-        this.mimeType = mimeType;
+    public FileResource(String extension) {
+        this.fileExtension = extension;
     }
 
     public String getContentId() {
@@ -31,11 +29,11 @@ public abstract class FileResource {
         this.contentId = contentId;
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public String getFileExtension() {
+        return fileExtension;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
     }
 }

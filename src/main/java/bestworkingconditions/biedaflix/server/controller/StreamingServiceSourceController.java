@@ -40,7 +40,6 @@ public class StreamingServiceSourceController {
 
         StreamingServiceSource newSource = new StreamingServiceSource();
         newSource.setName(name);
-        newSource.setMimeType(logo.getContentType());
 
         contentStore.setContent(newSource,logo.getInputStream());
         repository.save(newSource);

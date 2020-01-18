@@ -10,8 +10,8 @@ public abstract class SeriesMediaFiles extends  FileResource {
     public SeriesMediaFiles() {
     }
 
-    public SeriesMediaFiles(String mimeType, @NotNull String seriesName) {
-        super(mimeType);
+    public SeriesMediaFiles(String extension, @NotNull String seriesName) {
+        super(extension);
         this.seriesName = seriesName;
     }
 
