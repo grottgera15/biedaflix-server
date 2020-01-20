@@ -11,7 +11,6 @@ public abstract class FileResource {
     protected String contentId;
     protected String fileExtension;
 
-    public abstract URI getResourceURI();
     public abstract String getFilePath();
 
     public FileResource() {

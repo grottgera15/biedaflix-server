@@ -10,13 +10,13 @@ import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -41,6 +41,17 @@ public class EpisodeController {
         Season newSeason = new Season(seasonNumber);
         series.getSeasons().add(newSeason);
         return newSeason;
+    }
+
+    @PostMapping("/addSubtitles")
+    public ResponseEntity<?> AddSubtitles(@NotBlank @RequestParam String seriesId,
+                                          @NotNull  @RequestParam int season,
+                                          @NotNull @RequestParam int episode,
+                                          @Valid @NotNull @RequestParam Episode.SubtitlesLanguage language ,
+                                          @NotNull @RequestParam MultipartFile subtitles){
+
+
+
     }
 
     @PostMapping("/episode")

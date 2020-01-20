@@ -1,5 +1,4 @@
 package bestworkingconditions.biedaflix.server.model;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;

@@ -13,11 +13,6 @@ public class SeriesBanner extends SeriesMediaFiles {
     }
 
     @Override
-    public URI getResourceURI() {
-        return null;
-    }
-
-    @Override
     public String getFilePath() {
         return super.getFilePath() + "banner" + "." + getFileExtension();
     }
