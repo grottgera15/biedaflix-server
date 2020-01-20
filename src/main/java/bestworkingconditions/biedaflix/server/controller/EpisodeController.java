@@ -89,7 +89,7 @@ public class EpisodeController {
 
         repository.save(series);
 
-        torrentService.addTorrent(series.getName(),request);
+        torrentService.addTorrent(series.getName(),request,newEpisode);
 
         List<TorrentInfo> info = torrentService.getTorrentsInfo();
 

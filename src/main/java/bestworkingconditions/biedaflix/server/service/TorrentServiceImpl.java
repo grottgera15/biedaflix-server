@@ -1,9 +1,12 @@
 package bestworkingconditions.biedaflix.server.service;
 
 
+import bestworkingconditions.biedaflix.server.model.CurrentlyDownloading;
+import bestworkingconditions.biedaflix.server.model.Episode;
 import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.properties.TorrentProperties;
+import bestworkingconditions.biedaflix.server.repository.CurrentlyDownloadingRepository;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.slf4j.Logger;
@@ -30,15 +33,17 @@ public class TorrentServiceImpl implements TorrentService {
     private final TorrentUriRepository torrentUriRepository;
     private final TorrentProperties torrentProperties;
     private final ResourceLoader resourceLoader;
+    private final CurrentlyDownloadingRepository currentlyDownloadingRepository;
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
 
     private List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
     @Autowired
-    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, ResourceLoader resourceLoader) {this.torrentUriRepository = torrentUriRepository;
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, ResourceLoader resourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository) {this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
         this.resourceLoader = resourceLoader;
+        this.currentlyDownloadingRepository = currentlyDownloadingRepository;
     }
 
     private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
@@ -87,10 +92,11 @@ public class TorrentServiceImpl implements TorrentService {
             hashes.add(info.getHash());
         }
         pauseTorrents(hashes);
+
     }
 
     @Override
-    public void addTorrent(String seriesName,EpisodeRequest episodeRequest) {
+    public void addTorrent(String seriesName, EpisodeRequest episodeRequest , Episode episode) {
 
         String seriesNameWithoutSpaces = seriesName.replaceAll("\\s+", "");
         String downloadName = seriesNameWithoutSpaces + "_S" + episodeRequest.getSeasonNumber() + "_E" + episodeRequest.getEpisodeNumber();
@@ -101,6 +107,17 @@ public class TorrentServiceImpl implements TorrentService {
                 .addKeyValuePair("rename",downloadName).build();
 
         ResponseEntity<String> response = new RestTemplate().postForEntity(torrentUriRepository.getUri("add"),request,String.class);
+
+        List<TorrentInfo> torrentsInfo = getTorrentsInfo();
+
+        for(TorrentInfo info : torrentsInfo){
+            if(info.getName() == downloadName){
+                CurrentlyDownloading currentlyDownloading = new CurrentlyDownloading();
+                currentlyDownloading.setTarget(episode);
+                currentlyDownloading.setTorrentInfo(info);
+                currentlyDownloadingRepository.save(currentlyDownloading);
+            }
+        }
 
     }
 
