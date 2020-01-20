@@ -3,8 +3,8 @@ package bestworkingconditions.biedaflix.server.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "currentlyDownloaded")
-public class CurrentlyDownloaded {
+@Document(collection = "currentlyDownloading")
+public class CurrentlyDownloading {
 
     @Id
     private String id;
@@ -12,10 +12,10 @@ public class CurrentlyDownloaded {
     private Episode target;
     private TorrentInfo torrentInfo;
 
-    public CurrentlyDownloaded() {
+    public CurrentlyDownloading() {
     }
 
-    public CurrentlyDownloaded(String id, Episode target, TorrentInfo torrentInfo) {
+    public CurrentlyDownloading(String id, Episode target, TorrentInfo torrentInfo) {
         this.id = id;
         this.target = target;
         this.torrentInfo = torrentInfo;

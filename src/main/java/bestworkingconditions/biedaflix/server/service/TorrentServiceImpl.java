@@ -65,10 +65,7 @@ public class TorrentServiceImpl implements TorrentService {
             commands.add("bash");
             commands.add(resource.getFile().getAbsolutePath());
 
-
-
-
-            ProcessBuilder processBuilder = new ProcessBuilder().command()
+            //ProcessBuilder processBuilder = new ProcessBuilder().command();
 
 
         }
