@@ -9,6 +9,7 @@ import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -29,16 +30,15 @@ public class TorrentServiceImpl implements TorrentService {
     private final TorrentUriRepository torrentUriRepository;
     private final TorrentProperties torrentProperties;
 
-
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
-    
+
     @Autowired
     public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties) {this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
     }
 
     private File getMovieFileFromDirectory(String TorrentName){
-        File f = new File();
+        File TorrentFolder = new ClassPathResource(torrentProperties.ge)
     }
 
     @Scheduled(cron = "0 0/1 * * * ?")

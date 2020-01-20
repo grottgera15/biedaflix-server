@@ -7,6 +7,15 @@ public class TorrentProperties {
     private String clientUri;
     private String clientPort;
     private String pathToResources;
+    private String downloadPath;
+
+    public String getDownloadPath() {
+        return downloadPath;
+    }
+
+    public void setDownloadPath(String downloadPath) {
+        this.downloadPath = downloadPath;
+    }
 
     public String getClientUri() {
         return clientUri;
