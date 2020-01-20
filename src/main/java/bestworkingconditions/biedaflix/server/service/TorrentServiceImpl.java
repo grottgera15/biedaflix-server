@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -19,7 +21,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -28,14 +29,16 @@ public class TorrentServiceImpl implements TorrentService {
 
     private final TorrentUriRepository torrentUriRepository;
     private final TorrentProperties torrentProperties;
+    private final ResourceLoader resourceLoader;
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
 
     private List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
     @Autowired
-    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties) {this.torrentUriRepository = torrentUriRepository;
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, ResourceLoader resourceLoader) {this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
+        this.resourceLoader = resourceLoader;
     }
 
     private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
@@ -49,11 +52,33 @@ public class TorrentServiceImpl implements TorrentService {
             throw new Exception("cannot find biggest file in torrent directory : " + torrentFolder);
     }
 
+    @Scheduled(initialDelay = 1000,cron = "0 0/1 * * * ?")
+    private void parseFinishedTorrents() throws Exception {
+        if(finishedDownloading.size() > 0) {
+            TorrentInfo torrentToParse = finishedDownloading.get(0);
+
+            File videoFile = getBiggestFileFromDirectory(torrentToParse.getName());
+
+            Resource resource = resourceLoader.getResource("classpath:ffmpeg-converter.sh");
+
+            List<String> commands = new ArrayList<>();
+            commands.add("bash");
+            commands.add(resource.getFile().getAbsolutePath());
+
+
+
+
+            ProcessBuilder processBuilder = new ProcessBuilder().command()
+
+
+        }
+    }
+
     @Scheduled(cron = "0 0/1 * * * ?")
-    private void CheckTorrentsStatus(){
+    private void checkTorrentsStatus(){
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
-        
+
         for( TorrentInfo info : status){
             if(info.getProgress() == 1.0){
                 finishedDownloading.add(info);
@@ -65,7 +90,6 @@ public class TorrentServiceImpl implements TorrentService {
             hashes.add(info.getHash());
         }
         pauseTorrents(hashes);
-
     }
 
     @Override
