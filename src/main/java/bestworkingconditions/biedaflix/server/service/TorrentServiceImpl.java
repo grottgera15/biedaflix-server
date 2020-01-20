@@ -19,8 +19,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -37,8 +39,15 @@ public class TorrentServiceImpl implements TorrentService {
         this.torrentProperties = torrentProperties;
     }
 
-    private File getMovieFileFromDirectory(String TorrentName){
-        File TorrentFolder = new ClassPathResource(torrentProperties.ge)
+    private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
+        File torrentFolder = new ClassPathResource(torrentProperties.getDownloadPath() + "/" + TorrentName).getFile();
+
+        File biggestFile = Arrays.stream(torrentFolder.listFiles()).max(Comparator.comparing(File::length)).get();
+
+        if(biggestFile.exists())
+            return biggestFile;
+        else
+            throw new Exception("cannot find biggest file in torrent directory : " + torrentFolder);
     }
 
     @Scheduled(cron = "0 0/1 * * * ?")
