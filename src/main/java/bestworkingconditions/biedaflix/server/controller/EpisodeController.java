@@ -1,10 +1,8 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.Episode;
-import bestworkingconditions.biedaflix.server.model.Season;
-import bestworkingconditions.biedaflix.server.model.Series;
-import bestworkingconditions.biedaflix.server.model.TorrentInfo;
+import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
+import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +15,22 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class EpisodeController {
 
     private final SeriesRepository repository;
     private final TorrentService torrentService;
+    private final FileResourceContentStore fileResourceContentStore;
 
     @Autowired
-    public EpisodeController(SeriesRepository repository, TorrentService torrentService) {
+    public EpisodeController(SeriesRepository repository, TorrentService torrentService, FileResourceContentStore fileResourceContentStore) {
         this.repository = repository;
         this.torrentService = torrentService;
+        this.fileResourceContentStore = fileResourceContentStore;
     }
 
     private Season getRequestedSeasonOrCreate(Series series, int seasonNumber){
@@ -44,14 +46,26 @@ public class EpisodeController {
     }
 
     @PostMapping("/addSubtitles")
-    public ResponseEntity<?> AddSubtitles(@NotBlank @RequestParam String seriesId,
+    public ResponseEntity<Object> AddSubtitles(@NotBlank @RequestParam String seriesId,
                                           @NotNull  @RequestParam int season,
                                           @NotNull @RequestParam int episode,
                                           @Valid @NotNull @RequestParam Episode.SubtitlesLanguage language ,
-                                          @NotNull @RequestParam MultipartFile subtitles){
+                                          @NotNull @RequestParam MultipartFile subtitles) throws IOException {
 
+        Optional<Series> requestedSeries = repository.findById(seriesId);
 
+        if(requestedSeries.isPresent()) {
+            Series series = requestedSeries.get();
 
+            EpisodeSubtitles subs = new EpisodeSubtitles(subtitles.getContentType(),series.getFolderName(),season,episode,language);
+            fileResourceContentStore.setContent(subs,subtitles.getInputStream());
+
+            series.getSeasons().get(season).getEpisodes().get(episode).getSubtitles().put(language,subs.getFilePath());
+
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist in database");
+        }
     }
 
     @PostMapping("/episode")
