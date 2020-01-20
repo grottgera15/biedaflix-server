@@ -3,6 +3,7 @@ package bestworkingconditions.biedaflix.server.service;
 
 import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
+import bestworkingconditions.biedaflix.server.properties.TorrentProperties;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.slf4j.Logger;
@@ -10,24 +11,35 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
+@EnableAsync
 public class TorrentServiceImpl implements TorrentService {
 
     private final TorrentUriRepository torrentUriRepository;
+    private final TorrentProperties torrentProperties;
+
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
-
+    
     @Autowired
-    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository) {this.torrentUriRepository = torrentUriRepository;}
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties) {this.torrentUriRepository = torrentUriRepository;
+        this.torrentProperties = torrentProperties;
+    }
+
+    private File getMovieFileFromDirectory(String TorrentName){
+        File f = new File();
+    }
 
     @Scheduled(cron = "0 0/1 * * * ?")
     private void CheckTorrentsStatus(){
@@ -46,8 +58,9 @@ public class TorrentServiceImpl implements TorrentService {
         for (TorrentInfo info : finishedDownloading){
             hashes.add(info.getHash());
         }
-
         pauseTorrents(hashes);
+
+
     }
 
     @Override
