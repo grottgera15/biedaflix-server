@@ -1,19 +1,32 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "currentlyDownloaded")
 public class CurrentlyDownloaded {
 
+    @Id
+    private String id;
+
     private Episode target;
-    private String torrentHash;
+    private TorrentInfo torrentInfo;
 
     public CurrentlyDownloaded() {
     }
 
-    public CurrentlyDownloaded(Episode target, String torrentHash) {
+    public CurrentlyDownloaded(String id, Episode target, TorrentInfo torrentInfo) {
+        this.id = id;
         this.target = target;
-        this.torrentHash = torrentHash;
+        this.torrentInfo = torrentInfo;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Episode getTarget() {
@@ -24,11 +37,11 @@ public class CurrentlyDownloaded {
         this.target = target;
     }
 
-    public String getTorrentHash() {
-        return torrentHash;
+    public TorrentInfo getTorrentInfo() {
+        return torrentInfo;
     }
 
-    public void setTorrentHash(String torrentHash) {
-        this.torrentHash = torrentHash;
+    public void setTorrentInfo(TorrentInfo torrentInfo) {
+        this.torrentInfo = torrentInfo;
     }
 }
