@@ -42,7 +42,9 @@ public class SeriesController {
     }
 
     private URL getSeriesResourceURL(String folderName, String resourceName)throws MalformedURLException {
-        return new  URL(appProperties.getDomain() + "/" + storeProperties.getPath() + folderName + "/" + resourceName);
+        String url = new StringBuilder().append(appProperties.getDomain()).append('/').
+                append(storeProperties.getPath()).append(folderName).append(resourceName).toString();
+        return new  URL(url);
     }
 
     @GetMapping("/series")
@@ -66,6 +68,9 @@ public class SeriesController {
     public ResponseEntity<Series> AddSeries(@Valid SeriesRequest request,
                                             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
                                             @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo) throws IOException {
+
+        
+
 
         Series newSeries = new Series();
         newSeries.setName(request.getName());
