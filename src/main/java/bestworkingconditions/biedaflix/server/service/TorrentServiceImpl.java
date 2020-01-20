@@ -20,10 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @EnableAsync
@@ -34,6 +31,8 @@ public class TorrentServiceImpl implements TorrentService {
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
 
+    private List<TorrentInfo> finishedDownloading = new ArrayList<>();
+
     @Autowired
     public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties) {this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
@@ -42,7 +41,7 @@ public class TorrentServiceImpl implements TorrentService {
     private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
         File torrentFolder = new ClassPathResource(torrentProperties.getDownloadPath() + "/" + TorrentName).getFile();
 
-        File biggestFile = Arrays.stream(torrentFolder.listFiles()).max(Comparator.comparing(File::length)).get();
+        File biggestFile = Arrays.stream(Objects.requireNonNull(torrentFolder.listFiles())).max(Comparator.comparing(File::length)).get();
 
         if(biggestFile.exists())
             return biggestFile;
@@ -54,9 +53,7 @@ public class TorrentServiceImpl implements TorrentService {
     private void CheckTorrentsStatus(){
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
-
-       List<TorrentInfo> finishedDownloading = new ArrayList<>();
-
+        
         for( TorrentInfo info : status){
             if(info.getProgress() == 1.0){
                 finishedDownloading.add(info);
@@ -68,7 +65,6 @@ public class TorrentServiceImpl implements TorrentService {
             hashes.add(info.getHash());
         }
         pauseTorrents(hashes);
-
 
     }
 
