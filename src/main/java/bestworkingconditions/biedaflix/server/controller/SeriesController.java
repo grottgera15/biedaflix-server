@@ -12,9 +12,11 @@ import bestworkingconditions.biedaflix.server.repository.FileResourceContentStor
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -69,8 +71,10 @@ public class SeriesController {
                                             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
                                             @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo) throws IOException {
 
-        
+        List<Series> all = repository.findAll();
 
+        if(all.stream().anyMatch(t -> t.getName().equals(request.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name already exists in database");
 
         Series newSeries = new Series();
         newSeries.setName(request.getName());
