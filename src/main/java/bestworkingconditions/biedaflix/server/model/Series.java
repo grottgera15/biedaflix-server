@@ -16,7 +16,7 @@ public class Series {
     private String name;
     private String description;
 
-    private SeriesBanner bannerVideo;
+    private SeriesBanner seriesBanner;
     private SeriesLogo logo;
 
     private String streamingServiceId;
@@ -24,14 +24,13 @@ public class Series {
     private List<Season> seasons;
 
     public Series() {
-        seasons = new ArrayList<>();
     }
 
-    public Series(String id, String name, String description, SeriesBanner bannerVideo, SeriesLogo logo, String streamingServiceId, Boolean onGoing, List<Season> seasons) {
+    public Series(String id, String name, String description, SeriesBanner seriesBanner, SeriesLogo logo, String streamingServiceId, Boolean onGoing, List<Season> seasons) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.bannerVideo = bannerVideo;
+        this.seriesBanner = seriesBanner;
         this.logo = logo;
         this.streamingServiceId = streamingServiceId;
         this.onGoing = onGoing;
@@ -58,12 +57,12 @@ public class Series {
         this.description = description;
     }
 
-    public SeriesBanner getBannerVideo() {
-        return bannerVideo;
+    public SeriesBanner getSeriesBanner() {
+        return seriesBanner;
     }
 
-    public void setBannerVideo(SeriesBanner bannerVideo) {
-        this.bannerVideo = bannerVideo;
+    public void setSeriesBanner(SeriesBanner seriesBanner) {
+        this.seriesBanner = seriesBanner;
     }
 
     public SeriesLogo getLogo() {

@@ -53,7 +53,7 @@ public class SeriesController {
 
         for(Series s : availableSeries){
             SeriesResponse r = new SeriesResponse(s.getId(),s.getName(),s.getDescription(),
-                    new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getBannerVideo().getFilePath())),
+                    new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getSeriesBanner().getFilePath())),
                     new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getLogo().getFilePath())),
                     s.getStreamingServiceId(),s.getOnGoing(),s.getSeasons());
             response.add(r);
@@ -83,7 +83,7 @@ public class SeriesController {
 
         if(banner.isPresent()){
             SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),request.getName());
-            newSeries.setBannerVideo(seriesBanner);
+            newSeries.setSeriesBanner(seriesBanner);
 
             fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
         }

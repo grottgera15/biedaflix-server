@@ -18,6 +18,9 @@ public class SeriesResponse {
     private Boolean onGoing;
     private List<Season> seasons;
 
+    public SeriesResponse() {
+    }
+
     public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String streamingServiceId, Boolean onGoing, List<Season> seasons) {
         this.id = id;
         this.name = name;
