@@ -91,7 +91,7 @@ public class SeriesController {
         }
 
         if(banner.isPresent()){
-            SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),request.getName());
+            SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),newSeries.getFolderName());
             newSeries.setSeriesBanner(seriesBanner);
 
             fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
