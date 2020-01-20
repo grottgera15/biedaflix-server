@@ -16,6 +16,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterRegistry;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Paths;
 
 @Configuration
