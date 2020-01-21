@@ -1,11 +1,7 @@
 package bestworkingconditions.biedaflix.server.model;
 
-import org.springframework.content.commons.annotations.ContentId;
-import org.springframework.content.commons.annotations.MimeType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.net.URI;
 
 @Document(collection = "streamingServices")
 public class StreamingServiceSource extends FileResource{
