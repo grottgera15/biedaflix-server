@@ -8,6 +8,7 @@ import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
+import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,12 +30,14 @@ public class EpisodeController {
     private final EpisodeRepository episodeRepository;
     private final SeriesRepository seriesRepository;
     private final FileResourceContentStore fileResourceContentStore;
+    private final TorrentService torrentService;
 
     @Autowired
-    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore) {
+    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, TorrentService torrentService) {
         this.episodeRepository = episodeRepository;
         this.seriesRepository = seriesRepository;
         this.fileResourceContentStore = fileResourceContentStore;
+        this.torrentService = torrentService;
     }
 
 
@@ -61,17 +64,16 @@ public class EpisodeController {
     @PostMapping("/episode")
     public ResponseEntity<List<TorrentInfo>> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
 
-        if( seriesRepository.existsById(request.getSeriesId())) {
-            Episode episode = new Episode(request.getSeriesId(),
-                    request.getSeasonNumber(),
-                    request.getEpisodeNumber(),
-                    request.getName(),
-                    request.getReleaseDate());
+        Series series = seriesRepository.findById(request.getSeriesId()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!"));
 
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        }
-        else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!");
-        }
+        Episode episode = new Episode(request.getSeriesId(),
+                request.getSeasonNumber(),
+                request.getEpisodeNumber(),
+                request.getName(),
+                request.getReleaseDate());
+
+        torrentService.addTorrent(series.getName(),request,episode);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

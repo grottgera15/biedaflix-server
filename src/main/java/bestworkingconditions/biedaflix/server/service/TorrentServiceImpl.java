@@ -8,6 +8,7 @@ import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.properties.TorrentProperties;
 import bestworkingconditions.biedaflix.server.repository.CurrentlyDownloadingRepository;
+import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
@@ -39,6 +40,7 @@ public class TorrentServiceImpl implements TorrentService {
     private final CurrentlyDownloadingRepository currentlyDownloadingRepository;
     private final SeriesRepository seriesRepository;
     private final File filesystemRoot;
+    private final EpisodeRepository episodeRepository;
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
 
@@ -50,13 +52,14 @@ public class TorrentServiceImpl implements TorrentService {
                               @Qualifier("fileSystemResourceLoader") ResourceLoader resourceLoader,
                               CurrentlyDownloadingRepository currentlyDownloadingRepository,
                               SeriesRepository seriesRepository,
-                              File filesystemRoot) {
+                              File filesystemRoot, EpisodeRepository episodeRepository) {
         this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
         this.resourceLoader = resourceLoader;
         this.currentlyDownloadingRepository = currentlyDownloadingRepository;
         this.seriesRepository = seriesRepository;
         this.filesystemRoot = filesystemRoot;
+        this.episodeRepository = episodeRepository;
     }
 
     private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
@@ -70,41 +73,54 @@ public class TorrentServiceImpl implements TorrentService {
             throw new Exception("cannot find biggest file in torrent directory : " + torrentFolder);
     }
 
-    @Scheduled(initialDelay = 1000,cron = "0 0/1 * * * ?")
+    @Scheduled(initialDelay = 30000,fixedRate = 60000)
     private void parseFinishedTorrents() throws Exception {
         if(finishedDownloading.size() > 0) {
             TorrentInfo torrentToParse = finishedDownloading.get(0);
 
             Optional<CurrentlyDownloading> currentlyDownloadingOptional = currentlyDownloadingRepository.findByTorrentInfo_Hash(torrentToParse.getHash());
-            CurrentlyDownloading currentlyDownloading = currentlyDownloadingOptional.orElseThrow( () -> new Exception("no currentlyDownloading matching torrentinfo"));
 
-            Series series = seriesRepository.findById(currentlyDownloading.getTarget().getSeriesId()).get();
+            if(currentlyDownloadingOptional.isPresent()) {
 
-            File videoFile = getBiggestFileFromDirectory(torrentToParse.getName());
+                CurrentlyDownloading currentlyDownloading = currentlyDownloadingOptional.get();
 
-            Resource resource = resourceLoader.getResource("classpath:ffmpeg-converter.sh");
+                Series series = seriesRepository.findById(currentlyDownloading.getTarget()
+                                                                              .getSeriesId()).get();
 
-            List<String> commands = new ArrayList<>();
-            commands.add("bash");
-            commands.add(resource.getFile().getAbsolutePath());
-            commands.add("-i");
-            commands.add(getBiggestFileFromDirectory(torrentToParse.getName()).toString());
-            commands.add("-n");
-            commands.add(series.getName());
-            commands.add("-s");
-            commands.add(Integer.toString(currentlyDownloading.getTarget().getSeasonNumber()));
-            commands.add("-e");
-            commands.add(Integer.toString(currentlyDownloading.getTarget().getEpisodeNumber()));
-            commands.add("-d");
-            commands.add(filesystemRoot.getAbsolutePath());
+                File videoFile = getBiggestFileFromDirectory(torrentToParse.getName());
 
-            Process processBuilder = new ProcessBuilder().command(commands).start();
+                Resource resource = resourceLoader.getResource("classpath:ffmpeg-converter.sh");
 
-            processBuilder.waitFor();
-            logger.info("FFMPG COMPLETED");
+                List<String> commands = new ArrayList<>();
+                commands.add("bash");
+                commands.add(resource.getFile()
+                                     .getAbsolutePath());
+                commands.add("-i");
+                commands.add(getBiggestFileFromDirectory(torrentToParse.getName()).toString());
+                commands.add("-n");
+                commands.add(series.getName());
+                commands.add("-s");
+                commands.add(Integer.toString(currentlyDownloading.getTarget()
+                                                                  .getSeasonNumber()));
+                commands.add("-e");
+                commands.add(Integer.toString(currentlyDownloading.getTarget()
+                                                                  .getEpisodeNumber()));
+                commands.add("-d");
+                commands.add(filesystemRoot.getAbsolutePath());
 
-            deleteTorrent(torrentToParse.getHash(),true);
-            currentlyDownloadingRepository.delete(currentlyDownloading);
+                Process processBuilder = new ProcessBuilder().command(commands)
+                                                             .start();
+
+                processBuilder.waitFor();
+                logger.info("FFMPG COMPLETED");
+
+                deleteTorrent(torrentToParse.getHash(), true);
+
+                //FIXME: ADD EPISODE TO DATABASE PROPERLY
+                episodeRepository.save(currentlyDownloading.getTarget());
+
+                currentlyDownloadingRepository.delete(currentlyDownloading);
+            }
         }
     }
 
@@ -141,9 +157,12 @@ public class TorrentServiceImpl implements TorrentService {
         ResponseEntity<String> response = new RestTemplate().postForEntity(torrentUriRepository.getUri("add"),request,String.class);
 
         List<TorrentInfo> torrentsInfo = getTorrentsInfo();
+        logger.info("TORRENTS" + String.valueOf(torrentsInfo));
 
         for(TorrentInfo info : torrentsInfo){
-            if(info.getName() == downloadName){
+            logger.info("INFO GET NAME :" + info.getName());
+            if(info.getName().equals(downloadName)){
+                logger.info("HELLO THERE");
                 CurrentlyDownloading currentlyDownloading = new CurrentlyDownloading();
                 currentlyDownloading.setTarget(episode);
                 currentlyDownloading.setTorrentInfo(info);

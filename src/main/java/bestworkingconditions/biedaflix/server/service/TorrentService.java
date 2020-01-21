@@ -12,4 +12,5 @@ public interface TorrentService {
     void deleteTorrent(String name, boolean deleteFiles);
     void pauseTorrents(List<String> torrentHashes);
     void resumeTorrents(List<String> torrentHashes);
+
 }
