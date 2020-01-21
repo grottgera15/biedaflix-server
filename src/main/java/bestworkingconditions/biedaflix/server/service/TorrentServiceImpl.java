@@ -1,10 +1,7 @@
 package bestworkingconditions.biedaflix.server.service;
 
 
-import bestworkingconditions.biedaflix.server.model.CurrentlyDownloading;
-import bestworkingconditions.biedaflix.server.model.Episode;
-import bestworkingconditions.biedaflix.server.model.Series;
-import bestworkingconditions.biedaflix.server.model.TorrentInfo;
+import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.properties.TorrentProperties;
 import bestworkingconditions.biedaflix.server.repository.CurrentlyDownloadingRepository;
@@ -20,6 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -62,15 +60,21 @@ public class TorrentServiceImpl implements TorrentService {
         this.episodeRepository = episodeRepository;
     }
 
-    private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
-        File torrentFolder = new ClassPathResource(torrentProperties.getDownloadPath() + "/" + TorrentName).getFile();
+    private File getBiggestFileFromDirectory(List<TorrentFileInfo> torrentFilesInfo) throws Exception {
 
-        File biggestFile = Arrays.stream(Objects.requireNonNull(torrentFolder.listFiles())).max(Comparator.comparing(File::length)).get();
+        if(torrentFilesInfo.size() > 0) {
 
-        if(biggestFile.exists())
-            return biggestFile;
-        else
-            throw new Exception("cannot find biggest file in torrent directory : " + torrentFolder);
+            TorrentFileInfo biggestFile = torrentFilesInfo.get(0);
+
+            for (TorrentFileInfo info : torrentFilesInfo) {
+                if(info.getFileSize() > biggestFile.getFileSize())
+                    biggestFile = info;
+            }
+            File torrentFile = new ClassPathResource(torrentProperties.getDownloadPath() + biggestFile.getRelativePath()).getFile();
+            return torrentFile;
+        }
+
+        return null;
     }
 
     @Scheduled(initialDelay = 30000,fixedRate = 60000)
@@ -87,7 +91,7 @@ public class TorrentServiceImpl implements TorrentService {
                 Series series = seriesRepository.findById(currentlyDownloading.getTarget()
                                                                               .getSeriesId()).get();
 
-                File videoFile = getBiggestFileFromDirectory(torrentToParse.getName());
+                File videoFile = getBiggestFileFromDirectory(getFilesInfo(currentlyDownloading.getTorrentInfo().getHash()));
 
                 Resource resource = resourceLoader.getResource("classpath:ffmpeg-converter.sh");
 
@@ -96,7 +100,7 @@ public class TorrentServiceImpl implements TorrentService {
                 commands.add(resource.getFile()
                                      .getAbsolutePath());
                 commands.add("-i");
-                commands.add(getBiggestFileFromDirectory(torrentToParse.getName()).toString());
+                commands.add( videoFile.toString());
                 commands.add("-n");
                 commands.add(series.getName());
                 commands.add("-s");
@@ -222,6 +226,18 @@ public class TorrentServiceImpl implements TorrentService {
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combineHashes).build();
         ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("resume"),request,String.class);
+    }
+
+    @Override
+    public List<TorrentFileInfo> getFilesInfo(String torrentHash) {
+        HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hash", torrentHash).build();
+
+        ResponseEntity<TorrentFileInfo[]> response = new RestTemplate().getForEntity(torrentUriRepository.getUri("files"),TorrentFileInfo[].class,request);
+
+        if(response.getBody() != null)
+            return new ArrayList<>(Arrays.asList(response.getBody()));
+        else
+            return new ArrayList<>();
     }
 
 }
