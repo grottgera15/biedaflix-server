@@ -8,7 +8,6 @@ import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
-import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +27,12 @@ public class EpisodeController {
 
     private final EpisodeRepository episodeRepository;
     private final SeriesRepository seriesRepository;
-    private final TorrentService torrentService;
     private final FileResourceContentStore fileResourceContentStore;
 
     @Autowired
-    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, TorrentService torrentService, FileResourceContentStore fileResourceContentStore) {
+    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore) {
         this.episodeRepository = episodeRepository;
         this.seriesRepository = seriesRepository;
-        this.torrentService = torrentService;
         this.fileResourceContentStore = fileResourceContentStore;
     }
 
