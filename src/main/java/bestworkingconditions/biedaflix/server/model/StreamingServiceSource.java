@@ -17,6 +17,11 @@ public class StreamingServiceSource extends FileResource{
     public StreamingServiceSource() {
     }
 
+    public StreamingServiceSource(String extension, String name) {
+        super(extension);
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }
@@ -36,6 +41,6 @@ public class StreamingServiceSource extends FileResource{
 
     @Override
     public String getFilePath() {
-        return  "/" + getClass().getSimpleName() + "/" + name ;
+        return  "/" + getClass().getSimpleName() + "/" + name + getFileExtension() ;
     }
 }
