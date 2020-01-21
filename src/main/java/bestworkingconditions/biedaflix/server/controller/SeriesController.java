@@ -1,13 +1,12 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.Series;
-import bestworkingconditions.biedaflix.server.model.SeriesBanner;
-import bestworkingconditions.biedaflix.server.model.SeriesLogo;
+import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.SeriesRequest;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.model.response.SeriesResponse;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.properties.StoreProperties;
+import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import org.apache.commons.io.FilenameUtils;
@@ -29,19 +28,21 @@ import java.util.Optional;
 @RestController
 public class SeriesController {
 
-    private final SeriesRepository repository;
+    private final SeriesRepository seriesRepository;
+    private final EpisodeRepository episodeRepository;
     private final FileResourceContentStore fileResourceContentStore;
     private final AppProperties appProperties;
     private final StoreProperties storeProperties;
 
-
     @Autowired
-    public SeriesController(SeriesRepository repository, FileResourceContentStore fileResourceContentStore, AppProperties appProperties, StoreProperties storeProperties) {
-        this.repository = repository;
+    public SeriesController(SeriesRepository seriesRepository, EpisodeRepository episodeRepository, FileResourceContentStore fileResourceContentStore, AppProperties appProperties, StoreProperties storeProperties) {
+        this.seriesRepository = seriesRepository;
+        this.episodeRepository = episodeRepository;
         this.fileResourceContentStore = fileResourceContentStore;
         this.appProperties = appProperties;
         this.storeProperties = storeProperties;
     }
+
 
     private URL getSeriesResourceURL(String folderName, String resourceName)throws MalformedURLException {
         String url = new StringBuilder().append(appProperties.getDomain()).append('/').
@@ -51,11 +52,15 @@ public class SeriesController {
 
     @GetMapping("/series")
     public ResponseEntity<List<SeriesResponse>> GetAll() throws MalformedURLException {
-        List<Series> availableSeries = repository.findAll();
+        List<Series> availableSeries = seriesRepository.findAll();
 
         List<SeriesResponse> response = new ArrayList<>();
 
         for(Series s : availableSeries){
+
+            List<EpisodeSubtitles> seriesEpisodes = episodeRepository.
+
+
             SeriesResponse r = new SeriesResponse(s.getId(),s.getName(),s.getDescription(),
                     new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getSeriesBanner().getFilePath())),
                     new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getLogo().getFilePath())),
@@ -71,7 +76,7 @@ public class SeriesController {
                                             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
                                             @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo) throws IOException {
 
-        List<Series> all = repository.findAll();
+        List<Series> all = seriesRepository.findAll();
 
         if(all.stream().anyMatch(t -> t.getName().equals(request.getName())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name already exists in database");
@@ -97,7 +102,7 @@ public class SeriesController {
             fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
         }
 
-        repository.save(newSeries);
+        seriesRepository.save(newSeries);
 
         return ResponseEntity.ok(newSeries);
     }
