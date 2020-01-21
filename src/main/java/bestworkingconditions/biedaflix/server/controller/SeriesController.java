@@ -21,9 +21,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class SeriesController {
@@ -58,13 +56,18 @@ public class SeriesController {
 
         for(Series s : availableSeries){
 
-            List<EpisodeSubtitles> seriesEpisodes = episodeRepository.
+            List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesId(s.getId());
 
+            Map<Integer,List<Episode>> seasons = new HashMap<>();
+
+            for(Episode e : seriesEpisodes){
+                seasons.get(e.getEpisodeNumber()).add(e);
+            }
 
             SeriesResponse r = new SeriesResponse(s.getId(),s.getName(),s.getDescription(),
                     new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getSeriesBanner().getFilePath())),
                     new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getLogo().getFilePath())),
-                    s.getStreamingServiceId(),s.getOnGoing(),s.getSeasons());
+                    s.getStreamingServiceId(),s.getOnGoing(),seasons);
             response.add(r);
         }
 

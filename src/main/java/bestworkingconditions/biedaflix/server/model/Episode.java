@@ -27,7 +27,6 @@ public class Episode {
     private int seasonNumber;
     private int episodeNumber;
 
-
     private String name;
     private boolean available;
     private Date releaseDate;
