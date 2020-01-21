@@ -3,10 +3,12 @@ package bestworkingconditions.biedaflix.server.service;
 
 import bestworkingconditions.biedaflix.server.model.CurrentlyDownloading;
 import bestworkingconditions.biedaflix.server.model.Episode;
+import bestworkingconditions.biedaflix.server.model.Series;
 import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.properties.TorrentProperties;
 import bestworkingconditions.biedaflix.server.repository.CurrentlyDownloadingRepository;
+import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.slf4j.Logger;
@@ -35,16 +37,18 @@ public class TorrentServiceImpl implements TorrentService {
     private final TorrentProperties torrentProperties;
     private final ResourceLoader resourceLoader;
     private final CurrentlyDownloadingRepository currentlyDownloadingRepository;
+    private final SeriesRepository seriesRepository;
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
 
     private List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
     @Autowired
-    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, @Qualifier("fileSystemResourceLoader") ResourceLoader resourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository) {this.torrentUriRepository = torrentUriRepository;
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, @Qualifier("fileSystemResourceLoader") ResourceLoader resourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository, SeriesRepository seriesRepository) {this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
         this.resourceLoader = resourceLoader;
         this.currentlyDownloadingRepository = currentlyDownloadingRepository;
+        this.seriesRepository = seriesRepository;
     }
 
     private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
@@ -64,8 +68,9 @@ public class TorrentServiceImpl implements TorrentService {
             TorrentInfo torrentToParse = finishedDownloading.get(0);
 
             Optional<CurrentlyDownloading> currentlyDownloadingOptional = currentlyDownloadingRepository.findByTorrentInfo_Hash(torrentToParse.getHash());
-
             CurrentlyDownloading currentlyDownloading = currentlyDownloadingOptional.orElseThrow( () -> new Exception("no currentlyDownloading matching torrentinfo"));
+
+            Series series = seriesRepository.findById(currentlyDownloading.getTarget().getSeriesId()).get();
 
             File videoFile = getBiggestFileFromDirectory(torrentToParse.getName());
 
