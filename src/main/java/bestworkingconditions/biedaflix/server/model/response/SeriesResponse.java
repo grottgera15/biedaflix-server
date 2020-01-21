@@ -1,14 +1,14 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
-import bestworkingconditions.biedaflix.server.model.Season;
-
+import bestworkingconditions.biedaflix.server.model.Episode;
 import java.util.List;
+import java.util.Map;
 
 public class SeriesResponse {
 
     private String id;
 
-    private  String name;
+    private String name;
     private String description;
 
     private MediaFilesResponse banner;
@@ -16,12 +16,13 @@ public class SeriesResponse {
 
     private String streamingServiceId;
     private Boolean onGoing;
-    private List<Season> seasons;
+
+    private Map<Integer,List<Episode>> seasons;
 
     public SeriesResponse() {
     }
 
-    public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String streamingServiceId, Boolean onGoing, List<Season> seasons) {
+    public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String streamingServiceId, Boolean onGoing, Map<Integer, List<Episode>> seasons) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -88,11 +89,11 @@ public class SeriesResponse {
         this.onGoing = onGoing;
     }
 
-    public List<Season> getSeasons() {
+    public Map<Integer, List<Episode>> getSeasons() {
         return seasons;
     }
 
-    public void setSeasons(List<Season> seasons) {
+    public void setSeasons(Map<Integer, List<Episode>> seasons) {
         this.seasons = seasons;
     }
 }
