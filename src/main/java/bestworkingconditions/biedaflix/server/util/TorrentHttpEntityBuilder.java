@@ -6,10 +6,18 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.Optional;
+
 
 public class TorrentHttpEntityBuilder {
     private MultiValueMap<String,String> map;
     private HttpHeaders headers;
+
+    public TorrentHttpEntityBuilder(MediaType mediaType) {
+        map = new LinkedMultiValueMap<>();
+        headers = new HttpHeaders();
+        headers.setContentType(mediaType);
+    }
 
     public TorrentHttpEntityBuilder() {
         map = new LinkedMultiValueMap<>();

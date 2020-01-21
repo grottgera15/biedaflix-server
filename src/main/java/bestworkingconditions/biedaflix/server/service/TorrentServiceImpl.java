@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.util.*;
 
@@ -85,6 +87,8 @@ public class TorrentServiceImpl implements TorrentService {
             Optional<CurrentlyDownloading> currentlyDownloadingOptional = currentlyDownloadingRepository.findByTorrentInfo_Hash(torrentToParse.getHash());
 
             if(currentlyDownloadingOptional.isPresent()) {
+
+                logger.info("PREPARING TO RUN FFMPG");
 
                 CurrentlyDownloading currentlyDownloading = currentlyDownloadingOptional.get();
 
@@ -229,8 +233,8 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Override
-    public List<TorrentFileInfo> getFilesInfo(String torrentHash) {
-        HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hash", torrentHash).build();
+    public List<TorrentFileInfo> getFilesInfo(@NotBlank  String torrentHash) {
+        HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder(MediaType.APPLICATION_JSON).addKeyValuePair("hash", torrentHash).build();
 
         ResponseEntity<TorrentFileInfo[]> response = new RestTemplate().getForEntity(torrentUriRepository.getUri("files"),TorrentFileInfo[].class,request);
 
