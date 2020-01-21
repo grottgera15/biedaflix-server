@@ -32,7 +32,8 @@ public class Episode {
     private Date releaseDate;
 
     private Map<VideoQuality,String> videoQualities;
-    private Map<SubtitlesLanguage,String> subtitles;
+    private EpisodeSubtitles episodeSubtitles;
+
 
     public Episode() {
     }
@@ -109,14 +110,12 @@ public class Episode {
         this.videoQualities = videoQualities;
     }
 
-    public Map<SubtitlesLanguage, String> getSubtitles() {
-        return subtitles;
+    public EpisodeSubtitles getEpisodeSubtitles() {
+        return episodeSubtitles;
     }
 
-    public void setSubtitles(Map<SubtitlesLanguage, String> subtitles) {
-        this.subtitles = subtitles;
+    public void setEpisodeSubtitles(EpisodeSubtitles episodeSubtitles) {
+        this.episodeSubtitles = episodeSubtitles;
     }
-
-
 
 }

@@ -38,17 +38,25 @@ public class TorrentServiceImpl implements TorrentService {
     private final ResourceLoader resourceLoader;
     private final CurrentlyDownloadingRepository currentlyDownloadingRepository;
     private final SeriesRepository seriesRepository;
+    private final File filesystemRoot;
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
 
     private List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
     @Autowired
-    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, @Qualifier("fileSystemResourceLoader") ResourceLoader resourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository, SeriesRepository seriesRepository) {this.torrentUriRepository = torrentUriRepository;
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository,
+                              TorrentProperties torrentProperties,
+                              @Qualifier("fileSystemResourceLoader") ResourceLoader resourceLoader,
+                              CurrentlyDownloadingRepository currentlyDownloadingRepository,
+                              SeriesRepository seriesRepository,
+                              File filesystemRoot) {
+        this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
         this.resourceLoader = resourceLoader;
         this.currentlyDownloadingRepository = currentlyDownloadingRepository;
         this.seriesRepository = seriesRepository;
+        this.filesystemRoot = filesystemRoot;
     }
 
     private File getBiggestFileFromDirectory(String TorrentName) throws Exception {
@@ -82,11 +90,18 @@ public class TorrentServiceImpl implements TorrentService {
             commands.add("-i");
             commands.add(getBiggestFileFromDirectory(torrentToParse.getName()).toString());
             commands.add("-n");
-            commands.add(currentlyDownloading.getTarget().get);
-            commands.add()
+            commands.add(series.getName());
+            commands.add("-s");
+            commands.add(Integer.toString(currentlyDownloading.getTarget().getSeasonNumber()));
+            commands.add("-e");
+            commands.add(Integer.toString(currentlyDownloading.getTarget().getEpisodeNumber()));
+            commands.add("-d");
+            commands.add(filesystemRoot.getAbsolutePath());
 
-            //ProcessBuilder processBuilder = new ProcessBuilder().command();
+            Process processBuilder = new ProcessBuilder().command(commands).start();
 
+            processBuilder.waitFor();
+            logger.info("FFMPG COMPLETED");
 
         }
     }
