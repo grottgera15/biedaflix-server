@@ -8,6 +8,7 @@ import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,8 @@ public class EpisodeController {
         EpisodeSubtitles subs = new EpisodeSubtitles(file.getContentType(),episodeSeries.getFolderName(),episode.getSeasonNumber(),episode.getEpisodeNumber(),language);
         fileResourceContentStore.setContent(subs,file.getInputStream());
 
-        episode.getSubtitles().put(language,subs.getFilePath());
+        episode.getEpisodeSubtitles().add(new EpisodeSubtitles(FilenameUtils.getExtension(file.getOriginalFilename()),
+                episodeSeries.getFolderName(),episode.getSeasonNumber(),episode.getEpisodeNumber(),language));
 
             return new ResponseEntity<>(HttpStatus.CREATED);
 

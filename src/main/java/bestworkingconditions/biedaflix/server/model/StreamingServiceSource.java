@@ -33,10 +33,6 @@ public class StreamingServiceSource extends FileResource{
         this.name = name;
     }
 
-    @Override
-    public URI getResourceURI() {
-        return null;
-    }
 
     @Override
     public String getFilePath() {

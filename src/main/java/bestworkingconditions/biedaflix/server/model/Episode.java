@@ -2,8 +2,7 @@ package bestworkingconditions.biedaflix.server.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 @Document(collection = "episodes")
 public class Episode {
@@ -31,8 +30,8 @@ public class Episode {
     private boolean available;
     private Date releaseDate;
 
-    private Map<VideoQuality,String> videoQualities;
-    private EpisodeSubtitles episodeSubtitles;
+    private Map<VideoQuality,String> videoQualities = new HashMap<>();
+    private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
 
 
     public Episode() {
@@ -110,12 +109,11 @@ public class Episode {
         this.videoQualities = videoQualities;
     }
 
-    public EpisodeSubtitles getEpisodeSubtitles() {
+    public List<EpisodeSubtitles> getEpisodeSubtitles() {
         return episodeSubtitles;
     }
 
-    public void setEpisodeSubtitles(EpisodeSubtitles episodeSubtitles) {
+    public void setEpisodeSubtitles(List<EpisodeSubtitles> episodeSubtitles) {
         this.episodeSubtitles = episodeSubtitles;
     }
-
 }

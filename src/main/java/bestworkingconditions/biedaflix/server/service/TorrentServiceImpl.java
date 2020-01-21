@@ -103,6 +103,8 @@ public class TorrentServiceImpl implements TorrentService {
             processBuilder.waitFor();
             logger.info("FFMPG COMPLETED");
 
+            deleteTorrent(torrentToParse.getHash(),true);
+            currentlyDownloadingRepository.delete(currentlyDownloading);
         }
     }
 
