@@ -75,10 +75,4 @@ public class EpisodeController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!");
         }
     }
-
-    @GetMapping("/status")
-    public ResponseEntity<List<TorrentInfo>> checkStatus(){
-        List<TorrentInfo> info = torrentService.getTorrentsInfo();
-        return ResponseEntity.ok(info);
-    }
 }
