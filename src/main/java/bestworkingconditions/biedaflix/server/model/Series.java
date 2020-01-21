@@ -21,12 +21,11 @@ public class Series {
 
     private String streamingServiceId;
     private Boolean onGoing;
-    private List<Season> seasons;
 
     public Series() {
     }
 
-    public Series(String id, String name, String description, SeriesBanner seriesBanner, SeriesLogo logo, String streamingServiceId, Boolean onGoing, List<Season> seasons) {
+    public Series(String id, String name, String description, SeriesBanner seriesBanner, SeriesLogo logo, String streamingServiceId, Boolean onGoing) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -34,11 +33,14 @@ public class Series {
         this.logo = logo;
         this.streamingServiceId = streamingServiceId;
         this.onGoing = onGoing;
-        this.seasons = seasons;
     }
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -73,10 +75,6 @@ public class Series {
         this.logo = logo;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getStreamingServiceId() {
         return streamingServiceId;
     }
@@ -91,14 +89,6 @@ public class Series {
 
     public void setOnGoing(Boolean onGoing) {
         this.onGoing = onGoing;
-    }
-
-    public List<Season> getSeasons() {
-        return seasons;
-    }
-
-    public void setSeasons(List<Season> seasons) {
-        this.seasons = seasons;
     }
 
     public String getFolderName(){

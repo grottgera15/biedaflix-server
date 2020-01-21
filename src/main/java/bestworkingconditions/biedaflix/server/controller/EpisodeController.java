@@ -1,7 +1,11 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.*;
+import bestworkingconditions.biedaflix.server.model.Episode;
+import bestworkingconditions.biedaflix.server.model.EpisodeSubtitles;
+import bestworkingconditions.biedaflix.server.model.Series;
+import bestworkingconditions.biedaflix.server.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
+import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.service.TorrentService;
@@ -22,78 +26,54 @@ import java.util.Optional;
 @RestController
 public class EpisodeController {
 
-    private final SeriesRepository repository;
+    private final EpisodeRepository episodeRepository;
+    private final SeriesRepository seriesRepository;
     private final TorrentService torrentService;
     private final FileResourceContentStore fileResourceContentStore;
 
     @Autowired
-    public EpisodeController(SeriesRepository repository, TorrentService torrentService, FileResourceContentStore fileResourceContentStore) {
-        this.repository = repository;
+    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, TorrentService torrentService, FileResourceContentStore fileResourceContentStore) {
+        this.episodeRepository = episodeRepository;
+        this.seriesRepository = seriesRepository;
         this.torrentService = torrentService;
         this.fileResourceContentStore = fileResourceContentStore;
     }
 
-    private Season getRequestedSeasonOrCreate(Series series, int seasonNumber){
-
-        for (Season s : series.getSeasons()){
-            if(s.getSeasonNumber() == seasonNumber)
-                return s;
-        }
-
-        Season newSeason = new Season(seasonNumber);
-        series.getSeasons().add(newSeason);
-        return newSeason;
-    }
 
     @PostMapping("/addSubtitles")
-    public ResponseEntity<Object> AddSubtitles(@NotBlank @RequestParam String seriesId,
-                                          @NotNull  @RequestParam int season,
-                                          @NotNull @RequestParam int episode,
-                                          @Valid @NotNull @RequestParam Episode.SubtitlesLanguage language ,
-                                          @NotNull @RequestParam MultipartFile subtitles) throws IOException {
+    public ResponseEntity<Object> AddSubtitles(@NotBlank String episodeId,
+                                                @NotNull Episode.SubtitlesLanguage language,
+                                                @NotNull @RequestParam MultipartFile file) throws IOException {
 
-        Optional<Series> requestedSeries = repository.findById(seriesId);
+        Optional<Episode> optionalEpisode = episodeRepository.findById(episodeId);
+        Episode episode = optionalEpisode.orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given id does not exist!"));
 
-        if(requestedSeries.isPresent()) {
-            Series series = requestedSeries.get();
+        Series episodeSeries = seriesRepository.findById(episode.getSeriesId()).get();
 
-            EpisodeSubtitles subs = new EpisodeSubtitles(subtitles.getContentType(),series.getFolderName(),season,episode,language);
-            fileResourceContentStore.setContent(subs,subtitles.getInputStream());
+        EpisodeSubtitles subs = new EpisodeSubtitles(file.getContentType(),episodeSeries.getFolderName(),episode.getSeasonNumber(),episode.getEpisodeNumber(),language);
+        fileResourceContentStore.setContent(subs,file.getInputStream());
 
-            series.getSeasons().get(season).getEpisodes().get(episode).getSubtitles().put(language,subs.getFilePath());
+        episode.getSubtitles().put(language,subs.getFilePath());
 
             return new ResponseEntity<>(HttpStatus.CREATED);
-        }else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist in database");
-        }
+
     }
 
     @PostMapping("/episode")
     public ResponseEntity<List<TorrentInfo>> AddEpisode(@Valid @RequestBody EpisodeRequest request) {
-        Series series = repository.findById(request.getSeriesId())
-                                                   .orElseThrow(() ->
-                                                           new ResponseStatusException(HttpStatus.NOT_FOUND, "Series not found!"));
 
-        Episode newEpisode = new Episode(request.getEpisodeNumber(),request.getName(),request.getReleaseDate());
+        if( seriesRepository.existsById(request.getSeriesId())) {
+            Episode episode = new Episode(request.getSeriesId(),
+                    request.getSeasonNumber(),
+                    request.getEpisodeNumber(),
+                    request.getName(),
+                    request.getReleaseDate());
 
-        Season currentSeason = getRequestedSeasonOrCreate(series,request.getSeasonNumber());
-
-        if(currentSeason.getEpisodes().stream().anyMatch(t->t.getName().equals(request.getName())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given name already exists in database");
-
-        if(currentSeason.getEpisodes().stream().noneMatch(t -> t.getEpisodeNumber() == newEpisode.getEpisodeNumber())) {
-            currentSeason.getEpisodes().add(newEpisode);
-        }else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given number already exists in database!");
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
-
-        repository.save(series);
-
-        torrentService.addTorrent(series.getName(),request,newEpisode);
-
-        List<TorrentInfo> info = torrentService.getTorrentsInfo();
-
-        return ResponseEntity.ok(info);
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!");
+        }
     }
 
     @GetMapping("/status")

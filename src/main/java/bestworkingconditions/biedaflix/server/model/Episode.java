@@ -1,4 +1,5 @@
 package bestworkingconditions.biedaflix.server.model;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -18,7 +19,14 @@ public class Episode {
         ENG;
     }
 
+    @Id
+    private String id;
+
+    private String seriesId;
+
+    private int seasonNumber;
     private int episodeNumber;
+
 
     private String name;
     private boolean available;
@@ -30,44 +38,86 @@ public class Episode {
     public Episode() {
     }
 
-    public Episode(int episodeNumber, String name, Date releaseDate) {
+    public Episode(String seriesId, int seasonNumber, int episodeNumber, String name, Date releaseDate) {
+        this.seriesId = seriesId;
+        this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
         this.name = name;
         this.releaseDate = releaseDate;
-        this.available = false;
     }
 
-    public Episode(int episodeNumber, String name, boolean available, Date releaseDate, Map<VideoQuality, String> videoQualities, Map<SubtitlesLanguage, String> subtitles) {
-        this.episodeNumber = episodeNumber;
-        this.name = name;
-        this.available = available;
-        this.releaseDate = releaseDate;
-        this.videoQualities = videoQualities;
-        this.subtitles = subtitles;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getSeriesId() {
+        return seriesId;
+    }
+
+    public void setSeriesId(String seriesId) {
+        this.seriesId = seriesId;
+    }
+
+    public int getSeasonNumber() {
+        return seasonNumber;
+    }
+
+    public void setSeasonNumber(int seasonNumber) {
+        this.seasonNumber = seasonNumber;
     }
 
     public int getEpisodeNumber() {
         return episodeNumber;
     }
 
+    public void setEpisodeNumber(int episodeNumber) {
+        this.episodeNumber = episodeNumber;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isAvailable() {
         return available;
     }
 
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public Map<VideoQuality, String> getVideoQualities() {
         return videoQualities;
     }
 
+    public void setVideoQualities(Map<VideoQuality, String> videoQualities) {
+        this.videoQualities = videoQualities;
+    }
+
     public Map<SubtitlesLanguage, String> getSubtitles() {
         return subtitles;
     }
+
+    public void setSubtitles(Map<SubtitlesLanguage, String> subtitles) {
+        this.subtitles = subtitles;
+    }
+
+
 
 }

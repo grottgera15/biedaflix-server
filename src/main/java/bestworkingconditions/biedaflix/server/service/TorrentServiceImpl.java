@@ -12,6 +12,7 @@ import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -40,7 +41,7 @@ public class TorrentServiceImpl implements TorrentService {
     private List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
     @Autowired
-    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, ResourceLoader resourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository) {this.torrentUriRepository = torrentUriRepository;
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, @Qualifier("fileSystemResourceLoader") ResourceLoader resourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository) {this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
         this.resourceLoader = resourceLoader;
         this.currentlyDownloadingRepository = currentlyDownloadingRepository;
@@ -62,6 +63,10 @@ public class TorrentServiceImpl implements TorrentService {
         if(finishedDownloading.size() > 0) {
             TorrentInfo torrentToParse = finishedDownloading.get(0);
 
+            Optional<CurrentlyDownloading> currentlyDownloadingOptional = currentlyDownloadingRepository.findByTorrentInfo_Hash(torrentToParse.getHash());
+
+            CurrentlyDownloading currentlyDownloading = currentlyDownloadingOptional.orElseThrow( () -> new Exception("no currentlyDownloading matching torrentinfo"));
+
             File videoFile = getBiggestFileFromDirectory(torrentToParse.getName());
 
             Resource resource = resourceLoader.getResource("classpath:ffmpeg-converter.sh");
@@ -69,6 +74,11 @@ public class TorrentServiceImpl implements TorrentService {
             List<String> commands = new ArrayList<>();
             commands.add("bash");
             commands.add(resource.getFile().getAbsolutePath());
+            commands.add("-i");
+            commands.add(getBiggestFileFromDirectory(torrentToParse.getName()).toString());
+            commands.add("-n");
+            commands.add(currentlyDownloading.getTarget().get);
+            commands.add()
 
             //ProcessBuilder processBuilder = new ProcessBuilder().command();
 
@@ -77,7 +87,7 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Scheduled(cron = "0 0/1 * * * ?")
-    private void checkTorrentsStatus(){
+    private void pauseDownloadedTorrents(){
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
 
