@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 get_duration () {
     local result=$(ffprobe -v error -show_entries format="duration" -of default="noprint_wrappers=1:nokey=1" $1)
@@ -68,20 +68,12 @@ duration=$(bc<<<"$duration / 1")
 durationCenter=$(bc<<<"$duration / 2")
 crop=$(detect_crop $filePath $durationCenter)
 
-if [[ ! -d "./s$season" ]]; then
-    mkdir -p "./s$season"
-fi
-
-if [[ ! -d "./s$season/e$episode" ]]; then
-    mkdir -p "./e$episode"
-fi
-
-finalPath="$destinationPath/s$season/e$episode"
+finalPath="$destinationPath/$seriesName/s$season/e$episode"
 mkdir -p "$finalPath/thumbs"
 
-ffmpeg -i $filePath -vcodec libx264 -crf 21 -preset superfast -tune film -vf $crop "$finalPath/1080.mp4"
+ffmpeg -i "$filePath" -vcodec libx264 -crf 21 -preset superfast -tune film -vf $crop "$finalPath/1080.mp4"
 ffmpeg -i "$finalPath/1080.mp4" -vcodec libx264 -crf $crf -preset superfast -tune film -vf scale=1280:-1 "$finalPath/720.mp4"
-ffmpeg -i "$finalPath/1080.mp4" -vcodec libx264 -crf (($crf-2)) -preset superfast -tune film -vf scale=854:-1 "$finalPath/480.mp4"
-ffmpeg -i "$finalPath/1080.mp4" -vf "scale=326:-1, fps=1/10" -crf ((30)) "$finalPath/thumbs/thumb%04d.jpg"
+ffmpeg -i "$finalPath/1080.mp4" -vcodec libx264 -crf $crf-2 -preset superfast -tune film -vf scale=854:-1 "$finalPath/480.mp4"
+ffmpeg -i "$finalPath/1080.mp4" -vf "scale=326:-1, fps=1/10" -crf 30 "$finalPath/thumbs/thumb%04d.jpg"
 
-exit 0  
+exit 0

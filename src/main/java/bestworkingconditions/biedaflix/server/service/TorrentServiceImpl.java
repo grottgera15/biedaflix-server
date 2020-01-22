@@ -11,20 +11,16 @@ import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.constraints.NotBlank;
 import java.io.File;
@@ -36,7 +32,7 @@ public class TorrentServiceImpl implements TorrentService {
 
     private final TorrentUriRepository torrentUriRepository;
     private final TorrentProperties torrentProperties;
-    private final ResourceLoader resourceLoader;
+    private final FileSystemResourceLoader fileSystemResourceLoader;
     private final CurrentlyDownloadingRepository currentlyDownloadingRepository;
     private final SeriesRepository seriesRepository;
     private final File filesystemRoot;
@@ -46,21 +42,16 @@ public class TorrentServiceImpl implements TorrentService {
 
     private List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
-    @Autowired
-    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository,
-                              TorrentProperties torrentProperties,
-                              @Qualifier("fileSystemResourceLoader") ResourceLoader resourceLoader,
-                              CurrentlyDownloadingRepository currentlyDownloadingRepository,
-                              SeriesRepository seriesRepository,
-                              File filesystemRoot, EpisodeRepository episodeRepository) {
+    public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, FileSystemResourceLoader fileSystemResourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository, SeriesRepository seriesRepository, File filesystemRoot, EpisodeRepository episodeRepository) {
         this.torrentUriRepository = torrentUriRepository;
         this.torrentProperties = torrentProperties;
-        this.resourceLoader = resourceLoader;
+        this.fileSystemResourceLoader = fileSystemResourceLoader;
         this.currentlyDownloadingRepository = currentlyDownloadingRepository;
         this.seriesRepository = seriesRepository;
         this.filesystemRoot = filesystemRoot;
         this.episodeRepository = episodeRepository;
     }
+
 
     private File getBiggestFileFromDirectory(List<TorrentFileInfo> torrentFilesInfo) throws Exception {
 
@@ -72,14 +63,16 @@ public class TorrentServiceImpl implements TorrentService {
                 if(info.getFileSize() > biggestFile.getFileSize())
                     biggestFile = info;
             }
-            File torrentFile = new ClassPathResource(torrentProperties.getDownloadPath() + biggestFile.getRelativePath()).getFile();
-            return torrentFile;
+
+            String path = torrentProperties.getDownloadPath() + biggestFile.getRelativePath();
+
+            return new File(path);
         }
 
         return null;
     }
 
-    @Scheduled(initialDelay = 30000,fixedRate = 60000)
+    @Scheduled(initialDelay = 15000,fixedRate = 30000)
     private void parseFinishedTorrents() throws Exception {
         if(finishedDownloading.size() > 0) {
             TorrentInfo torrentToParse = finishedDownloading.get(0);
@@ -95,18 +88,20 @@ public class TorrentServiceImpl implements TorrentService {
                 Series series = seriesRepository.findById(currentlyDownloading.getTarget()
                                                                               .getSeriesId()).get();
 
-                File videoFile = getBiggestFileFromDirectory(getFilesInfo(currentlyDownloading.getTorrentInfo().getHash()));
+                File relativeVideoFile = getBiggestFileFromDirectory(getFilesInfo(currentlyDownloading.getTorrentInfo().getHash()));
+                File aboluteVideFile = new File(System.getProperty("user.dir") + relativeVideoFile.getAbsolutePath());
 
-                Resource resource = resourceLoader.getResource("classpath:ffmpeg-converter.sh");
+                File resource = fileSystemResourceLoader.getResource("ffmpeg-converter.sh").getFile();
+
+                logger.info("VIDEO FILE" + "\"" + aboluteVideFile.getAbsolutePath() + "\"");
+                logger.info("ROOT " + filesystemRoot.getAbsolutePath() + "/series");
 
                 List<String> commands = new ArrayList<>();
-                commands.add("bash");
-                commands.add(resource.getFile()
-                                     .getAbsolutePath());
+                commands.add(resource.getAbsolutePath());
                 commands.add("-i");
-                commands.add( videoFile.toString());
+                commands.add(aboluteVideFile.getAbsolutePath());
                 commands.add("-n");
-                commands.add(series.getName());
+                commands.add(series.getFolderName());
                 commands.add("-s");
                 commands.add(Integer.toString(currentlyDownloading.getTarget()
                                                                   .getSeasonNumber()));
@@ -114,12 +109,18 @@ public class TorrentServiceImpl implements TorrentService {
                 commands.add(Integer.toString(currentlyDownloading.getTarget()
                                                                   .getEpisodeNumber()));
                 commands.add("-d");
-                commands.add(filesystemRoot.getAbsolutePath());
+                commands.add(filesystemRoot.getAbsolutePath() + "/series");
 
-                Process processBuilder = new ProcessBuilder().command(commands)
-                                                             .start();
+                ProcessBuilder processBuilder = new ProcessBuilder().command(commands).inheritIO();
 
-                processBuilder.waitFor();
+                try {
+                    Process process = processBuilder.start();
+                    process.waitFor();
+                }
+                catch (Exception e){
+                    throw new Exception(e);
+                }
+
                 logger.info("FFMPG COMPLETED");
 
                 deleteTorrent(torrentToParse.getHash(), true);
@@ -132,7 +133,7 @@ public class TorrentServiceImpl implements TorrentService {
         }
     }
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(fixedRate = 15000)
     private void pauseDownloadedTorrents(){
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
@@ -234,9 +235,11 @@ public class TorrentServiceImpl implements TorrentService {
 
     @Override
     public List<TorrentFileInfo> getFilesInfo(@NotBlank  String torrentHash) {
-        HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder(MediaType.APPLICATION_JSON).addKeyValuePair("hash", torrentHash).build();
 
-        ResponseEntity<TorrentFileInfo[]> response = new RestTemplate().getForEntity(torrentUriRepository.getUri("files"),TorrentFileInfo[].class,request);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getUri("files"))
+                .queryParam("hash",torrentHash);
+
+        ResponseEntity<TorrentFileInfo[]> response = new RestTemplate().getForEntity(builder.build().encode().toUri(),TorrentFileInfo[].class);
 
         if(response.getBody() != null)
             return new ArrayList<>(Arrays.asList(response.getBody()));
