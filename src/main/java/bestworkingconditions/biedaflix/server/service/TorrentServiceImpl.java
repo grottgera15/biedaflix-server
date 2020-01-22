@@ -9,6 +9,8 @@ import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
+import javafx.scene.shape.Path;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResourceLoader;
@@ -18,13 +20,17 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.constraints.NotBlank;
 import java.io.File;
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @EnableAsync
@@ -53,7 +59,7 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
 
-    private File getBiggestFileFromDirectory(List<TorrentFileInfo> torrentFilesInfo) throws Exception {
+    private Optional<File> getBiggestFileFromDirectory(List<TorrentFileInfo> torrentFilesInfo) {
 
         if(torrentFilesInfo.size() > 0) {
 
@@ -66,11 +72,27 @@ public class TorrentServiceImpl implements TorrentService {
 
             String path = torrentProperties.getDownloadPath() + biggestFile.getRelativePath();
 
-            return new File(path);
+            return Optional.of(new File(path));
         }
 
-        return null;
+        return Optional.empty();
     }
+
+    private void normalizeRequestedFiles(List<TorrentFileInfo> requestedFiles) throws IOException {
+
+        //  find ./downloads/biedaflix/  -depth -name "* *" -execdir rename "s/ /_/g" *  {} \;
+
+        if(requestedFiles.size() > 1){
+            File parentFile = new File(System.getProperty("user.dir") + requestedFiles.get(0).getRelativePath()).getParentFile();
+
+            ProcessBuilder processBuilder = new ProcessBuilder().directory(new File(System.getProperty("user.dir"))).command(
+                    "find" + "." + parentFile  + "-depth -name \"* *\" -execdir rename \"s/ /_/g\" *  {} \\;"
+            );
+        }
+
+
+    }
+
 
     @Scheduled(initialDelay = 15000,fixedRate = 30000)
     private void parseFinishedTorrents() throws Exception {
@@ -88,18 +110,24 @@ public class TorrentServiceImpl implements TorrentService {
                 Series series = seriesRepository.findById(currentlyDownloading.getTarget()
                                                                               .getSeriesId()).get();
 
-                File relativeVideoFile = getBiggestFileFromDirectory(getFilesInfo(currentlyDownloading.getTorrentInfo().getHash()));
-                File aboluteVideFile = new File(System.getProperty("user.dir") + relativeVideoFile.getAbsolutePath());
+
+                List<TorrentFileInfo> torrentFileInfos = getFilesInfo(currentlyDownloading.getTorrentInfo().getHash());
+                normalizeRequestedFiles(torrentFileInfos);
+                Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(torrentFileInfos);
+
+                File relativeVideoFile = relativeVideoOptionaloFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
+
+                File aboluteVideoFile = new File(System.getProperty("user.dir") + relativeVideoFile.getAbsolutePath());
 
                 File resource = fileSystemResourceLoader.getResource("ffmpeg-converter.sh").getFile();
 
-                logger.info("VIDEO FILE" + "\"" + aboluteVideFile.getAbsolutePath() + "\"");
+                logger.info("VIDEO FILE" + "\"" + aboluteVideoFile.getAbsolutePath() + "\"");
                 logger.info("ROOT " + filesystemRoot.getAbsolutePath() + "/series");
 
                 List<String> commands = new ArrayList<>();
                 commands.add(resource.getAbsolutePath());
                 commands.add("-i");
-                commands.add(aboluteVideFile.getAbsolutePath());
+                commands.add(aboluteVideoFile.getAbsolutePath());
                 commands.add("-n");
                 commands.add(series.getFolderName());
                 commands.add("-s");
@@ -161,7 +189,9 @@ public class TorrentServiceImpl implements TorrentService {
         HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder()
                 .addKeyValuePair("urls",episodeRequest.getMagnetLink())
                 .addKeyValuePair("category","biedaflix")
-                .addKeyValuePair("rename",downloadName).build();
+                .addKeyValuePair("rename",downloadName)
+                .addKeyValuePair("root_folder","true")
+                .build();
 
         ResponseEntity<String> response = new RestTemplate().postForEntity(torrentUriRepository.getUri("add"),request,String.class);
 
