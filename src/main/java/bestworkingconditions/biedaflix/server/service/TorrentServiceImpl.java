@@ -9,8 +9,7 @@ import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
-import javafx.scene.shape.Path;
-import org.apache.commons.io.FilenameUtils;
+import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResourceLoader;
@@ -26,7 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -261,6 +259,17 @@ public class TorrentServiceImpl implements TorrentService {
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combineHashes).build();
         ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("resume"),request,String.class);
+    }
+
+    @Override
+    public void setTorrentCategory(List<String> torrentHashes, TorrentCategory category) {
+        String combinedHashes = combineHashesForRequest(torrentHashes);
+
+        HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder()
+                .addKeyValuePair("hashes",combinedHashes)
+                .addKeyValuePair("category",category.getCategoryValue()).build();
+
+        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("setCategory"),request,String.class);
     }
 
     @Override
