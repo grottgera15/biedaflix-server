@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Path;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
@@ -43,8 +44,6 @@ public class TorrentServiceImpl implements TorrentService {
     private final EpisodeRepository episodeRepository;
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
-
-    private List<TorrentInfo> finishedDownloading = new ArrayList<>();
 
     public TorrentServiceImpl(TorrentUriRepository torrentUriRepository, TorrentProperties torrentProperties, FileSystemResourceLoader fileSystemResourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository, SeriesRepository seriesRepository, File filesystemRoot, EpisodeRepository episodeRepository) {
         this.torrentUriRepository = torrentUriRepository;
@@ -76,106 +75,123 @@ public class TorrentServiceImpl implements TorrentService {
         return Optional.empty();
     }
 
-    private void normalizeRequestedFiles(List<TorrentFileInfo> requestedFiles) throws IOException {
+    private void normalizeRequestedFiles(List<TorrentFileInfo> requestedFiles) throws Exception {
 
         //  find ./downloads/biedaflix/  -depth -name "* *" -execdir rename "s/ /_/g" *  {} \;
 
-        if(requestedFiles.size() > 1){
-            File parentFile = new File(System.getProperty("user.dir") + requestedFiles.get(0).getRelativePath()).getParentFile();
+        File parentFile = new File(System.getProperty("user.dir") + requestedFiles.get(0).getRelativePath()).getParentFile();
+        File renamer = fileSystemResourceLoader.getResource("renamer.sh").getFile();
 
-            ProcessBuilder processBuilder = new ProcessBuilder().directory(new File(System.getProperty("user.dir"))).command(
-                    "find" + "." + parentFile  + "-depth -name \"* *\" -execdir rename \"s/ /_/g\" *  {} \\;"
-            );
+       String[] commands = {
+               renamer.getAbsolutePath(),"-i", System.getProperty("user.dir") + "/downloads/biedaflix_finished/"
+       };
+
+        ProcessBuilder processBuilder = new ProcessBuilder().command(commands).inheritIO();
+
+
+        Process rename = processBuilder.start();
+
+        //Process rename = Runtime.getRuntime().exec("find " + System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + " -depth" +" -name" + " \"* *\"" + " -execdir" +
+        //       " rename \"s/ /_/g\" * {} \\;");
+
+        rename.waitFor();
+
+        for(TorrentFileInfo info : requestedFiles){
+            File oldFile = new File(info.getRelativePath().replaceAll("\\s+", "_"));
+            String filename = oldFile.getName();
+
+            //info.setRelativePath();
+
         }
-
 
     }
 
-
     @Scheduled(initialDelay = 15000,fixedRate = 30000)
     private void parseFinishedTorrents() throws Exception {
-        if(finishedDownloading.size() > 0) {
-            TorrentInfo torrentToParse = finishedDownloading.get(0);
 
-            Optional<CurrentlyDownloading> currentlyDownloadingOptional = currentlyDownloadingRepository.findByTorrentInfo_Hash(torrentToParse.getHash());
+        List<CurrentlyDownloading> currentlyDownloadingList = currentlyDownloadingRepository.findAll();
 
-            if(currentlyDownloadingOptional.isPresent()) {
+        for(CurrentlyDownloading currentlyDownloading : currentlyDownloadingList){
+        if(currentlyDownloading.getTorrentInfo().getProgress() ==  1) {
 
-                logger.info("PREPARING TO RUN FFMPG");
+            logger.info("PREPARING TO RUN FFMPG");
 
-                CurrentlyDownloading currentlyDownloading = currentlyDownloadingOptional.get();
-
-                Series series = seriesRepository.findById(currentlyDownloading.getTarget()
-                                                                              .getSeriesId()).get();
+            Series series = seriesRepository.findById(currentlyDownloading.getTarget()
+                                                                          .getSeriesId()).get();
 
 
-                List<TorrentFileInfo> torrentFileInfos = getFilesInfo(currentlyDownloading.getTorrentInfo().getHash());
-                normalizeRequestedFiles(torrentFileInfos);
-                Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(torrentFileInfos);
+            List<TorrentFileInfo> torrentFileInfos = getFilesInfo(currentlyDownloading.getTorrentInfo().getHash());
+            normalizeRequestedFiles(torrentFileInfos);
+            Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(torrentFileInfos);
 
-                File relativeVideoFile = relativeVideoOptionaloFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
+            File relativeVideoFile = relativeVideoOptionaloFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
 
-                File aboluteVideoFile = new File(System.getProperty("user.dir") + relativeVideoFile.getAbsolutePath());
+            File aboluteVideoFile = new File(System.getProperty("user.dir") + relativeVideoFile.getAbsolutePath());
 
-                File resource = fileSystemResourceLoader.getResource("ffmpeg-converter.sh").getFile();
+            File resource = fileSystemResourceLoader.getResource("ffmpeg-converter.sh").getFile();
 
-                logger.info("VIDEO FILE" + "\"" + aboluteVideoFile.getAbsolutePath() + "\"");
-                logger.info("ROOT " + filesystemRoot.getAbsolutePath() + "/series");
+            logger.info("VIDEO FILE" + "\"" + aboluteVideoFile.getAbsolutePath() + "\"");
+            logger.info("ROOT " + filesystemRoot.getAbsolutePath() + "/series");
 
-                List<String> commands = new ArrayList<>();
-                commands.add(resource.getAbsolutePath());
-                commands.add("-i");
-                commands.add(aboluteVideoFile.getAbsolutePath());
-                commands.add("-n");
-                commands.add(series.getFolderName());
-                commands.add("-s");
-                commands.add(Integer.toString(currentlyDownloading.getTarget()
-                                                                  .getSeasonNumber()));
-                commands.add("-e");
-                commands.add(Integer.toString(currentlyDownloading.getTarget()
-                                                                  .getEpisodeNumber()));
-                commands.add("-d");
-                commands.add(filesystemRoot.getAbsolutePath() + "/series");
+            List<String> commands = new ArrayList<>();
+            commands.add(resource.getAbsolutePath());
+            commands.add("-i");
+            commands.add(aboluteVideoFile.getAbsolutePath());
+            commands.add("-n");
+            commands.add(series.getFolderName());
+            commands.add("-s");
+            commands.add(Integer.toString(currentlyDownloading.getTarget()
+                                                              .getSeasonNumber()));
+            commands.add("-e");
+            commands.add(Integer.toString(currentlyDownloading.getTarget()
+                                                              .getEpisodeNumber()));
+            commands.add("-d");
+            commands.add(filesystemRoot.getAbsolutePath() + "/series");
 
-                ProcessBuilder processBuilder = new ProcessBuilder().command(commands).inheritIO();
+            ProcessBuilder processBuilder = new ProcessBuilder().command(commands).inheritIO();
 
-                try {
-                    Process process = processBuilder.start();
-                    process.waitFor();
-                }
-                catch (Exception e){
-                    throw new Exception(e);
-                }
-
-                logger.info("FFMPG COMPLETED");
-
-                deleteTorrent(torrentToParse.getHash(), true);
-
-                //FIXME: ADD EPISODE TO DATABASE PROPERLY
-                episodeRepository.save(currentlyDownloading.getTarget());
-
-                currentlyDownloadingRepository.delete(currentlyDownloading);
+            try {
+                Process process = processBuilder.start();
+                process.waitFor();
             }
+            catch (Exception e){
+                throw new Exception(e);
+            }
+
+            logger.info("FFMPG COMPLETED");
+
+            deleteTorrent(currentlyDownloading.getTorrentInfo().getHash(), true);
+
+            //FIXME: ADD EPISODE TO DATABASE PROPERLY
+            episodeRepository.save(currentlyDownloading.getTarget());
+
+            currentlyDownloadingRepository.delete(currentlyDownloading);
+            }
+
         }
     }
 
     @Scheduled(fixedRate = 15000)
-    private void pauseDownloadedTorrents(){
+    private void pauseDownloadedTorrents() throws Exception {
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
 
         for( TorrentInfo info : status){
-            if(info.getProgress() == 1.0){
-                finishedDownloading.add(info);
-            }
+            CurrentlyDownloading currentlyDownloading = currentlyDownloadingRepository.findByTorrentInfo_Hash(info.getHash()).orElseThrow(() -> new Exception("TORRENT is missing "));
+            currentlyDownloading.setTorrentInfo(info);
+            currentlyDownloadingRepository.save(currentlyDownloading);
         }
 
         List<String> hashes = new ArrayList<>();
-        for (TorrentInfo info : finishedDownloading){
-            hashes.add(info.getHash());
+        for (TorrentInfo info : status){
+            if(info.getProgress() == 1)
+                hashes.add(info.getHash());
         }
-        pauseTorrents(hashes);
 
+        if(hashes.size() > 0) {
+            pauseTorrents(hashes);
+            setTorrentCategory(hashes, TorrentCategory.BIEDAFLIX_FINISHED);
+        }
     }
 
     @Override
