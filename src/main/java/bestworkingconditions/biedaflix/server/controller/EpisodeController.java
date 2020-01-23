@@ -1,9 +1,6 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.Episode;
-import bestworkingconditions.biedaflix.server.model.EpisodeSubtitles;
-import bestworkingconditions.biedaflix.server.model.Series;
-import bestworkingconditions.biedaflix.server.model.TorrentInfo;
+import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
@@ -43,7 +40,7 @@ public class EpisodeController {
 
     @PostMapping("/addSubtitles")
     public ResponseEntity<Object> AddSubtitles(@NotBlank String episodeId,
-                                                @NotNull Episode.SubtitlesLanguage language,
+                                                @NotNull EpisodeSubtitles language,
                                                 @NotNull @RequestParam MultipartFile file) throws IOException {
 
         Optional<Episode> optionalEpisode = episodeRepository.findById(episodeId);

@@ -103,6 +103,7 @@ public class TorrentServiceImpl implements TorrentService {
         }
     }
 
+
     @Scheduled(initialDelay = 15000,fixedRate = 30000)
     private void parseFinishedTorrents() throws Exception {
 
@@ -158,6 +159,13 @@ public class TorrentServiceImpl implements TorrentService {
             deleteTorrent(currentlyDownloading.getTorrentInfo().getHash(), true);
 
             //FIXME: ADD EPISODE TO DATABASE PROPERLY
+
+            List<EpisodeVideo> episodeVideos = new ArrayList<>();
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.HIGH));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.MEDIUM));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.LOW));
+
+            
             episodeRepository.save(currentlyDownloading.getTarget());
 
             deleteLeftoverFilesFromDirectory(currentlyDownloading);

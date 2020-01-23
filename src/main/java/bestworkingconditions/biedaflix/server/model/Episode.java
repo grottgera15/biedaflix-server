@@ -7,17 +7,6 @@ import java.util.*;
 @Document(collection = "episodes")
 public class Episode {
 
-    public enum VideoQuality {
-        LOW,
-        MID,
-        HIGH;
-    }
-
-    public enum SubtitlesLanguage{
-        PL,
-        ENG;
-    }
-
     @Id
     private String id;
 
