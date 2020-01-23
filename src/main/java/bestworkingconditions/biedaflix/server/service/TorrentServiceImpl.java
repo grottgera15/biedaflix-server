@@ -56,54 +56,41 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
 
-    private Optional<File> getBiggestFileFromDirectory(List<TorrentFileInfo> torrentFilesInfo) {
+    private Optional<File> getBiggestFileFromDirectory(CurrentlyDownloading currentlyDownloading) {
 
-        if(torrentFilesInfo.size() > 0) {
+        if(currentlyDownloading.getTorrentFileInfoList().size() > 0) {
 
-            TorrentFileInfo biggestFile = torrentFilesInfo.get(0);
+            TorrentFileInfo biggestFile = currentlyDownloading.getTorrentFileInfoList().get(0);
 
-            for (TorrentFileInfo info : torrentFilesInfo) {
+            for (TorrentFileInfo info : currentlyDownloading.getTorrentFileInfoList()) {
                 if(info.getFileSize() > biggestFile.getFileSize())
                     biggestFile = info;
             }
 
-            String path = torrentProperties.getDownloadPath() + biggestFile.getRelativePath();
-
+            String path = currentlyDownloading.getTorrentInfo().getSaveDirectory() + biggestFile.getRelativePath();
             return Optional.of(new File(path));
         }
 
         return Optional.empty();
     }
 
-    private void normalizeRequestedFiles(List<TorrentFileInfo> requestedFiles) throws Exception {
-
-        //  find ./downloads/biedaflix/  -depth -name "* *" -execdir rename "s/ /_/g" *  {} \;
-
-        File parentFile = new File(System.getProperty("user.dir") + requestedFiles.get(0).getRelativePath()).getParentFile();
+    private void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
         File renamer = fileSystemResourceLoader.getResource("renamer.sh").getFile();
 
-       String[] commands = {
+        String[] commands = {
                renamer.getAbsolutePath(),"-i", System.getProperty("user.dir") + "/downloads/biedaflix_finished/"
-       };
+        };
 
         ProcessBuilder processBuilder = new ProcessBuilder().command(commands).inheritIO();
-
-
         Process rename = processBuilder.start();
-
-        //Process rename = Runtime.getRuntime().exec("find " + System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + " -depth" +" -name" + " \"* *\"" + " -execdir" +
-        //       " rename \"s/ /_/g\" * {} \\;");
-
         rename.waitFor();
 
-        for(TorrentFileInfo info : requestedFiles){
-            File oldFile = new File(info.getRelativePath().replaceAll("\\s+", "_"));
-            String filename = oldFile.getName();
-
-            //info.setRelativePath();
-
+        for(TorrentFileInfo info : currentlyDownloading.getTorrentFileInfoList()){
+            if(currentlyDownloading.getTorrentFileInfoList().size() > 1)
+                info.setRelativePath("/" + info.getRelativePath().replaceAll("//s+","_"));
+            else
+                info.setRelativePath(info.getRelativePath().replaceAll("//s+","_"));
         }
-
     }
 
     @Scheduled(initialDelay = 15000,fixedRate = 30000)
@@ -119,10 +106,8 @@ public class TorrentServiceImpl implements TorrentService {
             Series series = seriesRepository.findById(currentlyDownloading.getTarget()
                                                                           .getSeriesId()).get();
 
-
-            List<TorrentFileInfo> torrentFileInfos = getFilesInfo(currentlyDownloading.getTorrentInfo().getHash());
-            normalizeRequestedFiles(torrentFileInfos);
-            Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(torrentFileInfos);
+            currentlyDownloading = normalizeRequestedFiles(currentlyDownloading);
+            Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(currentlyDownloading.getTorrentFileInfoList());
 
             File relativeVideoFile = relativeVideoOptionaloFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
 
@@ -171,17 +156,7 @@ public class TorrentServiceImpl implements TorrentService {
         }
     }
 
-    @Scheduled(fixedRate = 15000)
-    private void pauseDownloadedTorrents() throws Exception {
-        List<TorrentInfo> status = getTorrentsInfo();
-        logger.info("SCHEDULED FUNCTION CALL " + status.toString());
-
-        for( TorrentInfo info : status){
-            CurrentlyDownloading currentlyDownloading = currentlyDownloadingRepository.findByTorrentInfo_Hash(info.getHash()).orElseThrow(() -> new Exception("TORRENT is missing "));
-            currentlyDownloading.setTorrentInfo(info);
-            currentlyDownloadingRepository.save(currentlyDownloading);
-        }
-
+    private void pauseDownloadedTorrents(List<TorrentInfo> status){
         List<String> hashes = new ArrayList<>();
         for (TorrentInfo info : status){
             if(info.getProgress() == 1)
@@ -192,6 +167,21 @@ public class TorrentServiceImpl implements TorrentService {
             pauseTorrents(hashes);
             setTorrentCategory(hashes, TorrentCategory.BIEDAFLIX_FINISHED);
         }
+    }
+
+    @Scheduled(fixedRate = 15000)
+    private void checkTorrentsStatus() throws Exception {
+        List<TorrentInfo> status = getTorrentsInfo();
+        logger.info("SCHEDULED FUNCTION CALL " + status.toString());
+
+        for( TorrentInfo info : status){
+            CurrentlyDownloading currentlyDownloading = currentlyDownloadingRepository.findByTorrentInfo_Hash(info.getHash()).orElseThrow(() -> new Exception("TORRENT is missing "));
+            currentlyDownloading.setTorrentFileInfoList( getFilesInfo(currentlyDownloading.getTorrentInfo().getHash()));
+            currentlyDownloading.setTorrentInfo(info);
+            currentlyDownloadingRepository.save(currentlyDownloading);
+        }
+
+        pauseDownloadedTorrents(status);
     }
 
     @Override

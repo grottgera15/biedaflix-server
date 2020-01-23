@@ -1,5 +1,7 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class TorrentInfo implements Serializable {
@@ -8,14 +10,18 @@ public class TorrentInfo implements Serializable {
     private String hash;
     private String name;
 
+    @JsonProperty("save_path")
+    private String saveDirectory;
+
     public TorrentInfo() {
     }
 
-    public TorrentInfo(float progress, float eta, String hash, String name) {
+    public TorrentInfo(float progress, float eta, String hash, String name, String saveDirectory) {
         this.progress = progress;
         this.eta = eta;
         this.hash = hash;
         this.name = name;
+        this.saveDirectory = saveDirectory;
     }
 
     public float getProgress() {
@@ -28,6 +34,10 @@ public class TorrentInfo implements Serializable {
 
     public String getHash() {
         return hash;
+    }
+
+    public String getSaveDirectory() {
+        return saveDirectory;
     }
 
     public String getName() {
