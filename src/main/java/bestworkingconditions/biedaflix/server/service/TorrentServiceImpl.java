@@ -9,6 +9,7 @@ import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
+import org.apache.commons.io.FileUtils;
 import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,11 +68,20 @@ public class TorrentServiceImpl implements TorrentService {
                     biggestFile = info;
             }
 
-            String path = currentlyDownloading.getTorrentInfo().getSaveDirectory() + biggestFile.getRelativePath();
+            String path = System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + biggestFile.getRelativePath();
             return Optional.of(new File(path));
         }
 
         return Optional.empty();
+    }
+
+    private void deleteLeftoverFilesFromDirectory(CurrentlyDownloading currentlyDownloading) throws IOException {
+        if(currentlyDownloading.getTorrentFileInfoList().size() > 0){
+            File parent = new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0)).getParentFile();
+            FileUtils.deleteDirectory(parent);
+        }
+        else
+            FileUtils.deleteDirectory(new File(System.getProperty("user.dir") + currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath() ));
     }
 
     private void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
@@ -106,12 +116,12 @@ public class TorrentServiceImpl implements TorrentService {
             Series series = seriesRepository.findById(currentlyDownloading.getTarget()
                                                                           .getSeriesId()).get();
 
-            currentlyDownloading = normalizeRequestedFiles(currentlyDownloading);
-            Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(currentlyDownloading.getTorrentFileInfoList());
+            normalizeRequestedFiles(currentlyDownloading);
+            Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(currentlyDownloading);
 
             File relativeVideoFile = relativeVideoOptionaloFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
 
-            File aboluteVideoFile = new File(System.getProperty("user.dir") + relativeVideoFile.getAbsolutePath());
+            File aboluteVideoFile = new File(relativeVideoFile.getAbsolutePath());
 
             File resource = fileSystemResourceLoader.getResource("ffmpeg-converter.sh").getFile();
 
@@ -150,6 +160,7 @@ public class TorrentServiceImpl implements TorrentService {
             //FIXME: ADD EPISODE TO DATABASE PROPERLY
             episodeRepository.save(currentlyDownloading.getTarget());
 
+            deleteLeftoverFilesFromDirectory(currentlyDownloading);
             currentlyDownloadingRepository.delete(currentlyDownloading);
             }
 

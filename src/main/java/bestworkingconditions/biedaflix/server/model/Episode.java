@@ -30,7 +30,7 @@ public class Episode {
     private boolean available;
     private Date releaseDate;
 
-    private Map<VideoQuality,String> videoQualities = new HashMap<>();
+    private List<EpisodeVideo> videoFiles = new ArrayList<>();
     private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
 
 
@@ -101,12 +101,12 @@ public class Episode {
         this.releaseDate = releaseDate;
     }
 
-    public Map<VideoQuality, String> getVideoQualities() {
-        return videoQualities;
+    public List<EpisodeVideo> getVideoFiles() {
+        return videoFiles;
     }
 
-    public void setVideoQualities(Map<VideoQuality, String> videoQualities) {
-        this.videoQualities = videoQualities;
+    public void setVideoFiles(List<EpisodeVideo> videoFiles) {
+        this.videoFiles = videoFiles;
     }
 
     public List<EpisodeSubtitles> getEpisodeSubtitles() {

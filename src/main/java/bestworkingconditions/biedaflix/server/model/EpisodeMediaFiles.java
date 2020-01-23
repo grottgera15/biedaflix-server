@@ -34,6 +34,6 @@ public class EpisodeMediaFiles extends SeriesMediaFiles {
 
     @Override
     public String getFilePath() {
-        return super.getFilePath() + "S" + season + "/E" + episode + "/";
+        return super.getFilePath() + "s" + season + "/e" + episode + "/";
     }
 }

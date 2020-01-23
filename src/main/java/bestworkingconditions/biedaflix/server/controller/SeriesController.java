@@ -59,10 +59,10 @@ public class SeriesController {
             List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesId(s.getId());
 
             Map<Integer,List<Episode>> seasons = new HashMap<>();
-
             for(Episode e : seriesEpisodes){
                 seasons.get(e.getEpisodeNumber()).add(e);
             }
+
 
             SeriesResponse r = new SeriesResponse(s.getId(),s.getName(),s.getDescription(),
                     new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getSeriesBanner().getFilePath())),
