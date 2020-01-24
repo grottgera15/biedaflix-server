@@ -81,7 +81,7 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     private void deleteLeftoverFilesFromDirectory(CurrentlyDownloading currentlyDownloading) throws IOException {
-        if(currentlyDownloading.getTorrentFileInfoList().size() > 0){
+        if(currentlyDownloading.getTorrentFileInfoList().size() > 1){
             File parent = new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0)).getParentFile();
             FileUtils.deleteDirectory(parent);
         }
