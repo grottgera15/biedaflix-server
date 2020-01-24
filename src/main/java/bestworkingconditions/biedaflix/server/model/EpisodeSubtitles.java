@@ -29,6 +29,14 @@ public class EpisodeSubtitles extends EpisodeMediaFiles {
         this.language = language;
     }
 
+    public SubtitlesLanguage getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(SubtitlesLanguage language) {
+        this.language = language;
+    }
+
     @Override
     public String getFilePath() {
         return super.getFilePath() + "sub"+language.getValue() + "." +fileExtension;

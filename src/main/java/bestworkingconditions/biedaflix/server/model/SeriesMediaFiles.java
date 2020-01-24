@@ -25,6 +25,6 @@ public abstract class SeriesMediaFiles extends  FileResource {
 
     @Override
     public String getFilePath() {
-        return "/series/" + seriesName + "/";
+        return "series/" + seriesName + "/";
     }
 }

@@ -24,6 +24,17 @@ public class SeriesResponse {
     public SeriesResponse() {
     }
 
+    public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String streamingServiceId, Boolean onGoing, Map<Integer, List<EpisodeResponse>> seasons) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.banner = banner;
+        this.logo = logo;
+        this.streamingServiceId = streamingServiceId;
+        this.onGoing = onGoing;
+        this.seasons = seasons;
+    }
+
     public String getId() {
         return id;
     }

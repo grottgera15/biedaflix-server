@@ -43,10 +43,8 @@ public class SeriesController {
         this.storeProperties = storeProperties;
     }
 
-
-    private URL getSeriesResourceURL(String folderName, String resourceName)throws MalformedURLException {
-        String url = new StringBuilder().append(appProperties.getDomain()).append('/').
-                append(storeProperties.getPath()).append(folderName).append(resourceName).toString();
+    private URL getSeriesResourceURL(String relativePath)throws MalformedURLException {
+        String url = appProperties.getDomain() + storeProperties.getPath() + relativePath;
         return new  URL(url);
     }
 
@@ -56,34 +54,56 @@ public class SeriesController {
 
         List<SeriesResponse> response = new ArrayList<>();
 
-        for(Series s : availableSeries){
+        for(Series series : availableSeries){
 
             Map<Integer,List<EpisodeResponse>> seasonsResponse = new HashMap<>();
-            List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesId(s.getId());
+            List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesId(series.getId());
 
             for (Episode ep : seriesEpisodes){
 
                 int seasonNumber = ep.getSeasonNumber();
 
                 Map<String,String> videoSources = new HashMap<>();
+                for(EpisodeVideo episodeVideo : ep.getVideoFiles()){
+                   videoSources.put(episodeVideo.getVideoQuality().getQuality(),getSeriesResourceURL(episodeVideo.getFilePath()).toString());
+                }
+
                 Map<String,String> subtitles = new HashMap<>();
+                for(EpisodeSubtitles episodeSubtitles : ep.getEpisodeSubtitles()){
+                    subtitles.put(episodeSubtitles.getLanguage().getValue(), getSeriesResourceURL(episodeSubtitles.getFilePath()).toString());
+                }
+
                 List<MediaFilesResponse> thumbs = new ArrayList<>();
+                for(EpisodeThumbs episodeThumbs : ep.getEpisodeThumbs()){
+                    thumbs.add(new MediaFilesResponse(getSeriesResourceURL(episodeThumbs.getFilePath())));
+                }
 
 
-
-               /* EpisodeResponse episodeResponse = new EpisodeResponse(
+                EpisodeResponse episodeResponse = new EpisodeResponse(
                         ep.getId(),
                         ep.getEpisodeNumber(),
                         ep.getName(),
                         ep.isAvailable(),
                         ep.getReleaseDate(),
+                        videoSources,
+                        subtitles,
+                        thumbs
                 );
-*/
+
                 if(!seasonsResponse.containsKey(seasonNumber))
                     seasonsResponse.put(seasonNumber,new ArrayList<>());
 
-                //seasonsResponse.get(seasonNumber).add(new );
+                seasonsResponse.get(seasonNumber).add(episodeResponse);
 
+                response.add(new SeriesResponse(series.getId(),
+                        series.getName(),
+                        series.getDescription(),
+                        new MediaFilesResponse(getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
+                        new MediaFilesResponse(getSeriesResourceURL(series.getLogo().getFilePath())),
+                        series.getStreamingServiceId(),
+                        series.getOnGoing(),
+                        seasonsResponse
+                        ));
             }
         }
 

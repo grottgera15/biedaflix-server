@@ -16,12 +16,12 @@ public class EpisodeResponse implements Serializable {
 
     private Map<String, String> videoSources = new HashMap<>();
     private Map<String,String> subtitles = new HashMap<>();
-    private List<EpisodeThumbs> thubs = new ArrayList<>();
+    private List<MediaFilesResponse> thumbs = new ArrayList<>();
 
     public EpisodeResponse() {
     }
 
-    public EpisodeResponse(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles, List<EpisodeThumbs> thubs) {
+    public EpisodeResponse(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles, List<MediaFilesResponse> thumbs) {
         this.id = id;
         this.episodeNumber = episodeNumber;
         this.name = name;
@@ -29,7 +29,7 @@ public class EpisodeResponse implements Serializable {
         this.releaseDate = releaseDate;
         this.videoSources = videoSources;
         this.subtitles = subtitles;
-        this.thubs = thubs;
+        this.thumbs = thumbs;
     }
 
     public String getId() {
@@ -88,11 +88,11 @@ public class EpisodeResponse implements Serializable {
         this.subtitles = subtitles;
     }
 
-    public List<EpisodeThumbs> getThubs() {
-        return thubs;
+    public List<MediaFilesResponse> getThumbs() {
+        return thumbs;
     }
 
-    public void setThubs(List<EpisodeThumbs> thubs) {
-        this.thubs = thubs;
+    public void setThumbs(List<MediaFilesResponse> thumbs) {
+        this.thumbs = thumbs;
     }
 }
