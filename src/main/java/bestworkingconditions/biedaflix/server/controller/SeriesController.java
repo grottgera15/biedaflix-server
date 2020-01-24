@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.print.DocFlavor;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -64,12 +65,24 @@ public class SeriesController {
 
                 int seasonNumber = ep.getSeasonNumber();
 
-                EpisodeResponse episodeResponse = new EpisodeResponse();
+                Map<String,String> videoSources = new HashMap<>();
+                Map<String,String> subtitles = new HashMap<>();
+                List<MediaFilesResponse> thumbs = new ArrayList<>();
 
+
+
+               /* EpisodeResponse episodeResponse = new EpisodeResponse(
+                        ep.getId(),
+                        ep.getEpisodeNumber(),
+                        ep.getName(),
+                        ep.isAvailable(),
+                        ep.getReleaseDate(),
+                );
+*/
                 if(!seasonsResponse.containsKey(seasonNumber))
                     seasonsResponse.put(seasonNumber,new ArrayList<>());
 
-                seasonsResponse.get(seasonNumber).add(new );
+                //seasonsResponse.get(seasonNumber).add(new );
 
             }
         }

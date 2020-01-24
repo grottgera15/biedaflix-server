@@ -39,8 +39,8 @@ public class EpisodeController {
 
 
     @PostMapping("/addSubtitles")
-    public ResponseEntity<Object> AddSubtitles(@NotBlank String episodeId,
-                                                @NotNull EpisodeSubtitles.SubtitlesLanguage language,
+    public ResponseEntity<Object> AddSubtitles(@NotBlank @RequestParam  String episodeId,
+                                                @NotNull @RequestParam EpisodeSubtitles.SubtitlesLanguage language,
                                                 @NotNull @RequestParam MultipartFile file) throws IOException {
 
         Optional<Episode> optionalEpisode = episodeRepository.findById(episodeId);
@@ -48,13 +48,13 @@ public class EpisodeController {
 
         Series episodeSeries = seriesRepository.findById(episode.getSeriesId()).get();
 
-        EpisodeSubtitles subs = new EpisodeSubtitles(file.getContentType(),episodeSeries.getFolderName(),episode.getSeasonNumber(),episode.getEpisodeNumber(),language);
+        EpisodeSubtitles subs = new EpisodeSubtitles(FilenameUtils.getExtension(file.getOriginalFilename()),episodeSeries.getFolderName(),episode.getSeasonNumber(),episode.getEpisodeNumber(),language);
         fileResourceContentStore.setContent(subs,file.getInputStream());
 
-        episode.getEpisodeSubtitles().add(new EpisodeSubtitles(FilenameUtils.getExtension(file.getOriginalFilename()),
-                episodeSeries.getFolderName(),episode.getSeasonNumber(),episode.getEpisodeNumber(),language));
+        episode.getEpisodeSubtitles().add(subs);
+        episodeRepository.save(episode);
 
-            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
 
     }
 

@@ -31,6 +31,6 @@ public class EpisodeSubtitles extends EpisodeMediaFiles {
 
     @Override
     public String getFilePath() {
-        return super.getFilePath() + "sub"+language+fileExtension;
+        return super.getFilePath() + "sub"+language.getValue() + "." +fileExtension;
     }
 }
