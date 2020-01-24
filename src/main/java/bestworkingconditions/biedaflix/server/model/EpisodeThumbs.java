@@ -24,6 +24,6 @@ public class EpisodeThumbs extends EpisodeMediaFiles {
 
     @Override
     public String getFilePath() {
-        return super.getFilePath() + "/thumbs/" + thumbName + fileExtension;
+        return super.getFilePath() + "thumbs/" + thumbName +"."+ fileExtension;
     }
 }

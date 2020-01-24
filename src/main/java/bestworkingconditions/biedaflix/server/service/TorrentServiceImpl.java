@@ -102,9 +102,9 @@ public class TorrentServiceImpl implements TorrentService {
 
         for(TorrentFileInfo info : currentlyDownloading.getTorrentFileInfoList()){
             if(currentlyDownloading.getTorrentFileInfoList().size() > 1)
-                info.setRelativePath("/" + info.getRelativePath().replaceAll("//s+","_"));
+                info.setRelativePath("/" + info.getRelativePath().replaceAll("\\s+","_"));
             else
-                info.setRelativePath(info.getRelativePath().replaceAll("//s+","_"));
+                info.setRelativePath(info.getRelativePath().replaceAll("\\s+","_"));
         }
     }
 

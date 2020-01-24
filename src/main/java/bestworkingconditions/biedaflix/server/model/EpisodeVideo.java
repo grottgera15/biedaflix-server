@@ -40,7 +40,7 @@ public class EpisodeVideo extends EpisodeMediaFiles {
 
     @Override
     public String getFilePath() {
-        return super.getFilePath() + videoQuality.getQuality() + fileExtension;
+        return super.getFilePath() + videoQuality.getQuality() + "." + fileExtension;
     }
 }
 
