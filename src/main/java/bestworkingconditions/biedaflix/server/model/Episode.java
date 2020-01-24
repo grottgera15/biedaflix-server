@@ -21,17 +21,22 @@ public class Episode {
 
     private List<EpisodeVideo> videoFiles = new ArrayList<>();
     private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
-
+    private List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
 
     public Episode() {
     }
 
-    public Episode(String seriesId, int seasonNumber, int episodeNumber, String name, Date releaseDate) {
+    public Episode(String id, String seriesId, int seasonNumber, int episodeNumber, String name, boolean available, Date releaseDate, List<EpisodeVideo> videoFiles, List<EpisodeSubtitles> episodeSubtitles, List<EpisodeThumbs> episodeThumbs) {
+        this.id = id;
         this.seriesId = seriesId;
         this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
         this.name = name;
+        this.available = available;
         this.releaseDate = releaseDate;
+        this.videoFiles = videoFiles;
+        this.episodeSubtitles = episodeSubtitles;
+        this.episodeThumbs = episodeThumbs;
     }
 
     public String getId() {
@@ -100,6 +105,14 @@ public class Episode {
 
     public List<EpisodeSubtitles> getEpisodeSubtitles() {
         return episodeSubtitles;
+    }
+
+    public List<EpisodeThumbs> getEpisodeThumbs() {
+        return episodeThumbs;
+    }
+
+    public void setEpisodeThumbs(List<EpisodeThumbs> episodeThumbs) {
+        this.episodeThumbs = episodeThumbs;
     }
 
     public void setEpisodeSubtitles(List<EpisodeSubtitles> episodeSubtitles) {

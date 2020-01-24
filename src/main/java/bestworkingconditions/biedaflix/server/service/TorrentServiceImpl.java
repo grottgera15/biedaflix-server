@@ -10,6 +10,7 @@ import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.util.TorrentHttpEntityBuilder;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.graalvm.compiler.nodes.memory.MemoryCheckpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +24,18 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.validation.Path;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @EnableAsync
@@ -165,7 +170,24 @@ public class TorrentServiceImpl implements TorrentService {
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.MEDIUM));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.LOW));
 
-            
+            List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
+
+            try(Stream<Path> walk = Files.walk(Paths.get(filesystemRoot.getAbsolutePath() + "/series/" + series.getFolderName()
+                        + "/s" + currentlyDownloading.getTarget().getSeasonNumber() + "/e" + currentlyDownloading.getTarget().getEpisodeNumber() +"/thumbs/"))){
+
+
+                List<File> result = walk.filter(Files::isRegularFile).map(Path::toFile).collect(Collectors.toList());
+
+                result.forEach(x ->  episodeThumbs.add(new EpisodeThumbs(FilenameUtils.getExtension(x.getName()),series.getFolderName(),
+                        currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(),FilenameUtils.removeExtension(x.getName()))));
+
+
+            }catch(IOException e){
+                throw new IOException(e);
+            }
+
+            currentlyDownloading.getTarget().setVideoFiles(episodeVideos);
+            currentlyDownloading.getTarget().setEpisodeThumbs(episodeThumbs);
             episodeRepository.save(currentlyDownloading.getTarget());
 
             deleteLeftoverFilesFromDirectory(currentlyDownloading);
