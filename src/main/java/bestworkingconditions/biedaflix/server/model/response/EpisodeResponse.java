@@ -1,11 +1,11 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
-import javax.print.DocFlavor;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import bestworkingconditions.biedaflix.server.model.EpisodeThumbs;
 
-public class EpisodeResponse {
+import java.io.Serializable;
+import java.util.*;
+
+public class EpisodeResponse implements Serializable {
 
     private String id;
     private int episodeNumber;
@@ -16,11 +16,12 @@ public class EpisodeResponse {
 
     private Map<String, String> videoSources = new HashMap<>();
     private Map<String,String> subtitles = new HashMap<>();
+    private List<EpisodeThumbs> thubs = new ArrayList<>();
 
     public EpisodeResponse() {
     }
 
-    public EpisodeResponse(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles) {
+    public EpisodeResponse(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles, List<EpisodeThumbs> thubs) {
         this.id = id;
         this.episodeNumber = episodeNumber;
         this.name = name;
@@ -28,6 +29,7 @@ public class EpisodeResponse {
         this.releaseDate = releaseDate;
         this.videoSources = videoSources;
         this.subtitles = subtitles;
+        this.thubs = thubs;
     }
 
     public String getId() {
@@ -84,5 +86,13 @@ public class EpisodeResponse {
 
     public void setSubtitles(Map<String, String> subtitles) {
         this.subtitles = subtitles;
+    }
+
+    public List<EpisodeThumbs> getThubs() {
+        return thubs;
+    }
+
+    public void setThubs(List<EpisodeThumbs> thubs) {
+        this.thubs = thubs;
     }
 }

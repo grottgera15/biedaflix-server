@@ -2,6 +2,7 @@ package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.SeriesRequest;
+import bestworkingconditions.biedaflix.server.model.response.EpisodeResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.model.response.SeriesResponse;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
@@ -56,19 +57,21 @@ public class SeriesController {
 
         for(Series s : availableSeries){
 
+            Map<Integer,List<EpisodeResponse>> seasonsResponse = new HashMap<>();
             List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesId(s.getId());
 
-            Map<Integer,List<Episode>> seasons = new HashMap<>();
-            for(Episode e : seriesEpisodes){
-                seasons.get(e.getEpisodeNumber()).add(e);
+            for (Episode ep : seriesEpisodes){
+
+                int seasonNumber = ep.getSeasonNumber();
+
+                EpisodeResponse episodeResponse = new EpisodeResponse();
+
+                if(!seasonsResponse.containsKey(seasonNumber))
+                    seasonsResponse.put(seasonNumber,new ArrayList<>());
+
+                seasonsResponse.get(seasonNumber).add(new );
+
             }
-
-
-            SeriesResponse r = new SeriesResponse(s.getId(),s.getName(),s.getDescription(),
-                    new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getSeriesBanner().getFilePath())),
-                    new MediaFilesResponse(getSeriesResourceURL(s.getFolderName(),s.getLogo().getFilePath())),
-                    s.getStreamingServiceId(),s.getOnGoing(),seasons);
-            response.add(r);
         }
 
         return ResponseEntity.ok(response);
