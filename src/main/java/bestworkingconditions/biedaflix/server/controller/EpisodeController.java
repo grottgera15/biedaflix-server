@@ -40,7 +40,7 @@ public class EpisodeController {
 
     @PostMapping("/addSubtitles")
     public ResponseEntity<Object> AddSubtitles(@NotBlank String episodeId,
-                                                @NotNull EpisodeSubtitles language,
+                                                @NotNull EpisodeSubtitles.SubtitlesLanguage language,
                                                 @NotNull @RequestParam MultipartFile file) throws IOException {
 
         Optional<Episode> optionalEpisode = episodeRepository.findById(episodeId);

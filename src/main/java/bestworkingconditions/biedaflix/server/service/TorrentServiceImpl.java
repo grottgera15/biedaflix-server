@@ -164,7 +164,6 @@ public class TorrentServiceImpl implements TorrentService {
             deleteTorrent(currentlyDownloading.getTorrentInfo().getHash(), true);
 
             //FIXME: ADD EPISODE TO DATABASE PROPERLY
-
             List<EpisodeVideo> episodeVideos = new ArrayList<>();
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.HIGH));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.MEDIUM));
@@ -188,6 +187,9 @@ public class TorrentServiceImpl implements TorrentService {
 
             currentlyDownloading.getTarget().setVideoFiles(episodeVideos);
             currentlyDownloading.getTarget().setEpisodeThumbs(episodeThumbs);
+
+            currentlyDownloading.getTarget().setAvailable(true);
+
             episodeRepository.save(currentlyDownloading.getTarget());
 
             deleteLeftoverFilesFromDirectory(currentlyDownloading);
