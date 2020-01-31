@@ -15,9 +15,14 @@ configurations {
     }
 }
 
+bootJar{
+    mainClassName="bestworkingconditions.biedaflix.server.ServerApplication"
+    archiveFileName="biedaflix-server.jar"
+    project.version=""
+}
 
 jar{
-    archivesBaseName="biedaflix-server"
+    archiveFileName="biedaflix-server.jar"
     project.version=""
 }
 
