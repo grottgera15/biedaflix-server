@@ -322,19 +322,6 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Override
-    public void login() {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getAuthUri("login"))
-                .queryParam("username",torrentProperties.getUsername()).queryParam("password",torrentProperties.getPassword());
-
-
-        ResponseEntity<String> response = new RestTemplate().getForEntity(builder.build().encode().toUri(),String.class);
-
-        HttpHeaders headers = response.getHeaders();
-        String cookieValue = headers.getFirst(HttpHeaders.SET_COOKIE);
-
-    }
-
-    @Override
     public List<TorrentFileInfo> getFilesInfo(@NotBlank  String torrentHash) {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getTorrentUri("files"))
