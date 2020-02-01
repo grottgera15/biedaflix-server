@@ -13,17 +13,15 @@ public class TorrentHttpEntityBuilder {
     private MultiValueMap<String,String> map;
     private HttpHeaders headers;
 
-    public TorrentHttpEntityBuilder(MediaType mediaType,String cookieValue) {
+    public TorrentHttpEntityBuilder(MediaType mediaType) {
         map = new LinkedMultiValueMap<>();
         headers = new HttpHeaders();
         headers.setContentType(mediaType);
-        headers.set(HttpHeaders.COOKIE,"SID="+cookieValue);
     }
 
     public TorrentHttpEntityBuilder() {
         map = new LinkedMultiValueMap<>();
         headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     public TorrentHttpEntityBuilder addKeyValuePair(String key, String value){
@@ -31,7 +29,8 @@ public class TorrentHttpEntityBuilder {
         return this;
     }
 
-    public HttpEntity<MultiValueMap<String,String>> build(){
+    public HttpEntity<MultiValueMap<String,String>> build(String cookieValue){
+        this.headers.set(HttpHeaders.COOKIE,"SID="+cookieValue);
         return new HttpEntity<>(this.map,this.headers);
     }
 }
