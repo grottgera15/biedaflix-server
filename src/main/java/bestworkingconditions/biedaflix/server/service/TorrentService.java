@@ -15,5 +15,6 @@ public interface TorrentService {
     void pauseTorrents(List<String> torrentHashes);
     void resumeTorrents(List<String> torrentHashes);
     void setTorrentCategory(List<String> torrentHashes, TorrentCategory category);
+    void login();
     List<TorrentFileInfo> getFilesInfo(String torrentHash);
 }

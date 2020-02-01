@@ -8,6 +8,9 @@ public class TorrentProperties {
     private String clientPort;
     private String pathToResources;
     private String downloadPath;
+    private String username;
+    private String password;
+
 
     public String getDownloadPath() {
         return downloadPath;
@@ -39,5 +42,21 @@ public class TorrentProperties {
 
     public void setPathToResources(String pathToResources) {
         this.pathToResources = pathToResources;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

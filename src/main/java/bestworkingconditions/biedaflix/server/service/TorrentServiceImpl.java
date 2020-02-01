@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -239,7 +240,7 @@ public class TorrentServiceImpl implements TorrentService {
                 .addKeyValuePair("root_folder","true")
                 .build();
 
-        ResponseEntity<String> response = new RestTemplate().postForEntity(torrentUriRepository.getUri("add"),request,String.class);
+        ResponseEntity<String> response = new RestTemplate().postForEntity(torrentUriRepository.getTorrentUri("add"),request,String.class);
 
         List<TorrentInfo> torrentsInfo = getTorrentsInfo();
         logger.info("TORRENTS" + String.valueOf(torrentsInfo));
@@ -262,7 +263,7 @@ public class TorrentServiceImpl implements TorrentService {
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("filter","all")
                                                                                           .addKeyValuePair("category","biedaflix").build();
-        ResponseEntity<TorrentInfo[]> responseEntity  = new RestTemplate().getForEntity(torrentUriRepository.getUri("info"),TorrentInfo[].class,request);
+        ResponseEntity<TorrentInfo[]> responseEntity  = new RestTemplate().getForEntity(torrentUriRepository.getTorrentUri("info"),TorrentInfo[].class,request);
 
         if(responseEntity.getBody() != null)
             return new ArrayList<>(Arrays.asList(responseEntity.getBody()));
@@ -276,7 +277,7 @@ public class TorrentServiceImpl implements TorrentService {
                                                                                           .addKeyValuePair("deleteFiles", Boolean.toString(deleteFiles))
                                                                                           .build();
 
-        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("delete"),request, String.class);
+        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getTorrentUri("delete"),request, String.class);
     }
 
     private String combineHashesForRequest(List<String> torrentHashes){
@@ -298,7 +299,7 @@ public class TorrentServiceImpl implements TorrentService {
         String combinedHashes = combineHashesForRequest(torrentHashes);
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combinedHashes).build();
-        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("pause"),request,String.class);
+        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getTorrentUri("pause"),request,String.class);
     }
 
     @Override
@@ -306,7 +307,7 @@ public class TorrentServiceImpl implements TorrentService {
         String combineHashes = combineHashesForRequest(torrentHashes);
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder().addKeyValuePair("hashes",combineHashes).build();
-        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("resume"),request,String.class);
+        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getTorrentUri("resume"),request,String.class);
     }
 
     @Override
@@ -317,13 +318,26 @@ public class TorrentServiceImpl implements TorrentService {
                 .addKeyValuePair("hashes",combinedHashes)
                 .addKeyValuePair("category",category.getCategoryValue()).build();
 
-        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getUri("setCategory"),request,String.class);
+        ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(torrentUriRepository.getTorrentUri("setCategory"),request,String.class);
+    }
+
+    @Override
+    public void login() {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getAuthUri("login"))
+                .queryParam("username",torrentProperties.getUsername()).queryParam("password",torrentProperties.getPassword());
+
+
+        ResponseEntity<String> response = new RestTemplate().getForEntity(builder.build().encode().toUri(),String.class);
+
+        HttpHeaders headers = response.getHeaders();
+        String cookieValue = headers.getFirst(HttpHeaders.SET_COOKIE);
+
     }
 
     @Override
     public List<TorrentFileInfo> getFilesInfo(@NotBlank  String torrentHash) {
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getUri("files"))
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getTorrentUri("files"))
                 .queryParam("hash",torrentHash);
 
         ResponseEntity<TorrentFileInfo[]> response = new RestTemplate().getForEntity(builder.build().encode().toUri(),TorrentFileInfo[].class);

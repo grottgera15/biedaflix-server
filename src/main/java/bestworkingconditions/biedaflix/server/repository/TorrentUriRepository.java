@@ -12,7 +12,11 @@ public class TorrentUriRepository {
     @Autowired
     public TorrentUriRepository(TorrentProperties properties) {this.properties = properties;}
 
-    public String getUri(String function){
+    public String getTorrentUri(String function){
         return "http://" + properties.getClientUri() + ":" + properties.getClientPort() + properties.getPathToResources() + function;
+    }
+
+    public String getAuthUri(String function){
+        return "http://" + properties.getClientUri() + ":" + properties.getClientPort() + "/api/v2/auth/" + function;
     }
 }
