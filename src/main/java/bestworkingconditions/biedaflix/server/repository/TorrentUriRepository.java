@@ -13,10 +13,10 @@ public class TorrentUriRepository {
     public TorrentUriRepository(TorrentProperties properties) {this.properties = properties;}
 
     public String getTorrentUri(String function){
-        return "http://" + properties.getClientUri() + ":" + properties.getClientPort() + properties.getPathToResources() + function;
+        return "http://" + properties.getClientUri()  +":" +  properties.getClientPort() + properties.getPathToResources() + function;
     }
 
     public String getAuthUri(String function){
-        return "http://" + properties.getClientUri() + ":" + properties.getClientPort() + "/api/v2/auth/" + function;
+        return "http://" + properties.getClientUri() +":"+ properties.getClientPort() + "/api/v2/auth/" + function;
     }
 }
