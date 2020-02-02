@@ -41,6 +41,10 @@ dependencies {
             //'org.bouncycastle:bcprov-jdk15on:1.60',
             'io.jsonwebtoken:jjwt-jackson:0.10.7'
 
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
+
+
     //hibernate validator
     implementation 'org.hibernate:hibernate-validator:6.1.0.Final'
 

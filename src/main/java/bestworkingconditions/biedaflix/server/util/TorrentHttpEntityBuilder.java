@@ -29,8 +29,7 @@ public class TorrentHttpEntityBuilder {
         return this;
     }
 
-    public HttpEntity<MultiValueMap<String,String>> build(String cookieValue){
-        this.headers.set(HttpHeaders.COOKIE,cookieValue);
+    public HttpEntity<MultiValueMap<String,String>> build(){
         return new HttpEntity<>(this.map,this.headers);
     }
 }
