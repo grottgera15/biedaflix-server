@@ -114,7 +114,7 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
 
-    @Scheduled(initialDelay = 15000,fixedRate = 30000)
+    @Scheduled(initialDelay = 45000,fixedRate = 30000)
     private void parseFinishedTorrents() throws Exception {
 
         List<CurrentlyDownloading> currentlyDownloadingList = currentlyDownloadingRepository.findAll();
@@ -217,7 +217,7 @@ public class TorrentServiceImpl implements TorrentService {
         }
     }
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 30000)
     private void checkTorrentsStatus() throws Exception {
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
@@ -268,7 +268,11 @@ public class TorrentServiceImpl implements TorrentService {
 
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder(MediaType.APPLICATION_FORM_URLENCODED).addKeyValuePair("filter","all")
                                                                                           .addKeyValuePair("category","biedaflix").build(loginCookieValue);
-        ResponseEntity<TorrentInfo[]> responseEntity  = new RestTemplate().getForEntity(torrentUriRepository.getTorrentUri("info"),TorrentInfo[].class,request);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getTorrentUri("info"))
+                                                           .queryParam("filter","all");
+
+        ResponseEntity<TorrentInfo[]> responseEntity  = new RestTemplate().getForEntity(builder.build().encode().toUriString(),TorrentInfo[].class,request);
 
         if(responseEntity.getBody() != null)
             return new ArrayList<>(Arrays.asList(responseEntity.getBody()));

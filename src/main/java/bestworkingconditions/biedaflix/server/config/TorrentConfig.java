@@ -23,7 +23,10 @@ public class TorrentConfig {
 
     @Bean
     public String getLoginCookieValue(){
-        return login();
+        String cookieUncut =  login();
+        cookieUncut = cookieUncut.replace(';','_');
+        String[] split = cookieUncut.split("_");
+        return split[0];
     }
 
     private String login() {
