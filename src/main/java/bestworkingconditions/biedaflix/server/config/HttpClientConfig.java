@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.controller;
+package bestworkingconditions.biedaflix.server.config;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;

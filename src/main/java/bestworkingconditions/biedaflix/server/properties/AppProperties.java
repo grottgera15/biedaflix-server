@@ -4,13 +4,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "biedaflix.config")
 public class AppProperties {
-    private String domain;
+    private String apiDomain;
 
-    public String getDomain() {
-        return domain;
+    public String getApiDomain() {
+        return apiDomain;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setApiDomain(String apiDomain) {
+        this.apiDomain = apiDomain;
     }
 }

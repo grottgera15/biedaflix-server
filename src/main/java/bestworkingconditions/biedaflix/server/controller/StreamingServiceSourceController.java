@@ -36,7 +36,7 @@ public class StreamingServiceSourceController {
     }
 
     private URL getStreamingServiceURL(StreamingServiceSource source) throws MalformedURLException {
-        String url = new StringBuilder().append(appProperties.getDomain()).append(source.getFilePath()).toString();
+        String url = new StringBuilder().append(appProperties.getApiDomain()).append("files").append(source.getFilePath()).toString();
         return new  URL(url);
     }
 

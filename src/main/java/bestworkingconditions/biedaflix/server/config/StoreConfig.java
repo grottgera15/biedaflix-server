@@ -16,7 +16,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterRegistry;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Paths;
 
 @Configuration
@@ -55,7 +54,7 @@ public class StoreConfig {
             public void configure(RestConfiguration config) {
                 config.getCorsRegistry().addMapping(storeProperties.getPath()+"**")
                       .allowedMethods("GET")
-                      .allowedOrigins(appProperties.getDomain())
+                      .allowedOrigins(appProperties.getApiDomain())
                       .maxAge(3600);
             }
         };
