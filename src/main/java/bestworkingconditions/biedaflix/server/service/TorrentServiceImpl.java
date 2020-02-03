@@ -240,6 +240,7 @@ public class TorrentServiceImpl implements TorrentService {
                 .addKeyValuePair("category","biedaflix")
                 .addKeyValuePair("rename",downloadName)
                 .addKeyValuePair("root_folder","true")
+                .addKeyValuePair("autoTMM","true")
                 .build();
 
         ResponseEntity<String> response = restTemplate.postForEntity(torrentUriRepository.getTorrentUri("add"),request,String.class);
