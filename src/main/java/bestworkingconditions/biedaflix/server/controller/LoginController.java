@@ -4,6 +4,7 @@ import bestworkingconditions.biedaflix.server.model.auth.AuthenticationRequest;
 import bestworkingconditions.biedaflix.server.model.auth.AuthenticationResponse;
 import bestworkingconditions.biedaflix.server.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -31,7 +34,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> Login(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> Login(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         }catch (BadCredentialsException e){
@@ -40,6 +43,12 @@ public class LoginController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
         String jwt = jwtService.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+
+        Cookie jwtCookie = new Cookie("jwt-auth",jwt);
+        jwtCookie.setDomain("biedaflix.pl");
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");
+        response.addCookie(jwtCookie);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
