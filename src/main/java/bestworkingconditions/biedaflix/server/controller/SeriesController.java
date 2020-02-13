@@ -75,21 +75,6 @@ public class SeriesController {
 
                     int seasonNumber = ep.getSeasonNumber();
 
-                    Map<String,String> videoSources = new HashMap<>();
-                    for(EpisodeVideo episodeVideo : ep.getVideoFiles()){
-                       videoSources.put(episodeVideo.getVideoQuality().getQuality(),getSeriesResourceURL(episodeVideo.getFilePath()).toString());
-                    }
-
-                    Map<String,String> subtitles = new HashMap<>();
-                    for(EpisodeSubtitles episodeSubtitles : ep.getEpisodeSubtitles()){
-                        subtitles.put(episodeSubtitles.getLanguage().getValue(), getSeriesResourceURL(episodeSubtitles.getFilePath()).toString());
-                    }
-
-                    List<MediaFilesResponse> thumbs = new ArrayList<>();
-                    for(EpisodeThumbs episodeThumbs : ep.getEpisodeThumbs()){
-                        thumbs.add(new MediaFilesResponse(getSeriesResourceURL(episodeThumbs.getFilePath())));
-                    }
-
                     EpisodeLightResponse episodeLightResponse = new EpisodeLightResponse(
                             ep.getId(),
                             ep.getEpisodeNumber(),
@@ -103,16 +88,18 @@ public class SeriesController {
 
                     seasonsResponse.get(seasonNumber).add(episodeLightResponse);
 
-                    response.add(new SeriesResponse(series.getId(),
-                            series.getName(),
-                            series.getDescription(),
-                            new MediaFilesResponse(getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
-                            new MediaFilesResponse(getSeriesResourceURL(series.getLogo().getFilePath())),
-                            series.getStreamingServiceId(),
-                            series.getOnGoing(),
-                            seasonsResponse
-                            ));
+
                 }
+
+                response.add(new SeriesResponse(series.getId(),
+                        series.getName(),
+                        series.getDescription(),
+                        new MediaFilesResponse(getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
+                        new MediaFilesResponse(getSeriesResourceURL(series.getLogo().getFilePath())),
+                        series.getStreamingServiceId(),
+                        series.getOnGoing(),
+                        seasonsResponse
+                ));
             }
         }
 
