@@ -2,7 +2,7 @@ package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.SeriesRequest;
-import bestworkingconditions.biedaflix.server.model.response.EpisodeResponse;
+import bestworkingconditions.biedaflix.server.model.response.EpisodeFullResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.model.response.SeriesResponse;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
@@ -55,7 +55,7 @@ public class SeriesController {
 
         for(Series series : availableSeries){
 
-            Map<Integer,List<EpisodeResponse>> seasonsResponse = new HashMap<>();
+            Map<Integer,List<EpisodeFullResponse>> seasonsResponse = new HashMap<>();
             List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesId(series.getId());
 
             if(seriesEpisodes.size() == 0){
@@ -90,7 +90,7 @@ public class SeriesController {
                     }
 
 
-                    EpisodeResponse episodeResponse = new EpisodeResponse(
+                    EpisodeFullResponse episodeFullResponse = new EpisodeFullResponse(
                             ep.getId(),
                             ep.getEpisodeNumber(),
                             ep.getName(),
@@ -104,7 +104,7 @@ public class SeriesController {
                     if(!seasonsResponse.containsKey(seasonNumber))
                         seasonsResponse.put(seasonNumber,new ArrayList<>());
 
-                    seasonsResponse.get(seasonNumber).add(episodeResponse);
+                    seasonsResponse.get(seasonNumber).add(episodeFullResponse);
 
                     response.add(new SeriesResponse(series.getId(),
                             series.getName(),

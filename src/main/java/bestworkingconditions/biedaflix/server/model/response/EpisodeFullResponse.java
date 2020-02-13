@@ -5,7 +5,7 @@ import bestworkingconditions.biedaflix.server.model.EpisodeThumbs;
 import java.io.Serializable;
 import java.util.*;
 
-public class EpisodeResponse implements Serializable {
+public class EpisodeFullResponse implements Serializable {
 
     private String id;
     private int episodeNumber;
@@ -18,10 +18,10 @@ public class EpisodeResponse implements Serializable {
     private Map<String,String> subtitles = new HashMap<>();
     private List<MediaFilesResponse> thumbs = new ArrayList<>();
 
-    public EpisodeResponse() {
+    public EpisodeFullResponse() {
     }
 
-    public EpisodeResponse(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles, List<MediaFilesResponse> thumbs) {
+    public EpisodeFullResponse(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles, List<MediaFilesResponse> thumbs) {
         this.id = id;
         this.episodeNumber = episodeNumber;
         this.name = name;

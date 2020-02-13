@@ -1,7 +1,5 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
-import bestworkingconditions.biedaflix.server.model.Episode;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +17,12 @@ public class SeriesResponse {
     private String streamingServiceId;
     private Boolean onGoing;
 
-    private Map<Integer,List<EpisodeResponse>> seasons = new HashMap<>();
+    private Map<Integer,List<EpisodeLightResponse>> seasons = new HashMap<>();
 
     public SeriesResponse() {
     }
 
-    public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String streamingServiceId, Boolean onGoing, Map<Integer, List<EpisodeResponse>> seasons) {
+    public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String streamingServiceId, Boolean onGoing, Map<Integer, List<EpisodeLightResponse>> seasons) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -91,11 +89,11 @@ public class SeriesResponse {
         this.onGoing = onGoing;
     }
 
-    public Map<Integer, List<EpisodeResponse>> getSeasons() {
+    public Map<Integer, List<EpisodeLightResponse>> getSeasons() {
         return seasons;
     }
 
-    public void setSeasons(Map<Integer, List<EpisodeResponse>> seasons) {
+    public void setSeasons(Map<Integer, List<EpisodeLightResponse>> seasons) {
         this.seasons = seasons;
     }
 }
