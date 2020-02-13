@@ -2,15 +2,13 @@ package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.SeriesRequest;
-import bestworkingconditions.biedaflix.server.model.response.EpisodeFullResponse;
 import bestworkingconditions.biedaflix.server.model.response.EpisodeLightResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.model.response.SeriesResponse;
-import bestworkingconditions.biedaflix.server.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.properties.StoreProperties;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
+import bestworkingconditions.biedaflix.server.service.SeriesService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 @RestController
@@ -31,22 +28,16 @@ public class SeriesController {
     private final SeriesRepository seriesRepository;
     private final EpisodeRepository episodeRepository;
     private final FileResourceContentStore fileResourceContentStore;
-    private final AppProperties appProperties;
-    private final StoreProperties storeProperties;
+    private final SeriesService seriesService;
 
     @Autowired
-    public SeriesController(SeriesRepository seriesRepository, EpisodeRepository episodeRepository, FileResourceContentStore fileResourceContentStore, AppProperties appProperties, StoreProperties storeProperties) {
+    public SeriesController(SeriesRepository seriesRepository, EpisodeRepository episodeRepository, FileResourceContentStore fileResourceContentStore, SeriesService seriesService) {
         this.seriesRepository = seriesRepository;
         this.episodeRepository = episodeRepository;
         this.fileResourceContentStore = fileResourceContentStore;
-        this.appProperties = appProperties;
-        this.storeProperties = storeProperties;
+        this.seriesService = seriesService;
     }
 
-    private URL getSeriesResourceURL(String relativePath)throws MalformedURLException {
-        String url = appProperties.getApiDomain() + storeProperties.getPath() + relativePath;
-        return new  URL(url);
-    }
 
     @GetMapping("/series")
     public ResponseEntity<List<SeriesResponse>> GetAll() throws MalformedURLException {
@@ -63,8 +54,8 @@ public class SeriesController {
                 response.add(new SeriesResponse(series.getId(),
                         series.getName(),
                         series.getDescription(),
-                        new MediaFilesResponse(getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
-                        new MediaFilesResponse(getSeriesResourceURL(series.getLogo().getFilePath())),
+                        new MediaFilesResponse(seriesService.getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
+                        new MediaFilesResponse(seriesService.getSeriesResourceURL(series.getLogo().getFilePath())),
                         series.getStreamingServiceId(),
                         series.getOnGoing(),
                         seasonsResponse
@@ -94,8 +85,8 @@ public class SeriesController {
                 response.add(new SeriesResponse(series.getId(),
                         series.getName(),
                         series.getDescription(),
-                        new MediaFilesResponse(getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
-                        new MediaFilesResponse(getSeriesResourceURL(series.getLogo().getFilePath())),
+                        new MediaFilesResponse(seriesService.getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
+                        new MediaFilesResponse(seriesService.getSeriesResourceURL(series.getLogo().getFilePath())),
                         series.getStreamingServiceId(),
                         series.getOnGoing(),
                         seasonsResponse
