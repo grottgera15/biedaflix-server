@@ -3,6 +3,7 @@ package bestworkingconditions.biedaflix.server.controller;
 import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.SeriesRequest;
 import bestworkingconditions.biedaflix.server.model.response.EpisodeFullResponse;
+import bestworkingconditions.biedaflix.server.model.response.EpisodeLightResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.model.response.SeriesResponse;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
@@ -55,8 +56,8 @@ public class SeriesController {
 
         for(Series series : availableSeries){
 
-            Map<Integer,List<EpisodeFullResponse>> seasonsResponse = new HashMap<>();
-            List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesId(series.getId());
+            Map<Integer,List<EpisodeLightResponse>> seasonsResponse = new HashMap<>();
+            List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesIdOrderByEpisodeNumber(series.getId());
 
             if(seriesEpisodes.size() == 0){
                 response.add(new SeriesResponse(series.getId(),
@@ -89,22 +90,18 @@ public class SeriesController {
                         thumbs.add(new MediaFilesResponse(getSeriesResourceURL(episodeThumbs.getFilePath())));
                     }
 
-
-                    EpisodeFullResponse episodeFullResponse = new EpisodeFullResponse(
+                    EpisodeLightResponse episodeLightResponse = new EpisodeLightResponse(
                             ep.getId(),
                             ep.getEpisodeNumber(),
                             ep.getName(),
                             ep.isAvailable(),
-                            ep.getReleaseDate(),
-                            videoSources,
-                            subtitles,
-                            thumbs
+                            ep.getReleaseDate()
                     );
 
                     if(!seasonsResponse.containsKey(seasonNumber))
                         seasonsResponse.put(seasonNumber,new ArrayList<>());
 
-                    seasonsResponse.get(seasonNumber).add(episodeFullResponse);
+                    seasonsResponse.get(seasonNumber).add(episodeLightResponse);
 
                     response.add(new SeriesResponse(series.getId(),
                             series.getName(),

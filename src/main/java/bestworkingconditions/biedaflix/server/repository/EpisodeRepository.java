@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EpisodeRepository extends MongoRepository<Episode,String> {
     List<Episode> findAllBySeriesId(String seriesId);
+    List<Episode> findAllBySeriesIdOrderByEpisodeNumber(String seriesId);
 }
