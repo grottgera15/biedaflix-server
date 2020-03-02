@@ -24,6 +24,10 @@ public class Role implements GrantedAuthority {
         return name;
     }
 
+    public void addOperation(Operation op){
+        allowedOperations.add(op);
+    }
+
     public Collection<? extends GrantedAuthority> getAllowedOperations(){
         return allowedOperations;
     }

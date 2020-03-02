@@ -34,9 +34,6 @@ public class MongoUserDetailsService implements UserDetailsService {
             grantedAuthorityList.add(role);
             grantedAuthorityList.addAll(role.getAllowedOperations());
         }
-
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(), grantedAuthorityList);
     }
-
-
 }

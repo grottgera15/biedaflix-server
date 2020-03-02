@@ -11,6 +11,7 @@ public class Operation implements GrantedAuthority {
 
     @Id
     private String id;
+
     @NotBlank
     private String name;
 
