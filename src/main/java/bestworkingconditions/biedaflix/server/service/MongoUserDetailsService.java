@@ -25,4 +25,6 @@ public class MongoUserDetailsService implements UserDetailsService {
         User user = userRepository.findUserByEmail(username);
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(), new ArrayList<>());
     }
+
+
 }
