@@ -14,7 +14,7 @@ public class SeriesResponse {
     private MediaFilesResponse banner;
     private MediaFilesResponse logo;
 
-    private String streamingServiceId;
+    private String sourceId;
     private Boolean onGoing;
 
     private Map<Integer,List<EpisodeLightResponse>> seasons = new HashMap<>();
@@ -22,13 +22,13 @@ public class SeriesResponse {
     public SeriesResponse() {
     }
 
-    public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String streamingServiceId, Boolean onGoing, Map<Integer, List<EpisodeLightResponse>> seasons) {
+    public SeriesResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String sourceId, Boolean onGoing, Map<Integer, List<EpisodeLightResponse>> seasons) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.banner = banner;
         this.logo = logo;
-        this.streamingServiceId = streamingServiceId;
+        this.sourceId = sourceId;
         this.onGoing = onGoing;
         this.seasons = seasons;
     }
@@ -73,12 +73,12 @@ public class SeriesResponse {
         this.logo = logo;
     }
 
-    public String getStreamingServiceId() {
-        return streamingServiceId;
+    public String getSourceId() {
+        return sourceId;
     }
 
-    public void setStreamingServiceId(String streamingServiceId) {
-        this.streamingServiceId = streamingServiceId;
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
     }
 
     public Boolean getOnGoing() {

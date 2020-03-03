@@ -72,8 +72,11 @@ public class StreamingServiceSourceController {
         }
 
         if(name.isPresent())
+            source.setName(name.get());
 
-        repository.
+        repository.save(source);
+
+        return ResponseEntity.ok();
     }
 
     @GetMapping(value = "/streamingSource")
