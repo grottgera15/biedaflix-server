@@ -55,7 +55,7 @@ public class StreamingServiceSourceController {
         contentStore.setContent(newSource, logo.getInputStream());
         repository.save(newSource);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(new StreamingServiceSourceResponse(newSource.getId(),newSource.getName(),getStreamingServiceURL(newSource)),HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/streamingSource/{id}", consumes = {"multipart/form-data"})
