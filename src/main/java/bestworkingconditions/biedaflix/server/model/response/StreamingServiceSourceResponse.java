@@ -1,18 +1,17 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.net.URL;
 
 public class StreamingServiceSourceResponse implements  Serializable{
     private String id;
     private String name;
-    private URL resourcePath;
+    private URL path;
 
-    public StreamingServiceSourceResponse(String id, String name,URL resourcePath) {
+    public StreamingServiceSourceResponse(String id, String name,URL path) {
         this.id = id;
         this.name = name;
-        this.resourcePath = resourcePath;
+        this.path = path;
     }
 
     public String getId() {
@@ -31,11 +30,11 @@ public class StreamingServiceSourceResponse implements  Serializable{
         this.name = name;
     }
 
-    public URL getResourcePath() {
-        return resourcePath;
+    public URL getPath() {
+        return path;
     }
 
-    public void setResourcePath(URL resourcePath) {
-        this.resourcePath = resourcePath;
+    public void setPath(URL path) {
+        this.path = path;
     }
 }
