@@ -4,7 +4,7 @@ import bestworkingconditions.biedaflix.server.model.*;
 import bestworkingconditions.biedaflix.server.model.request.SeriesRequest;
 import bestworkingconditions.biedaflix.server.model.response.EpisodeLightResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
-import bestworkingconditions.biedaflix.server.model.response.SeriesResponse;
+import bestworkingconditions.biedaflix.server.model.response.SeriesFullResponse;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
@@ -40,10 +40,10 @@ public class SeriesController {
 
 
     @GetMapping("/series")
-    public ResponseEntity<List<SeriesResponse>> GetAll() throws MalformedURLException {
+    public ResponseEntity<List<SeriesFullResponse>> GetAll() throws MalformedURLException {
         List<Series> availableSeries = seriesRepository.findAll();
 
-        List<SeriesResponse> response = new ArrayList<>();
+        List<SeriesFullResponse> response = new ArrayList<>();
 
         for(Series series : availableSeries){
 
@@ -51,7 +51,7 @@ public class SeriesController {
             List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesIdOrderByEpisodeNumber(series.getId());
 
             if(seriesEpisodes.size() == 0){
-                response.add(new SeriesResponse(series.getId(),
+                response.add(new SeriesFullResponse(series.getId(),
                         series.getName(),
                         series.getDescription(),
                         new MediaFilesResponse(seriesService.getSeriesResourceURL(series.getSeriesBanner().getFilePath())),
@@ -82,7 +82,7 @@ public class SeriesController {
 
                 }
 
-                response.add(new SeriesResponse(series.getId(),
+                response.add(new SeriesFullResponse(series.getId(),
                         series.getName(),
                         series.getDescription(),
                         new MediaFilesResponse(seriesService.getSeriesResourceURL(series.getSeriesBanner().getFilePath())),

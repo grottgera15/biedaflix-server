@@ -76,7 +76,14 @@ public class StreamingServiceSourceController {
 
         repository.save(source);
 
-        return ResponseEntity.ok();
+        return new ResponseEntity<>(new StreamingServiceSourceResponse(source.getId(),source.getName(),getStreamingServiceURL(source)),HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "/streamingSource/{id}")
+    public ResponseEntity<?> deleteStreamingServiceSource(@PathVariable String id){
+
+
+
     }
 
     @GetMapping(value = "/streamingSource")
