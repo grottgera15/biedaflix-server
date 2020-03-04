@@ -1,8 +1,8 @@
 package bestworkingconditions.biedaflix.server.service;
 
 import bestworkingconditions.biedaflix.server.model.User;
-import bestworkingconditions.biedaflix.server.model.authority.Operation;
 import bestworkingconditions.biedaflix.server.model.authority.Role;
+import bestworkingconditions.biedaflix.server.repository.RoleRepository;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -20,9 +20,13 @@ import java.util.List;
 public class MongoUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public MongoUserDetailsService(UserRepository userRepository) {this.userRepository = userRepository;}
+    public MongoUserDetailsService(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -30,7 +34,9 @@ public class MongoUserDetailsService implements UserDetailsService {
 
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
 
-        for ( Role role : user.getRoles() ){
+        List<Role> userRoles = roleRepository.findAllById(user.getRoles());
+
+        for ( Role role : userRoles ){
             grantedAuthorityList.add(role);
             grantedAuthorityList.addAll(role.getAllowedOperations());
         }

@@ -1,6 +1,7 @@
 package bestworkingconditions.biedaflix.server.model;
 
 import bestworkingconditions.biedaflix.server.model.authority.Role;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,15 +22,14 @@ public class User {
     private String password;
     private boolean accepted;
 
-
-
-    private List<Role> roles = new ArrayList<>();
+    private List<String> roles = new ArrayList<>();
 
     public User() {
     }
 
-    public User(String id, String email, String password, boolean accepted, List<Role> roles) {
+    public User(String id, String refreshToken, String email, String password, boolean accepted, List<String> roles) {
         this.id = id;
+        this.refreshToken = refreshToken;
         this.email = email;
         this.password = password;
         this.accepted = accepted;
@@ -76,11 +76,11 @@ public class User {
         this.accepted = accepted;
     }
 
-    public List<Role> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 }
