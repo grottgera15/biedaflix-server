@@ -40,7 +40,7 @@ public class JwtFilter extends GenericFilterBean {
         if(reqCookies != null) {
             for (Cookie c : reqCookies) {
                 if (c.getName()
-                     .equals("jwt-auth")) {
+                     .equals("jwt_token")) {
                     authorizationHeader = c.getValue();
                     break;
                 }

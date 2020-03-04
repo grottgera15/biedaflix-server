@@ -35,7 +35,7 @@ public class UserController {
 
         List<User> repositoryAll = repository.findAll();
 
-        if(repositoryAll.stream().anyMatch(t-> t.getEmail().equals(user.email)))
+        if(repositoryAll.stream().anyMatch(t-> t.getEmail().equals(user.getEmail())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given email already exists in the database!");
 
         String plainText = user.getPassword();
