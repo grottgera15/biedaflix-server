@@ -1,10 +1,16 @@
 package bestworkingconditions.biedaflix.server.controller;
 
+import bestworkingconditions.biedaflix.server.model.Series;
 import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
+import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
+import bestworkingconditions.biedaflix.server.model.response.SeriesLightResponse;
 import bestworkingconditions.biedaflix.server.model.response.StreamingServiceSourceResponse;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
+import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.StreamingServiceSourceRepository;
+import bestworkingconditions.biedaflix.server.service.SeriesService;
+import net.minidev.json.JSONObject;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +31,15 @@ public class StreamingServiceSourceController {
 
     private final FileResourceContentStore contentStore;
     private final StreamingServiceSourceRepository repository;
+    private final SeriesRepository seriesRepository;
+    private final SeriesService seriesService;
     private final AppProperties appProperties;
 
     @Autowired
-    public StreamingServiceSourceController(FileResourceContentStore contentStore, StreamingServiceSourceRepository repository, AppProperties appProperties) {this.contentStore = contentStore;
+    public StreamingServiceSourceController(FileResourceContentStore contentStore, StreamingServiceSourceRepository repository, SeriesRepository seriesRepository, SeriesService seriesService, AppProperties appProperties) {this.contentStore = contentStore;
         this.repository = repository;
+        this.seriesRepository = seriesRepository;
+        this.seriesService = seriesService;
         this.appProperties = appProperties;
     }
 
@@ -80,10 +90,38 @@ public class StreamingServiceSourceController {
     }
 
     @DeleteMapping(value = "/streamingSource/{id}")
-    public ResponseEntity<?> deleteStreamingServiceSource(@PathVariable String id){
+    public ResponseEntity<?> deleteStreamingServiceSource(@PathVariable String id) throws MalformedURLException {
 
+        List<Series> associatedSeries = seriesRepository.findAllByStreamingServiceId(id);
 
+        if(associatedSeries.size() > 0){
 
+            List<SeriesLightResponse> lightResponses = new ArrayList<>();
+
+            for(Series s : associatedSeries){
+                SeriesLightResponse lightResponse = new SeriesLightResponse(
+                        s.getId(),
+                        s.getName(),
+                        s.getDescription(),
+                        new MediaFilesResponse(seriesService.getSeriesResourceURL(s.getSeriesBanner().getFilePath())),
+                        new MediaFilesResponse(seriesService.getSeriesResourceURL(s.getLogo().getFilePath())),
+                        s.getStreamingServiceId(),
+                        s.getOnGoing()
+                        );
+
+                lightResponses.add(lightResponse);
+            }
+
+            JSONObject response = new JSONObject();
+            response.put("message","you cannot delete this StreamingSource, as it is used in the following associatedSeries");
+            response.put("associatedSeries", lightResponses);
+
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }else{
+            repository.deleteById(id);
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/streamingSource")
