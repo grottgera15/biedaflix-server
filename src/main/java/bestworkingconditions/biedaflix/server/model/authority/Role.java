@@ -25,6 +25,11 @@ public class Role implements GrantedAuthority {
     }
 
     public Role(@NotBlank String name, List<Operation> allowedOperations) {
+        this.name = name;
+        this.allowedOperations = allowedOperations;
+    }
+
+    public Role(String id, @NotBlank String name, List<Operation> allowedOperations) {
         this.id = id;
         this.name = name;
         this.allowedOperations = allowedOperations;
@@ -40,6 +45,10 @@ public class Role implements GrantedAuthority {
     }
 
     public Collection<? extends GrantedAuthority> getAllowedOperations(){
+        return allowedOperations;
+    }
+
+    public List<Operation> getOperationEnumList(){
         return allowedOperations;
     }
 

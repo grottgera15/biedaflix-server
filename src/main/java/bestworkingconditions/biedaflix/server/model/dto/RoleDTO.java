@@ -3,13 +3,14 @@ package bestworkingconditions.biedaflix.server.model.dto;
 import bestworkingconditions.biedaflix.server.model.authority.Operation;
 import bestworkingconditions.biedaflix.server.model.authority.OperationType;
 import bestworkingconditions.biedaflix.server.model.authority.Role;
-import org.springframework.security.core.GrantedAuthority;
-
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoleDTO {
+public class RoleDTO implements Serializable {
+
+    private String id;
 
     @NotBlank
     private String name;
@@ -19,19 +20,28 @@ public class RoleDTO {
     public RoleDTO() {
     }
 
-    public RoleDTO(@NotBlank String name, List<OperationType> allowedOperations) {
+    public RoleDTO(String id, @NotBlank String name, List<OperationType> allowedOperations) {
+        this.id = id;
         this.name = name;
         this.allowedOperations = allowedOperations;
     }
 
     public RoleDTO(Role role){
         this.name = role.getName();
+        this.id = role.getId();
 
-        for(GrantedAuthority grantedAuthority : role.getAllowedOperations()){
-
-            this.allowedOperations.add(OperationType.valueOf(grantedAuthority.getAuthority()));
+        for(Operation op : role.getOperationEnumList()){
+            this.allowedOperations.add(OperationType.valueOf(op.getType().toString()));
         }
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

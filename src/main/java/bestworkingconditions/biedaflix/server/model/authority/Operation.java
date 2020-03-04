@@ -14,4 +14,9 @@ public class Operation implements GrantedAuthority {
     public String getAuthority() {
         return type.getOperationName();
     }
+
+    public OperationType getType() {
+        return type;
+    }
+
 }
