@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -33,22 +34,27 @@ public class LoginController {
         this.userDetailsService = userDetailsService;
     }
 
+    @PostMapping("/refreshToken")
+    public ResponseEntity<?> refreshToken(){
+
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> Login(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> Login(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         }catch (BadCredentialsException e){
-            throw new Exception("Incorrect username or password",e);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials!");
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
         String jwt = jwtService.generateToken(userDetails);
 
-        Cookie jwtCookie = new Cookie("jwt-auth",jwt);
-        jwtCookie.setDomain("biedaflix.pl");
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        response.addCookie(jwtCookie);
+        Cookie jwtTokenCookie = new Cookie("jwt_token",jwt);
+        jwtTokenCookie.setDomain("biedaflix.pl");
+        jwtTokenCookie.setHttpOnly(false);
+        jwtTokenCookie.setPath("/");
+        response.addCookie(jwtTokenCookie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
