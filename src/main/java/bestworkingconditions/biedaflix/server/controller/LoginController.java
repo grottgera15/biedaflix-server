@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -116,6 +115,16 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<?> Login(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+
+        if(appProperties.getRequireUserAcceptance()){
+            Optional<User> requestedUser = userRepository.findByUsernameOrEmail(authenticationRequest.getEmail(),authenticationRequest.getEmail());
+
+            if(requestedUser.isPresent()){
+                if(!requestedUser.get().isAccepted())
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user is not accepted!");
+            }
+        }
+
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         }catch (BadCredentialsException e){
