@@ -81,8 +81,7 @@ public class StreamingServiceSourceController {
             contentStore.setContent(source,logo.get().getInputStream());
         }
 
-        if(name.isPresent())
-            source.setName(name.get());
+        name.ifPresent(source::setName);
 
         repository.save(source);
 
@@ -99,16 +98,7 @@ public class StreamingServiceSourceController {
             List<SeriesLightResponse> lightResponses = new ArrayList<>();
 
             for(Series s : associatedSeries){
-                SeriesLightResponse lightResponse = new SeriesLightResponse(
-                        s.getId(),
-                        s.getName(),
-                        s.getDescription(),
-                        new MediaFilesResponse(seriesService.getSeriesResourceURL(s.getSeriesBanner().getFilePath())),
-                        new MediaFilesResponse(seriesService.getSeriesResourceURL(s.getLogo().getFilePath())),
-                        s.getStreamingServiceId(),
-                        s.getOnGoing()
-                        );
-
+                SeriesLightResponse lightResponse = seriesService.seriesLightResponseFromSeries(s);
                 lightResponses.add(lightResponse);
             }
 

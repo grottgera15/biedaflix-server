@@ -1,5 +1,7 @@
 package bestworkingconditions.biedaflix.server.model.request;
 
+import bestworkingconditions.biedaflix.server.model.SeriesStatus;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -11,9 +13,19 @@ public class SeriesRequest {
     private String description;
     @NotBlank
     private String sourceId;
-    @NotNull
-    private Boolean onGoing;
 
+    @NotNull
+    private SeriesStatus status;
+
+    public SeriesRequest() {
+    }
+
+    public SeriesRequest(@NotBlank String name, @NotBlank String description, @NotBlank String sourceId, @NotNull SeriesStatus status) {
+        this.name = name;
+        this.description = description;
+        this.sourceId = sourceId;
+        this.status = status;
+    }
 
     public String getName() {
         return name;
@@ -39,11 +51,11 @@ public class SeriesRequest {
         this.sourceId = sourceId;
     }
 
-    public Boolean getOnGoing() {
-        return onGoing;
+    public SeriesStatus getStatus() {
+        return status;
     }
 
-    public void setOnGoing(Boolean onGoing) {
-        this.onGoing = onGoing;
+    public void setStatus(SeriesStatus status) {
+        this.status = status;
     }
 }

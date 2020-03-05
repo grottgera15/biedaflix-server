@@ -1,5 +1,7 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
+import bestworkingconditions.biedaflix.server.model.SeriesStatus;
+
 public class SeriesLightResponse {
 
     private String id;
@@ -11,18 +13,19 @@ public class SeriesLightResponse {
     private MediaFilesResponse logo;
 
     private String sourceId;
-    private Boolean onGoing;
+
+    private SeriesStatus status;
 
     public SeriesLightResponse() {
     }
 
-    public SeriesLightResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String sourceId, Boolean onGoing) {
+    public SeriesLightResponse(String id, String name, String description, MediaFilesResponse banner, MediaFilesResponse logo, String sourceId, SeriesStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.banner = banner;
         this.logo = logo;
         this.sourceId = sourceId;
-        this.onGoing = onGoing;
+        this.status = status;
     }
 }

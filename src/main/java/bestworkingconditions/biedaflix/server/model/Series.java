@@ -20,19 +20,19 @@ public class Series {
     private SeriesLogo logo;
 
     private String streamingServiceId;
-    private Boolean onGoing;
+    private SeriesStatus status;
 
     public Series() {
     }
 
-    public Series(String id, String name, String description, SeriesBanner seriesBanner, SeriesLogo logo, String streamingServiceId, Boolean onGoing) {
+    public Series(String id, String name, String description, SeriesBanner seriesBanner, SeriesLogo logo, String streamingServiceId, SeriesStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.seriesBanner = seriesBanner;
         this.logo = logo;
         this.streamingServiceId = streamingServiceId;
-        this.onGoing = onGoing;
+        this.status = status;
     }
 
     public String getId() {
@@ -83,12 +83,12 @@ public class Series {
         this.streamingServiceId = streamingServiceId;
     }
 
-    public Boolean getOnGoing() {
-        return onGoing;
+    public SeriesStatus getStatus() {
+        return status;
     }
 
-    public void setOnGoing(Boolean onGoing) {
-        this.onGoing = onGoing;
+    public void setStatus(SeriesStatus status) {
+        this.status = status;
     }
 
     public String getFolderName(){

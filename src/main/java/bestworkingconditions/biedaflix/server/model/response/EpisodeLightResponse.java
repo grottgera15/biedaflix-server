@@ -1,5 +1,7 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
+import bestworkingconditions.biedaflix.server.model.Episode;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,6 +23,14 @@ public class EpisodeLightResponse implements Serializable {
         this.name = name;
         this.available = available;
         this.releaseDate = releaseDate;
+    }
+
+    public EpisodeLightResponse(Episode episode){
+        this.id = episode.getId();
+        this.episodeNumber = episode.getEpisodeNumber();
+        this.name = episode.getName();
+        this.available = episode.isAvailable();
+        this.releaseDate = episode.getReleaseDate();
     }
 
     public String getId() {
