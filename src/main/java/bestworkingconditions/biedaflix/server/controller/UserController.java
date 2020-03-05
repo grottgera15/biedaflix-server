@@ -1,22 +1,19 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
 import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.model.request.UserAdministrateRequest;
 import bestworkingconditions.biedaflix.server.model.request.UserRegisterRequest;
 import bestworkingconditions.biedaflix.server.model.response.UserAdministrateResponse;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
+import bestworkingconditions.biedaflix.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.servlet.http.Cookie;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -28,11 +25,13 @@ import java.util.Optional;
 public class UserController {
 
     private final UserRepository repository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository repository, UserService userService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -48,7 +47,7 @@ public class UserController {
             User newUserData = new User(administrateRequest);
             newUserData.setId(id);
             repository.save(newUserData);
-            return ResponseEntity.ok(new UserAdministrateResponse(newUserData));
+            return ResponseEntity.ok(userService.CreateUserAdministrateResponseFromUser(newUserData));
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"username or email already taken!");
         }
@@ -66,7 +65,7 @@ public class UserController {
             requestedUsers= repository.findAll();
         }
 
-        requestedUsers.forEach( x -> userAdministrateResponses.add(new UserAdministrateResponse(x)));
+        requestedUsers.forEach( x -> userAdministrateResponses.add(userService.CreateUserAdministrateResponseFromUser(x)));
         return ResponseEntity.ok(userAdministrateResponses);
     }
 

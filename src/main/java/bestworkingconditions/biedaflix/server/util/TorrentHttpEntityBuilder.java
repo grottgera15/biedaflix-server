@@ -22,7 +22,7 @@ public class TorrentHttpEntityBuilder {
     public TorrentHttpEntityBuilder() {
         map = new LinkedMultiValueMap<>();
         headers = new HttpHeaders();
-    }
+    };
 
     public TorrentHttpEntityBuilder addKeyValuePair(String key, String value){
         this.map.add(key,value);

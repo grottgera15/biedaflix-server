@@ -6,8 +6,25 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AppProperties {
     private String apiDomain;
     private String domain;
+    private String ownerUsername;
+    private String ownerRoleName;
     private Boolean requireUserAcceptance;
 
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
+    }
+
+    public String getOwnerRoleName() {
+        return ownerRoleName;
+    }
+
+    public void setOwnerRoleName(String ownerRoleName) {
+        this.ownerRoleName = ownerRoleName;
+    }
 
     public String getDomain() {
         return domain;
