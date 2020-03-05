@@ -142,12 +142,8 @@ public class TorrentServiceImpl implements TorrentService {
             commands.add(aboluteVideoFile.getAbsolutePath());
             commands.add("-n");
             commands.add(series.getFolderName());
-            commands.add("-s");
-            commands.add(Integer.toString(currentlyDownloading.getTarget()
-                                                              .getSeasonNumber()));
             commands.add("-e");
-            commands.add(Integer.toString(currentlyDownloading.getTarget()
-                                                              .getEpisodeNumber()));
+            commands.add(currentlyDownloading.getTarget().getId());
             commands.add("-d");
             commands.add(filesystemRoot.getAbsolutePath() + "/series");
 
@@ -174,8 +170,7 @@ public class TorrentServiceImpl implements TorrentService {
             List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
 
             try(Stream<Path> walk = Files.walk(Paths.get(filesystemRoot.getAbsolutePath() + "/series/" + series.getFolderName()
-                        + "/s" + currentlyDownloading.getTarget().getSeasonNumber() + "/e" + currentlyDownloading.getTarget().getEpisodeNumber() +"/thumbs/"))){
-
+                        + "/"+ currentlyDownloading.getTarget().getId() +"/thumbs/"))){
 
                 List<File> result = walk.filter(Files::isRegularFile).map(Path::toFile).collect(Collectors.toList());
 

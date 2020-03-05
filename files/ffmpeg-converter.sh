@@ -13,7 +13,7 @@ detect_crop () {
 
 crf=21
 
-while getopts ":i:a:n:s:d:e:" opt; do
+while getopts ":i:a:n:d:e:" opt; do
     case $opt in
         i)
             filePath=${OPTARG}
@@ -26,9 +26,6 @@ while getopts ":i:a:n:s:d:e:" opt; do
             ;;
         d)
             destinationPath=${OPTARG}
-            ;;
-        s)
-            season=${OPTARG}
             ;;
         e)
             episode=${OPTARG}
@@ -53,11 +50,6 @@ if [[ -z "$seriesName" ]]; then
     exit 1
 fi
 
-if [[ -z "$season" ]] || [[ -z "$episode" ]]; then
-    echo "You need to specity season and episode number with -s and -e flags."
-    exit 1
-fi
-
 if [[ ! -d "$destinationPath" ]]; then
     echo "You need to specify destination path for your episode with -d flag!"
     exit 1
@@ -68,7 +60,7 @@ duration=$(bc<<<"$duration / 1")
 durationCenter=$(bc<<<"$duration / 2")
 crop=$(detect_crop $filePath $durationCenter)
 
-finalPath="$destinationPath/$seriesName/s$season/e$episode"
+finalPath="$destinationPath/$seriesName/e$episode"
 mkdir -p "$finalPath/thumbs"
 
 ffmpeg -i "$filePath" -vcodec libx264 -crf 21 -preset superfast -tune film -vf $crop "$finalPath/1080.mp4"
