@@ -41,6 +41,14 @@ public class RoleController {
         return newRole;
     }
 
+    @GetMapping("/operations")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
+    public ResponseEntity<?> getOperations(){
+
+        OperationType[] types = OperationType.class.getEnumConstants();
+        return ResponseEntity.ok(types);
+    }
+
     @PostMapping("/role")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> addRole(@Valid @RequestBody RoleDTO roleDTO){
