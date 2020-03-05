@@ -16,7 +16,7 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 
 class MongoUserDetailsServiceTest {
-
+/*
     private MongoUserDetailsService mongoUserDetailsService;
 
     @Mock
@@ -50,4 +50,6 @@ class MongoUserDetailsServiceTest {
 
 
     }
+
+ */
 }
