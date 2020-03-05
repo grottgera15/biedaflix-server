@@ -19,6 +19,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.servlet.http.Cookie;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,12 +54,20 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/administrateUser")
+    @GetMapping(value = "/administrateUsers")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> getAllUsers( @RequestParam(required = false) Optional<String> filter){
 
-    throw new NotImplementedException();
+        List<UserAdministrateResponse> userAdministrateResponses = new ArrayList<>();
+        List<User> requestedUsers;
+        if(filter.isPresent()){
+            requestedUsers = repository.findAllByRolesContaining(filter.get());
+        }else{
+            requestedUsers= repository.findAll();
+        }
 
+        requestedUsers.forEach( x -> userAdministrateResponses.add(new UserAdministrateResponse(x)));
+        return ResponseEntity.ok(userAdministrateResponses);
     }
 
     @PostMapping(value = "/register")
