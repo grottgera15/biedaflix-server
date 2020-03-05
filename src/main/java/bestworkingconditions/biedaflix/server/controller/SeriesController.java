@@ -44,7 +44,7 @@ public class SeriesController {
     @GetMapping("/series")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> GetAll(
-            @RequestParam(required = false,defaultValue = "true") Boolean showSeasons,
+            @RequestParam(required = false,defaultValue = "false") Boolean showSeasons,
             @RequestParam(required = false) Optional<SeriesStatus> status,
             @RequestParam(required = false) Optional<String> sourceId
     ) throws MalformedURLException {

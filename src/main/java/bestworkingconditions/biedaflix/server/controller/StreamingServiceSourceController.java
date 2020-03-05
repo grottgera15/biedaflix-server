@@ -68,8 +68,8 @@ public class StreamingServiceSourceController {
         return new ResponseEntity<>(new StreamingServiceSourceResponse(newSource.getId(),newSource.getName(),getStreamingServiceURL(newSource)),HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/streamingSource/{id}", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> updateStreamingServiceSource(@PathVariable String id,
+    @PatchMapping(value = "/streamingSource", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> updateStreamingServiceSource(@RequestParam String id,
                                                           @RequestParam(name="name") Optional<String> name,
                                                           @RequestParam(name="logo") Optional<MultipartFile> logo) throws IOException{
 
