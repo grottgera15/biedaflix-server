@@ -94,6 +94,17 @@ public class LoginController {
 
     }
 
+    private void checkIfUserIsAccepted(String username, String email){
+        if(appProperties.getRequireUserAcceptance()){
+            Optional<User> requestedUser = userRepository.findByUsernameOrEmail(username,email);
+
+            if(requestedUser.isPresent()){
+                if(!requestedUser.get().isAccepted())
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user is not accepted!");
+            }
+        }
+    }
+
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(HttpServletRequest request,HttpServletResponse response){
 
@@ -102,6 +113,9 @@ public class LoginController {
         if (refreshTokenCookie != null) {
             User requestedUser = userRepository.findUserByRefreshToken(refreshTokenCookie.getValue()).
                         orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid refresh token!"));
+
+
+            checkIfUserIsAccepted(requestedUser.getUsername(),requestedUser.getEmail());
 
             requestedUser.setRefreshToken(UUID.randomUUID().toString());
             userRepository.save(requestedUser);
@@ -116,14 +130,7 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<?> Login(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
-        if(appProperties.getRequireUserAcceptance()){
-            Optional<User> requestedUser = userRepository.findByUsernameOrEmail(authenticationRequest.getEmail(),authenticationRequest.getEmail());
-
-            if(requestedUser.isPresent()){
-                if(!requestedUser.get().isAccepted())
-                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user is not accepted!");
-            }
-        }
+        checkIfUserIsAccepted(authenticationRequest.getEmail(),authenticationRequest.getEmail());
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
