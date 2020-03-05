@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.servlet.http.Cookie;
 import javax.validation.Valid;
@@ -44,11 +45,20 @@ public class UserController {
 
             administrateRequest.setPassword(passwordEncoder.encode(administrateRequest.getPassword()));
             User newUserData = new User(administrateRequest);
+            newUserData.setId(id);
             repository.save(newUserData);
             return ResponseEntity.ok(new UserAdministrateResponse(newUserData));
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"username or email already taken!");
         }
+    }
+
+    @GetMapping(value = "/administrateUser")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
+    public ResponseEntity<?> getAllUsers( @RequestParam(required = false) Optional<String> filter){
+
+    throw new NotImplementedException();
+
     }
 
     @PostMapping(value = "/register")
@@ -60,7 +70,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given email already exists in the database!");
 
         if(repositoryAll.stream().anyMatch(t-> t.getUsername().equals(userRequest.getUsername())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given email already exists in the database!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given username already exists in the database!");
 
         String plainText = userRequest.getPassword();
         userRequest.setPassword(passwordEncoder.encode(plainText));

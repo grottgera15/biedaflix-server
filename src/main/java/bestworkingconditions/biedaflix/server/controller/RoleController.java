@@ -10,6 +10,7 @@ import bestworkingconditions.biedaflix.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,12 +42,14 @@ public class RoleController {
     }
 
     @PostMapping("/role")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> addRole(@Valid @RequestBody RoleDTO roleDTO){
         roleRepository.save(createNewRoleFromDTO(roleDTO));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/roles")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> getAllRoles(){
         List<Role> roles = roleRepository.findAll();
 
@@ -58,6 +61,7 @@ public class RoleController {
     }
 
     @PutMapping("/role")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> updateRole(@NotBlank @RequestParam String id,@Valid @RequestBody RoleDTO roleDTO){
         Role r = createNewRoleFromDTO(roleDTO);
         r.setId(id);
@@ -67,6 +71,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/role")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> deleteRole(@NotBlank @RequestParam String id){
         List<User> usersContainingRole =  userRepository.findAllByRolesContaining(id);
 

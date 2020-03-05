@@ -54,7 +54,7 @@ public class JwtFilter extends GenericFilterBean {
                 jwt = authorizationHeader;
                 try {
                     username = jwtService.extractSubject(jwt);
-                } catch (SignatureException ignored) {
+                } catch (Exception ignored) {
 
                 }
             }
