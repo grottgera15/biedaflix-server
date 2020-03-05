@@ -142,4 +142,20 @@ public class LoginController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request){
+        Cookie refreshTokenCookie = WebUtils.getCookie(request,"refresh_token");
+        if (refreshTokenCookie != null){
+
+            Optional<User> requestedUser = userRepository.findUserByRefreshToken(refreshTokenCookie.getValue());
+
+            if(requestedUser.isPresent()) {
+                User u = requestedUser.get();
+                u.setRefreshToken("");
+                userRepository.save(u);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
