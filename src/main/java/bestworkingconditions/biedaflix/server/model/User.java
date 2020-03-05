@@ -1,5 +1,7 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import bestworkingconditions.biedaflix.server.model.request.UserAdministrateRequest;
+import bestworkingconditions.biedaflix.server.model.request.UserRegisterRequest;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,6 +16,7 @@ public class User {
     private String refreshToken;
 
     private String email;
+    private String username;
     private String password;
     private boolean accepted;
 
@@ -22,13 +25,26 @@ public class User {
     public User() {
     }
 
-    public User(String id, String refreshToken, String email, String password, boolean accepted, List<String> roles) {
+    public User(String id, String refreshToken, String email, String username, String password, boolean accepted, List<String> roles) {
         this.id = id;
         this.refreshToken = refreshToken;
         this.email = email;
+        this.username = username;
         this.password = password;
         this.accepted = accepted;
         this.roles = roles;
+    }
+
+    public User(UserRegisterRequest registerRequest){
+        this.email = registerRequest.getEmail();
+        this.username = registerRequest.getUsername();
+        this.password = registerRequest.getPassword();
+    }
+
+    public User(UserAdministrateRequest userAdministrateRequest){
+        this((UserRegisterRequest) userAdministrateRequest);
+        this.roles = userAdministrateRequest.getRoles();
+        this.accepted = userAdministrateRequest.isAccepted();
     }
 
     public String getId() {
@@ -65,6 +81,14 @@ public class User {
 
     public boolean isAccepted() {
         return accepted;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setAccepted(boolean accepted) {
