@@ -167,9 +167,9 @@ public class TorrentServiceImpl implements TorrentService {
 
             //FIXME: ADD EPISODE TO DATABASE PROPERLY
             List<EpisodeVideo> episodeVideos = new ArrayList<>();
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.HIGH));
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.MEDIUM));
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.LOW));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(),EpisodeVideo.VideoQuality.HIGH));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.MEDIUM));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.LOW));
 
             List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
 
@@ -180,7 +180,7 @@ public class TorrentServiceImpl implements TorrentService {
                 List<File> result = walk.filter(Files::isRegularFile).map(Path::toFile).collect(Collectors.toList());
 
                 result.forEach(x ->  episodeThumbs.add(new EpisodeThumbs(FilenameUtils.getExtension(x.getName()),series.getFolderName(),
-                        currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(),FilenameUtils.removeExtension(x.getName()))));
+                        currentlyDownloading.getTarget().getId(),FilenameUtils.removeExtension(x.getName()))));
 
 
             }catch(IOException e){

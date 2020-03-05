@@ -53,7 +53,7 @@ public class EpisodeController {
 
         Series episodeSeries = seriesRepository.findById(episode.getSeriesId()).get();
 
-        EpisodeSubtitles subs = new EpisodeSubtitles(FilenameUtils.getExtension(file.getOriginalFilename()),episodeSeries.getFolderName(),episode.getSeasonNumber(),episode.getEpisodeNumber(),language);
+        EpisodeSubtitles subs = new EpisodeSubtitles(FilenameUtils.getExtension(file.getOriginalFilename()),episodeSeries.getFolderName(),episode.getId(),language);
         fileResourceContentStore.setContent(subs,file.getInputStream());
 
         episode.getEpisodeSubtitles().add(subs);
@@ -64,7 +64,7 @@ public class EpisodeController {
     }
 
     @GetMapping("/episode")
-    public ResponseEntity<EpisodeFullResponse> getEpisodeInfo(@NotBlank @RequestParam String id) throws MalformedURLException {
+    public ResponseEntity<EpisodeFullResponse> getEpisodeInfo(@NotBlank @RequestParam String id) {
 
         Episode ep = episodeRepository.findById(id)
                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given id does not exist!"));
@@ -72,23 +72,21 @@ public class EpisodeController {
         Map<String, String> videoSources = new HashMap<>();
         for (EpisodeVideo episodeVideo : ep.getVideoFiles()) {
             videoSources.put(episodeVideo.getVideoQuality()
-                                         .getQuality(), seriesService.getSeriesResourceURL(episodeVideo.getFilePath())
-                                                                     .toString());
+                                         .getQuality(), seriesService.getSeriesResourceURL(episodeVideo));
         }
 
         Map<String, String> subtitles = new HashMap<>();
         for (EpisodeSubtitles episodeSubtitles : ep.getEpisodeSubtitles()) {
             subtitles.put(episodeSubtitles.getLanguage()
-                                          .getValue(), seriesService.getSeriesResourceURL(episodeSubtitles.getFilePath())
-                                                                    .toString());
+                                          .getValue(), seriesService.getSeriesResourceURL(episodeSubtitles));
         }
 
         List<MediaFilesResponse> thumbs = new ArrayList<>();
         for (EpisodeThumbs episodeThumbs : ep.getEpisodeThumbs()) {
-            thumbs.add(new MediaFilesResponse(seriesService.getSeriesResourceURL(episodeThumbs.getFilePath())));
+            thumbs.add(new MediaFilesResponse(seriesService.getSeriesResourceURL(episodeThumbs)));
         }
 
-        thumbs.sort( ( a, b) ->  a.getPath().toString().compareTo(b.getPath().toString()));
+        thumbs.sort(Comparator.comparing(MediaFilesResponse::getPath));
 
         EpisodeFullResponse response = new EpisodeFullResponse(
                 ep.getId(),

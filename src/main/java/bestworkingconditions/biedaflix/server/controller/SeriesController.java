@@ -46,7 +46,7 @@ public class SeriesController {
             @RequestParam(required = false,defaultValue = "false") Boolean showSeasons,
             @RequestParam(required = false) Optional<SeriesStatus> status,
             @RequestParam(required = false) Optional<String> sourceId
-    ) throws MalformedURLException {
+    ) {
 
         Series example = new Series();
         status.ifPresent(example::setStatus);
@@ -103,6 +103,8 @@ public class SeriesController {
         newSeries.setDescription(request.getDescription());
         newSeries.setStatus(request.getStatus());
         newSeries.setStreamingServiceId(request.getSourceId());
+
+        newSeries = seriesRepository.save(newSeries);
 
         if(logo.isPresent()){
             SeriesLogo seriesLogo = new SeriesLogo(FilenameUtils.getExtension(logo.get().getOriginalFilename()),newSeries.getFolderName());

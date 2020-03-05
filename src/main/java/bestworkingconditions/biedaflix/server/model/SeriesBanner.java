@@ -1,9 +1,8 @@
 package bestworkingconditions.biedaflix.server.model;
 
 import javax.validation.constraints.NotNull;
-import java.net.URI;
 
-public class SeriesBanner extends SeriesMediaFiles {
+public class SeriesBanner extends SeriesMediaFile {
 
     public SeriesBanner() {
     }

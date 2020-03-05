@@ -92,6 +92,6 @@ public class Series {
     }
 
     public String getFolderName(){
-        return this.name.replace(' ','_');
+        return this.id;
     }
 }
