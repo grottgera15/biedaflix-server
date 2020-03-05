@@ -62,7 +62,9 @@ public class LoginController {
     }
 
     private String refreshUserToken(String email){
-        User requestedUser = userRepository.findUserByEmail(email);
+        User requestedUser = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user does not exist")
+        );
         UUID refresh_token = UUID.randomUUID();
         requestedUser.setRefreshToken(refresh_token.toString());
         userRepository.save(requestedUser);
