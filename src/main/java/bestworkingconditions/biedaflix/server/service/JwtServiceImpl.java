@@ -57,18 +57,18 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails,Date expiryDate) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername(),expiryDate);
     }
 
     @Override
-    public String createToken(Map<String, Object> claims, String subject) {
+    public String createToken(Map<String, Object> claims, String subject, Date expiryDate) {
         return Jwts.builder()
                    .setClaims(claims)
                    .setSubject(subject)
                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                   .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 48)).signWith(secretKey,algorithm).compact();
+                   .setExpiration(expiryDate).signWith(secretKey,algorithm).compact();
     }
 
     @Override

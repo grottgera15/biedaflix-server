@@ -12,6 +12,8 @@ import java.util.List;
 @Document(collection = "roles")
 public class Role implements GrantedAuthority {
 
+    private static final  String prefix = "ROLE_";
+
     @Id
     private String id;
 
@@ -19,9 +21,23 @@ public class Role implements GrantedAuthority {
     private String name;
     private List<Operation> allowedOperations = new ArrayList<>();
 
+    public Role() {
+    }
+
+    public Role(@NotBlank String name, List<Operation> allowedOperations) {
+        this.name = name;
+        this.allowedOperations = allowedOperations;
+    }
+
+    public Role(String id, @NotBlank String name, List<Operation> allowedOperations) {
+        this.id = id;
+        this.name = name;
+        this.allowedOperations = allowedOperations;
+    }
+
     @Override
     public String getAuthority() {
-        return name;
+        return prefix + name;
     }
 
     public void addOperation(Operation op){
@@ -30,5 +46,29 @@ public class Role implements GrantedAuthority {
 
     public Collection<? extends GrantedAuthority> getAllowedOperations(){
         return allowedOperations;
+    }
+
+    public List<Operation> getOperationEnumList(){
+        return allowedOperations;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAllowedOperations(List<Operation> allowedOperations) {
+        this.allowedOperations = allowedOperations;
     }
 }

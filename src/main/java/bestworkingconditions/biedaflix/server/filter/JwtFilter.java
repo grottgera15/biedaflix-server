@@ -1,6 +1,7 @@
 package bestworkingconditions.biedaflix.server.filter;
 
 import bestworkingconditions.biedaflix.server.service.JwtService;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
@@ -33,14 +35,13 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-
         Cookie[] reqCookies = req.getCookies();
         String authorizationHeader = null;
 
         if(reqCookies != null) {
             for (Cookie c : reqCookies) {
                 if (c.getName()
-                     .equals("jwt-auth")) {
+                     .equals("jwt_token")) {
                     authorizationHeader = c.getValue();
                     break;
                 }
@@ -51,7 +52,11 @@ public class JwtFilter extends GenericFilterBean {
 
             if (authorizationHeader != null) {
                 jwt = authorizationHeader;
-                username = jwtService.extractSubject(jwt);
+                try {
+                    username = jwtService.extractSubject(jwt);
+                } catch (Exception ignored) {
+
+                }
             }
 
             if (username != null && SecurityContextHolder.getContext()
