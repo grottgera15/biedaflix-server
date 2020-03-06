@@ -1,10 +1,11 @@
 package bestworkingconditions.biedaflix.server.model.request;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserAdministrateRequest extends UserRegisterRequest {
+public class UserAdministrateRequest {
 
     private List<String> roles = new ArrayList<>();
     private  boolean accepted;
@@ -12,8 +13,7 @@ public class UserAdministrateRequest extends UserRegisterRequest {
     public UserAdministrateRequest() {
     }
 
-    public UserAdministrateRequest(@NotBlank String email, @NotBlank String username, @NotBlank String password, List<String> roles, boolean accepted) {
-        super(email, username, password);
+    public UserAdministrateRequest(List<String> roles, boolean accepted) {
         this.roles = roles;
         this.accepted = accepted;
     }

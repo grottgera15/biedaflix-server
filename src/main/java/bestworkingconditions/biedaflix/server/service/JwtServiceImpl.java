@@ -40,6 +40,7 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
+
     @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
@@ -66,6 +67,7 @@ public class JwtServiceImpl implements JwtService {
         UserAdministrateResponse payload = userService.CreateUserAdministrateResponseFromUser(user);
 
         claims.put("user",payload);
+        claims.put("sub",payload.getId());
         return createToken(claims,expiryDate);
     }
 
