@@ -15,6 +15,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,6 +58,7 @@ public class StreamingServiceSourceController {
     }
 
     @PostMapping(value = "/streamingSource", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> addStreamingServiceSource(@RequestParam(name="name") String name, @RequestParam(name="logo")MultipartFile logo) throws IOException {
         checkIfNameIsAvailable(name);
 
@@ -69,6 +71,7 @@ public class StreamingServiceSourceController {
     }
 
     @PatchMapping(value = "/streamingSource", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> updateStreamingServiceSource(@RequestParam String id,
                                                           @RequestParam(name="name") Optional<String> name,
                                                           @RequestParam(name="logo") Optional<MultipartFile> logo) throws IOException{
@@ -88,8 +91,9 @@ public class StreamingServiceSourceController {
         return new ResponseEntity<>(new StreamingServiceSourceResponse(source.getId(),source.getName(),getStreamingServiceURL(source)),HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/streamingSource/{id}")
-    public ResponseEntity<?> deleteStreamingServiceSource(@PathVariable String id) throws MalformedURLException {
+    @DeleteMapping(value = "/streamingSource")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
+    public ResponseEntity<?> deleteStreamingServiceSource(@RequestParam String id) {
 
         List<Series> associatedSeries = seriesRepository.findAllByStreamingServiceId(id);
 
@@ -114,7 +118,7 @@ public class StreamingServiceSourceController {
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(value = "/streamingSource")
+    @GetMapping(value = "/streamingSources")
     public ResponseEntity<?> getListOfAllStreamingServiceSources() throws MalformedURLException {
         List<StreamingServiceSource> streamingServiceSources = repository.findAll();
         List<StreamingServiceSourceResponse> response = new ArrayList<>();
