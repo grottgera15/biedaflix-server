@@ -32,7 +32,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameOrEmail(username,username).orElseThrow(
+        User user = userRepository.findByUsernameOrEmailOrId(username,username,username).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user does not exist")
         );
 
@@ -44,6 +44,6 @@ public class MongoUserDetailsService implements UserDetailsService {
             grantedAuthorityList.add(role);
             grantedAuthorityList.addAll(role.getAllowedOperations());
         }
-        return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(), grantedAuthorityList);
+        return new org.springframework.security.core.userdetails.User(user.getId(),user.getPassword(), grantedAuthorityList);
     }
 }

@@ -12,11 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class RoleController {
@@ -41,9 +43,24 @@ public class RoleController {
         return newRole;
     }
 
+    @GetMapping("/operations")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
+    public ResponseEntity<?> getOperations(){
+
+        OperationType[] types = OperationType.class.getEnumConstants();
+        return ResponseEntity.ok(types);
+    }
+
     @PostMapping("/role")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> addRole(@Valid @RequestBody RoleDTO roleDTO){
+
+        Optional<Role> match = roleRepository.findByName(roleDTO.getName());
+
+        if(match.isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name already taken!");
+        }
+
         roleRepository.save(createNewRoleFromDTO(roleDTO));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -64,8 +81,15 @@ public class RoleController {
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> updateRole(@NotBlank @RequestParam String id,@Valid @RequestBody RoleDTO roleDTO){
         Role r = createNewRoleFromDTO(roleDTO);
-        r.setId(id);
-        roleRepository.save(r);
+
+        Optional<Role> match = roleRepository.findByName(roleDTO.getName());
+
+        if( !match.isPresent() | (match.isPresent() && match.get().getId().equals(id))){
+            roleRepository.save(r);
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name already taken!");
+        }
 
         return ResponseEntity.ok(new RoleDTO(r));
     }

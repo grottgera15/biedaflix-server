@@ -142,12 +142,8 @@ public class TorrentServiceImpl implements TorrentService {
             commands.add(aboluteVideoFile.getAbsolutePath());
             commands.add("-n");
             commands.add(series.getFolderName());
-            commands.add("-s");
-            commands.add(Integer.toString(currentlyDownloading.getTarget()
-                                                              .getSeasonNumber()));
             commands.add("-e");
-            commands.add(Integer.toString(currentlyDownloading.getTarget()
-                                                              .getEpisodeNumber()));
+            commands.add(currentlyDownloading.getTarget().getId());
             commands.add("-d");
             commands.add(filesystemRoot.getAbsolutePath() + "/series");
 
@@ -167,20 +163,19 @@ public class TorrentServiceImpl implements TorrentService {
 
             //FIXME: ADD EPISODE TO DATABASE PROPERLY
             List<EpisodeVideo> episodeVideos = new ArrayList<>();
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.HIGH));
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.MEDIUM));
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(), EpisodeVideo.VideoQuality.LOW));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(),EpisodeVideo.VideoQuality.HIGH));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.MEDIUM));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.LOW));
 
             List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
 
             try(Stream<Path> walk = Files.walk(Paths.get(filesystemRoot.getAbsolutePath() + "/series/" + series.getFolderName()
-                        + "/s" + currentlyDownloading.getTarget().getSeasonNumber() + "/e" + currentlyDownloading.getTarget().getEpisodeNumber() +"/thumbs/"))){
-
+                        + "/"+ currentlyDownloading.getTarget().getId() +"/thumbs/"))){
 
                 List<File> result = walk.filter(Files::isRegularFile).map(Path::toFile).collect(Collectors.toList());
 
                 result.forEach(x ->  episodeThumbs.add(new EpisodeThumbs(FilenameUtils.getExtension(x.getName()),series.getFolderName(),
-                        currentlyDownloading.getTarget().getSeasonNumber(),currentlyDownloading.getTarget().getEpisodeNumber(),FilenameUtils.removeExtension(x.getName()))));
+                        currentlyDownloading.getTarget().getId(),FilenameUtils.removeExtension(x.getName()))));
 
 
             }catch(IOException e){

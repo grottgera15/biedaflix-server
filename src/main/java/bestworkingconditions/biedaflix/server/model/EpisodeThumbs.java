@@ -2,15 +2,15 @@ package bestworkingconditions.biedaflix.server.model;
 
 import javax.validation.constraints.NotNull;
 
-public class EpisodeThumbs extends EpisodeMediaFiles {
+public class EpisodeThumbs extends EpisodeMediaFile {
 
     private String thumbName;
 
     public EpisodeThumbs() {
     }
 
-    public EpisodeThumbs(String extension, @NotNull String seriesName, int season, int episode, String thumbName) {
-        super(extension, seriesName, season, episode);
+    public EpisodeThumbs(String extension, @NotNull String seriesId, String episodeId, String thumbName) {
+        super(extension, seriesId, episodeId);
         this.thumbName = thumbName;
     }
 

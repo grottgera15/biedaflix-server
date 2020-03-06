@@ -15,9 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -72,17 +72,15 @@ public class LoginController {
         return refresh_token.toString();
     }
 
-    private List<Cookie> generateCookies(String email){
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    private List<Cookie> generateCookies(User target){
 
         Date tokenExpiry =  new Date(System.currentTimeMillis() + 1000 * 60 * 15);
-        String jwt = jwtService.generateToken(userDetails, tokenExpiry);
+        String jwt = jwtService.generateToken(target, tokenExpiry);
 
         Cookie jwtTokenCookie =  createCookie("jwt_token",jwt,false);
         Cookie jwtTokenExpiry = createCookie("jwt_token_expiry",Long.toString(tokenExpiry.getTime()),false);
 
-        String refreshToken = refreshUserToken(email);
+        String refreshToken = refreshUserToken(target.getEmail());
         Cookie refreshTokenCookie = createCookie("refresh_token",refreshToken,true);
 
         return new ArrayList<>(Arrays.asList(jwtTokenCookie, jwtTokenExpiry, refreshTokenCookie));
@@ -95,6 +93,20 @@ public class LoginController {
 
     }
 
+    private Optional<User> checkIfUserIsAccepted(String username, String email){
+
+        Optional<User> requestedUser = userRepository.findByUsernameOrEmail(username,email);
+
+        if(appProperties.getRequireUserAcceptance()){
+            if(requestedUser.isPresent()){
+                if(!requestedUser.get().isAccepted())
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user is not accepted!");
+            }
+        }
+
+        return  requestedUser;
+    }
+
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(HttpServletRequest request,HttpServletResponse response){
 
@@ -104,9 +116,12 @@ public class LoginController {
             User requestedUser = userRepository.findUserByRefreshToken(refreshTokenCookie.getValue()).
                         orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid refresh token!"));
 
+
+            checkIfUserIsAccepted(requestedUser.getUsername(),requestedUser.getEmail());
+
             requestedUser.setRefreshToken(UUID.randomUUID().toString());
             userRepository.save(requestedUser);
-            addCookies(response,generateCookies(requestedUser.getEmail()));
+            addCookies(response,generateCookies(requestedUser));
 
         }else
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid refresh token!");
@@ -114,16 +129,37 @@ public class LoginController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> Login(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+    @PostMapping(value = "/login", consumes = {"application/json"})
+    public ResponseEntity<?> Login(
+            @RequestBody() AuthenticationRequest authenticationRequest,
+            HttpServletResponse response) {
+
+        Optional<User> user = checkIfUserIsAccepted(authenticationRequest.getLogin(),authenticationRequest.getLogin());
+
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getLogin(), authenticationRequest.getPassword()));
         }catch (BadCredentialsException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials!");
         }
 
-        addCookies(response,generateCookies(authenticationRequest.getEmail()));
+        user.ifPresent(value -> addCookies(response, generateCookies(value)));
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request){
+        Cookie refreshTokenCookie = WebUtils.getCookie(request,"refresh_token");
+        if (refreshTokenCookie != null){
+
+            Optional<User> requestedUser = userRepository.findUserByRefreshToken(refreshTokenCookie.getValue());
+
+            if(requestedUser.isPresent()) {
+                User u = requestedUser.get();
+                u.setRefreshToken("");
+                userRepository.save(u);
+            }
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

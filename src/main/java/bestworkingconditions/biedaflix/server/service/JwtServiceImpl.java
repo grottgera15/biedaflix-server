@@ -1,10 +1,11 @@
 package bestworkingconditions.biedaflix.server.service;
 
+import bestworkingconditions.biedaflix.server.model.User;
+import bestworkingconditions.biedaflix.server.model.response.UserAdministrateResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,13 @@ public class JwtServiceImpl implements JwtService {
 
     private final SecretKey secretKey;
     private final SignatureAlgorithm algorithm;
+    private final UserService userService;
 
     @Autowired
-    public JwtServiceImpl(SecretKey secretKey, SignatureAlgorithm algorithm) {
+    public JwtServiceImpl(SecretKey secretKey, SignatureAlgorithm algorithm, UserService userService) {
         this.secretKey = secretKey;
         this.algorithm = algorithm;
+        this.userService = userService;
     }
 
 
@@ -36,6 +39,7 @@ public class JwtServiceImpl implements JwtService {
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+
 
     @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -57,16 +61,20 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(UserDetails userDetails,Date expiryDate) {
+    public String generateToken(User user, Date expiryDate) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername(),expiryDate);
+
+        UserAdministrateResponse payload = userService.CreateUserAdministrateResponseFromUser(user);
+
+        claims.put("user",payload);
+        claims.put("sub",payload.getId());
+        return createToken(claims,expiryDate);
     }
 
     @Override
-    public String createToken(Map<String, Object> claims, String subject, Date expiryDate) {
+    public String createToken(Map<String, Object> claims , Date expiryDate) {
         return Jwts.builder()
                    .setClaims(claims)
-                   .setSubject(subject)
                    .setIssuedAt(new Date(System.currentTimeMillis()))
                    .setExpiration(expiryDate).signWith(secretKey,algorithm).compact();
     }

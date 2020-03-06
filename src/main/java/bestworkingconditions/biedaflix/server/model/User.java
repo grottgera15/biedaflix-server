@@ -18,7 +18,7 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private boolean accepted;
+    private Boolean accepted;
 
     private List<String> roles = new ArrayList<>();
 
@@ -39,12 +39,6 @@ public class User {
         this.email = registerRequest.getEmail();
         this.username = registerRequest.getUsername();
         this.password = registerRequest.getPassword();
-    }
-
-    public User(UserAdministrateRequest userAdministrateRequest){
-        this((UserRegisterRequest) userAdministrateRequest);
-        this.roles = userAdministrateRequest.getRoles();
-        this.accepted = userAdministrateRequest.isAccepted();
     }
 
     public String getId() {
@@ -91,7 +85,11 @@ public class User {
         this.username = username;
     }
 
-    public void setAccepted(boolean accepted) {
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
         this.accepted = accepted;
     }
 

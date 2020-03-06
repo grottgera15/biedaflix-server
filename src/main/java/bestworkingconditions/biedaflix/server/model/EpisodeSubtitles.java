@@ -2,7 +2,7 @@ package bestworkingconditions.biedaflix.server.model;
 
 import javax.validation.constraints.NotNull;
 
-public class EpisodeSubtitles extends EpisodeMediaFiles {
+public class EpisodeSubtitles extends EpisodeMediaFile {
 
     public enum SubtitlesLanguage{
         PL("PL"),
@@ -24,8 +24,8 @@ public class EpisodeSubtitles extends EpisodeMediaFiles {
     public EpisodeSubtitles() {
     }
 
-    public EpisodeSubtitles(String extension, @NotNull String seriesName, int season, int episode, SubtitlesLanguage language) {
-        super(extension, seriesName, season, episode);
+    public EpisodeSubtitles(String extension, @NotNull String seriesId, String episodeId, SubtitlesLanguage language) {
+        super(extension, seriesId, episodeId);
         this.language = language;
     }
 

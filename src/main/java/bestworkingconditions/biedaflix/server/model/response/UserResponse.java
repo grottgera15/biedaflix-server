@@ -1,5 +1,7 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
+import bestworkingconditions.biedaflix.server.model.User;
+
 import java.io.Serializable;
 
 public class UserResponse implements Serializable {
@@ -16,6 +18,12 @@ public class UserResponse implements Serializable {
         this.id = id;
         this.email = email;
         this.username = username;
+    }
+
+    public UserResponse(User user){
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.username = user.getUsername();
     }
 
     public String getId() {

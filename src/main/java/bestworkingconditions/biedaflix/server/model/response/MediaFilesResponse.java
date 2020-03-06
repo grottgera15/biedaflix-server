@@ -1,21 +1,22 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
-import java.net.URI;
+import bestworkingconditions.biedaflix.server.model.SeriesMediaFile;
+
 import java.net.URL;
 
 public class MediaFilesResponse {
 
-    private URL path;
+    private String path;
 
-    public MediaFilesResponse(URL path) {
+    public MediaFilesResponse(String path) {
         this.path = path;
     }
 
-    public URL getPath() {
+    public String getPath() {
         return path;
     }
 
-    public void setPath(URL path) {
+    public void setPath(String path) {
         this.path = path;
     }
 }

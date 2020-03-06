@@ -68,8 +68,8 @@ public class StreamingServiceSourceController {
         return new ResponseEntity<>(new StreamingServiceSourceResponse(newSource.getId(),newSource.getName(),getStreamingServiceURL(newSource)),HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/streamingSource/{id}", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> updateStreamingServiceSource(@PathVariable String id,
+    @PatchMapping(value = "/streamingSource", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> updateStreamingServiceSource(@RequestParam String id,
                                                           @RequestParam(name="name") Optional<String> name,
                                                           @RequestParam(name="logo") Optional<MultipartFile> logo) throws IOException{
 
@@ -81,8 +81,7 @@ public class StreamingServiceSourceController {
             contentStore.setContent(source,logo.get().getInputStream());
         }
 
-        if(name.isPresent())
-            source.setName(name.get());
+        name.ifPresent(source::setName);
 
         repository.save(source);
 
@@ -99,16 +98,7 @@ public class StreamingServiceSourceController {
             List<SeriesLightResponse> lightResponses = new ArrayList<>();
 
             for(Series s : associatedSeries){
-                SeriesLightResponse lightResponse = new SeriesLightResponse(
-                        s.getId(),
-                        s.getName(),
-                        s.getDescription(),
-                        new MediaFilesResponse(seriesService.getSeriesResourceURL(s.getSeriesBanner().getFilePath())),
-                        new MediaFilesResponse(seriesService.getSeriesResourceURL(s.getLogo().getFilePath())),
-                        s.getStreamingServiceId(),
-                        s.getOnGoing()
-                        );
-
+                SeriesLightResponse lightResponse = seriesService.seriesLightResponseFromSeries(s);
                 lightResponses.add(lightResponse);
             }
 

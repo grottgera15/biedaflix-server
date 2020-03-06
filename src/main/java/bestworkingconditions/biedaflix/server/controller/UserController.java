@@ -1,38 +1,41 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
+import bestworkingconditions.biedaflix.server.model.Series;
 import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.model.request.UserAdministrateRequest;
 import bestworkingconditions.biedaflix.server.model.request.UserRegisterRequest;
 import bestworkingconditions.biedaflix.server.model.response.UserAdministrateResponse;
+import bestworkingconditions.biedaflix.server.model.response.UserResponse;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
+import bestworkingconditions.biedaflix.server.service.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.servlet.http.Cookie;
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin()
 public class UserController {
 
     private final UserRepository repository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository repository, UserService userService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -40,34 +43,95 @@ public class UserController {
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> updateUser(@RequestParam @NotBlank String id, @Valid @RequestBody UserAdministrateRequest administrateRequest){
 
-        Optional<User> match = repository.findByUsernameOrEmail(administrateRequest.getUsername(),administrateRequest.getEmail());
+        Optional<User> match = repository.findById(id);
 
-        if(!match.isPresent() | ( match.isPresent() && match.get().getId().equals(id)) ){
+        if( match.isPresent() && match.get().getId().equals(id)){
 
-            administrateRequest.setPassword(passwordEncoder.encode(administrateRequest.getPassword()));
-            User newUserData = new User(administrateRequest);
-            newUserData.setId(id);
-            repository.save(newUserData);
-            return ResponseEntity.ok(new UserAdministrateResponse(newUserData));
+            User u = match.get();
+            u.setRoles(administrateRequest.getRoles());
+            u.setAccepted(administrateRequest.isAccepted());
+
+            repository.save(u);
+            return ResponseEntity.ok(userService.CreateUserAdministrateResponseFromUser(u));
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"username or email already taken!");
         }
     }
 
+    @DeleteMapping(value = "/administrateUser")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
+    public ResponseEntity<?> deleteUser(
+            @RequestParam String id
+    ){
+        repository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping(value = "/administrateUsers")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
-    public ResponseEntity<?> getAllUsers( @RequestParam(required = false) Optional<String> filter){
+    public ResponseEntity<?> getAllUsers(
+            @RequestParam(required = false) Optional<String> roleId,
+            @RequestParam(required = false) Optional<Boolean> accepted
+    ){
 
+        User example = new User();
+        example.setAccepted(null);
+        example.setRoles(null);
+
+        roleId.ifPresent(s -> example.setRoles(Collections.singletonList(s)));
+        accepted.ifPresent(example::setAccepted);
+
+        List<User> requestedUsers = repository.findAll(Example.of(example));
         List<UserAdministrateResponse> userAdministrateResponses = new ArrayList<>();
-        List<User> requestedUsers;
-        if(filter.isPresent()){
-            requestedUsers = repository.findAllByRolesContaining(filter.get());
-        }else{
-            requestedUsers= repository.findAll();
-        }
 
-        requestedUsers.forEach( x -> userAdministrateResponses.add(new UserAdministrateResponse(x)));
+        requestedUsers.forEach( x -> userAdministrateResponses.add(userService.CreateUserAdministrateResponseFromUser(x)));
         return ResponseEntity.ok(userAdministrateResponses);
+    }
+
+    @PatchMapping(value = "/user", consumes = {"multipart/form-data"})
+    @PreAuthorize("authentication.name == #id")
+    public ResponseEntity<?> patchUser(
+            @RequestParam String id,
+            @RequestParam(required = false) Optional<String> username,
+            @RequestParam(required = false)Optional<String> email,
+            @RequestParam(required = false) Optional<String> password
+            ){
+
+        Optional<User> match = repository.findById(id);
+
+        if(match.isPresent()){
+
+            User u = match.get();
+
+            username.ifPresent(u::setUsername);
+            email.ifPresent(u::setEmail);
+            password.ifPresent(x -> u.setPassword(passwordEncoder.encode(x)));
+
+            repository.save(u);
+
+            return ResponseEntity.ok(new UserResponse(u));
+
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!");
+        }
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getUsers(
+    ){
+        List<UserResponse> response = new ArrayList<>();
+
+        repository.findAll().forEach(x -> response.add(new UserResponse(x)));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(
+            @RequestParam() String id
+    ){
+        return ResponseEntity.ok(new UserResponse(repository.findById(id).orElseThrow( ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!"))));
     }
 
     @PostMapping(value = "/register")

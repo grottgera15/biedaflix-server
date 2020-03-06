@@ -2,7 +2,7 @@ package bestworkingconditions.biedaflix.server.model;
 
 import javax.validation.constraints.NotNull;
 
-public class EpisodeVideo extends EpisodeMediaFiles {
+public class EpisodeVideo extends EpisodeMediaFile {
 
     public enum VideoQuality{
         HIGH("1080"),
@@ -25,8 +25,8 @@ public class EpisodeVideo extends EpisodeMediaFiles {
     public EpisodeVideo() {
     }
 
-    public EpisodeVideo(String extension, @NotNull String seriesName, int season, int episode, VideoQuality videoQuality) {
-        super(extension, seriesName, season, episode);
+    public EpisodeVideo(String extension, @NotNull String seriesId, String episodeId, VideoQuality videoQuality) {
+        super(extension, seriesId, episodeId);
         this.videoQuality = videoQuality;
     }
 
