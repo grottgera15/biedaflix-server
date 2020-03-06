@@ -2,10 +2,7 @@ package bestworkingconditions.biedaflix.server.model.authority;
 
 public enum OperationType {
 
-    PUT("OP_PUT"),
-    PATCH("OP_PATCH"),
-    DELETE("OP_DELETE"),
-    READ("OP_READ"),
+    ADMINISTRATE_SOURCES("OP_ADMINISTRATE_SOURCES"),
     ADMINISTRATE_USERS("OP_ADMINISTRATE_USERS"),
     ADMINISTRATE_SERIES("OP_ADMINISTRATE_SERIES");
 
