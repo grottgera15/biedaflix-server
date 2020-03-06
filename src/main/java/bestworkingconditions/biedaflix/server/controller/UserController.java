@@ -58,6 +58,16 @@ public class UserController {
         }
     }
 
+    @DeleteMapping(value = "/administrateUser")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
+    public ResponseEntity<?> deleteUser(
+            @RequestParam String id
+    ){
+        repository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping(value = "/administrateUsers")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> getAllUsers(
