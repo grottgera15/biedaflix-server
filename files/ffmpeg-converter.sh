@@ -6,8 +6,8 @@ get_duration () {
 }
 
 detect_crop () {
-    ffmpeg -ss "$2" -i "$1" -t 15 -vf "cropdetect=24:2:0" -f null - 2> "./$episode/output.txt"
-    local result=$(grep -o -m 1 "crop=.*" ./"$episode"/output.txt)
+    ffmpeg -ss "$2" -i "$1" -t 15 -vf "cropdetect=24:2:0" -f null - 2> "$3/output.txt"
+    local result=$(grep -o -m 1 "crop=.*" "$3"/output.txt)
     echo "$result"
 }
 
@@ -61,14 +61,18 @@ duration=$(get_duration "$filePath")
 duration=$(bc<<<"$duration / 1")
 durationCenter=$(bc<<<"$duration / 2")
 
-if [[ ! -d "./$episode" ]]; then
-    mkdir -p "./$episode"
+if [[ ! -d "$destinationPath/$series" ]]; then
+    mkdir -p "$destinationPath/$series"
 fi
 
-crop=$(detect_crop "$filePath" "$durationCenter")
+finalPath="$destinationPath/$series/$episode"
 
+if [[ ! -d "$finalPath" ]]; then
+    mkdir -p "$finalPath"
+fi
 
-finalPath="$destinationPath/$episode"
+crop=$(detect_crop "$filePath" "$durationCenter" "$finalPath")
+
 mkdir -p "$finalPath/thumbs"
 
 ffmpeg -i "$filePath" -vcodec libx264 -crf 21 -preset superfast -tune film -vf "$crop" "$finalPath/1080.mp4"

@@ -84,28 +84,46 @@ public class EpisodeController {
         Series series = seriesRepository.findById(request.getSeriesId()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!"));
 
-        Episode episode = episodeService.episodeFromEpisodeRequest(request);
 
-        torrentService.addTorrent(series.getName(),request,episode);
+
+
+        if(episodeRepository.existsEpisodeByEpisodeNumberAndSeasonNumber(request.getEpisodeNumber(),request.getSeasonNumber())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given number already exists");
+        }
+
+        Episode episode = episodeService.episodeFromEpisodeRequest(request);
         episodeRepository.save(episode);
+
+        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),request,episode));
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/episode")
+    @PatchMapping("/episode")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> updateEpisode(
             @RequestParam String id,
-            @Valid @RequestBody EpisodeRequest request
+            @Valid @RequestBody(required = false) EpisodeRequest request
             ){
 
         if(!episodeRepository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given id does not exist!");
         }
 
-        if(!seriesRepository.existsById(request.getSeriesId())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!");
+        Series series = seriesRepository.findById(request.getSeriesId()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!")
+        );
+
+        Optional<Episode> match = episodeRepository.findByEpisodeNumberAndSeasonNumber(request.getEpisodeNumber(),request.getSeasonNumber());
+
+        if(match.isPresent() && !match.get().getId().equals(id)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given number already exists");
         }
+
+        Episode episode = episodeService.episodeFromEpisodeRequest(request);
+        episodeRepository.save(episode);
+
+        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),request,episode));
 
         return ResponseEntity.ok(episodeRepository.save(episodeService.episodeFromEpisodeRequest(request)));
     }
