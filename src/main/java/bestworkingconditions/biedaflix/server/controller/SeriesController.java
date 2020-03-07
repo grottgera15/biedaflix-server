@@ -11,6 +11,7 @@ import bestworkingconditions.biedaflix.server.repository.FileResourceContentStor
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
 import bestworkingconditions.biedaflix.server.service.SeriesService;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -41,9 +43,77 @@ public class SeriesController {
         this.seriesService = seriesService;
     }
 
+    @PostMapping("/series")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
+    public ResponseEntity<Series> AddSeries(@Valid SeriesRequest request,
+                                            @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
+                                            @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo) throws IOException {
+
+        List<Series> all = seriesRepository.findAll();
+
+        if(all.stream().anyMatch(t -> t.getName().equals(request.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name already exists in database");
+
+        Series newSeries = new Series();
+        newSeries.setName(request.getName());
+        newSeries.setDescription(request.getDescription());
+        newSeries.setStatus(request.getStatus());
+        newSeries.setStreamingServiceId(request.getSourceId());
+
+        newSeries = seriesRepository.save(newSeries);
+
+        if(logo.isPresent()){
+            SeriesLogo seriesLogo = new SeriesLogo(FilenameUtils.getExtension(logo.get().getOriginalFilename()),newSeries.getFolderName());
+            newSeries.setLogo(seriesLogo);
+
+
+            fileResourceContentStore.setContent(seriesLogo,logo.get().getInputStream());
+        }
+
+        if(banner.isPresent()){
+            SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),newSeries.getFolderName());
+            newSeries.setSeriesBanner(seriesBanner);
+
+            fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
+        }
+
+        seriesRepository.save(newSeries);
+
+        return ResponseEntity.ok(newSeries);
+    }
+
+    @PatchMapping(name = "/series", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
+    public ResponseEntity<?> UpdateSeries(
+            @RequestParam String id,
+            @RequestParam(required = false) Optional<String> name,
+            @RequestParam(required = false) Optional<String> description,
+            @RequestParam(required = false) Optional<String> sourceId,
+            @RequestParam(required = false) Optional<SeriesStatus> status,
+            @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
+            @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo
+    ){
+
+        Series requestedSeries = seriesRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name does not exist in database")
+        );
+
+        name.ifPresent(requestedSeries::setName);
+        description.ifPresent(requestedSeries::setDescription);
+        sourceId.ifPresent(requestedSeries::setStreamingServiceId);
+        status.ifPresent(requestedSeries::setStatus);
+
+        banner.ifPresent( x -> requestedSeries.setSeriesBanner(new SeriesBanner(FilenameUtils.getExtension(x.getOriginalFilename()), requestedSeries.getFolderName())));
+        logo.ifPresent( x -> requestedSeries.setLogo(new SeriesLogo(FilenameUtils.getExtension(x.getOriginalFilename()), requestedSeries.getFolderName())));
+
+        Series s = seriesRepository.save(requestedSeries);
+
+        return ResponseEntity.ok(seriesService.seriesLightResponseFromSeries(s));
+    }
+
     @GetMapping("/series")
     public ResponseEntity<?> GetAll(
-            @RequestParam(required = false,defaultValue = "false") Boolean showSeasons,
+            @RequestParam(required = false) Boolean showSeasons,
             @RequestParam(required = false) Optional<SeriesStatus> status,
             @RequestParam(required = false) Optional<String> sourceId
     ) {
@@ -87,43 +157,12 @@ public class SeriesController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/series")
+    @DeleteMapping("/series")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<Series> AddSeries(@Valid SeriesRequest request,
-                                            @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
-                                            @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo) throws IOException {
+    public ResponseEntity<?> deleteSeries(@RequestParam String id){
+        seriesRepository.deleteById(id);
 
-        List<Series> all = seriesRepository.findAll();
-
-        if(all.stream().anyMatch(t -> t.getName().equals(request.getName())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name already exists in database");
-
-        Series newSeries = new Series();
-        newSeries.setName(request.getName());
-        newSeries.setDescription(request.getDescription());
-        newSeries.setStatus(request.getStatus());
-        newSeries.setStreamingServiceId(request.getSourceId());
-
-        newSeries = seriesRepository.save(newSeries);
-
-        if(logo.isPresent()){
-            SeriesLogo seriesLogo = new SeriesLogo(FilenameUtils.getExtension(logo.get().getOriginalFilename()),newSeries.getFolderName());
-            newSeries.setLogo(seriesLogo);
-
-
-            fileResourceContentStore.setContent(seriesLogo,logo.get().getInputStream());
-        }
-
-        if(banner.isPresent()){
-            SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),newSeries.getFolderName());
-            newSeries.setSeriesBanner(seriesBanner);
-
-            fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
-        }
-
-        seriesRepository.save(newSeries);
-
-        return ResponseEntity.ok(newSeries);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }
 

@@ -3,6 +3,7 @@ package bestworkingconditions.biedaflix.server.model.response;
 import bestworkingconditions.biedaflix.server.model.SeriesStatus;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public class SeriesLightResponse implements Serializable {
 
@@ -11,8 +12,8 @@ public class SeriesLightResponse implements Serializable {
     private String name;
     private String description;
 
-    private MediaFilesResponse banner;
-    private MediaFilesResponse logo;
+    private Optional<MediaFilesResponse> banner;
+    private Optional<MediaFilesResponse> logo;
 
     private String sourceId;
 
@@ -25,8 +26,8 @@ public class SeriesLightResponse implements Serializable {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.banner = banner;
-        this.logo = logo;
+        this.banner = Optional.of(banner);
+        this.logo = Optional.of(logo);
         this.sourceId = sourceId;
         this.status = status;
     }
@@ -55,20 +56,20 @@ public class SeriesLightResponse implements Serializable {
         this.description = description;
     }
 
-    public MediaFilesResponse getBanner() {
+    public Optional<MediaFilesResponse> getBanner() {
         return banner;
     }
 
-    public void setBanner(MediaFilesResponse banner) {
+    public void setBanner(Optional<MediaFilesResponse> banner) {
         this.banner = banner;
     }
 
-    public MediaFilesResponse getLogo() {
-        return logo;
+    public void setLogo(Optional<MediaFilesResponse> logo) {
+        this.logo = logo;
     }
 
-    public void setLogo(MediaFilesResponse logo) {
-        this.logo = logo;
+    public Optional<MediaFilesResponse> getLogo() {
+        return logo;
     }
 
     public String getSourceId() {

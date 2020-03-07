@@ -1,6 +1,7 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
 import bestworkingconditions.biedaflix.server.model.Episode;
+import bestworkingconditions.biedaflix.server.model.EpisodeStatus;
 import bestworkingconditions.biedaflix.server.model.EpisodeThumbs;
 
 import java.io.Serializable;
@@ -15,8 +16,8 @@ public class EpisodeFullResponse extends EpisodeLightResponse{
     public EpisodeFullResponse() {
     }
 
-    public EpisodeFullResponse(String id, int episodeNumber, String name, boolean available, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles, List<MediaFilesResponse> thumbs) {
-        super(id, episodeNumber, name, available, releaseDate);
+    public EpisodeFullResponse(String id, int episodeNumber, String name, EpisodeStatus status, Date releaseDate, Map<String, String> videoSources, Map<String, String> subtitles, List<MediaFilesResponse> thumbs) {
+        super(id, episodeNumber, name, status, releaseDate);
         this.videoSources = videoSources;
         this.subtitles = subtitles;
         this.thumbs = thumbs;
