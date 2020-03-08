@@ -57,7 +57,7 @@ public class StreamingServiceSourceController {
 
     }
 
-    @PostMapping(value = "/streamingSource", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/streamingSources", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> addStreamingServiceSource(@RequestParam(name="name") String name, @RequestParam(name="logo")MultipartFile logo) throws IOException {
         checkIfNameIsAvailable(name);
@@ -70,11 +70,11 @@ public class StreamingServiceSourceController {
         return new ResponseEntity<>(new StreamingServiceSourceResponse(newSource.getId(),newSource.getName(),getStreamingServiceURL(newSource)),HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/streamingSource", consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/streamingSources/{id}", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
-    public ResponseEntity<?> updateStreamingServiceSource(@RequestParam String id,
-                                                          @RequestParam(name="name") Optional<String> name,
-                                                          @RequestParam(name="logo") Optional<MultipartFile> logo) throws IOException{
+    public ResponseEntity<?> updateStreamingServiceSource( @PathVariable String id,
+                                                          @RequestParam(name = "name") Optional<String> name,
+                                                          @RequestParam(name = "logo") Optional<MultipartFile> logo) throws IOException{
 
         name.ifPresent(this::checkIfNameIsAvailable);
 

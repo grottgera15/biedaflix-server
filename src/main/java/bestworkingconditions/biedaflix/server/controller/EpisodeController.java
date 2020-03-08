@@ -1,8 +1,10 @@
 package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.*;
+import bestworkingconditions.biedaflix.server.model.request.EpisodePatchRequest;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.model.response.EpisodeFullResponse;
+import bestworkingconditions.biedaflix.server.model.response.EpisodeLightResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
@@ -12,6 +14,7 @@ import bestworkingconditions.biedaflix.server.service.SeriesService;
 import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,26 +35,24 @@ public class EpisodeController {
     private final SeriesRepository seriesRepository;
     private final FileResourceContentStore fileResourceContentStore;
     private final TorrentService torrentService;
-    private final SeriesService seriesService;
     private final EpisodeService episodeService;
 
     @Autowired
-    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, TorrentService torrentService, SeriesService seriesService, EpisodeService episodeService) {
+    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, TorrentService torrentService, EpisodeService episodeService) {
         this.episodeRepository = episodeRepository;
         this.seriesRepository = seriesRepository;
         this.fileResourceContentStore = fileResourceContentStore;
         this.torrentService = torrentService;
-        this.seriesService = seriesService;
         this.episodeService = episodeService;
     }
 
-    @PostMapping(name = "/addSubtitles", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/episodes/{id}/subtitles", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<Object> addSubtitles(@NotBlank @RequestParam  String episodeId,
-                                                @NotNull @RequestParam EpisodeSubtitles.SubtitlesLanguage language,
-                                                @NotNull @RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity<Object> addSubtitles(@PathVariable String id,
+                                               @NotNull @RequestParam EpisodeSubtitles.SubtitlesLanguage language,
+                                               @NotNull @RequestParam MultipartFile file ) throws IOException {
 
-        Optional<Episode> optionalEpisode = episodeRepository.findById(episodeId);
+        Optional<Episode> optionalEpisode = episodeRepository.findById(id);
         Episode episode = optionalEpisode.orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given id does not exist!"));
 
         Series episodeSeries = seriesRepository.findById(episode.getSeriesId()).get();
@@ -67,8 +68,8 @@ public class EpisodeController {
 
     }
 
-    @GetMapping("/episode")
-    public ResponseEntity<EpisodeFullResponse> getEpisodeInfo(@NotBlank @RequestParam String id) {
+    @GetMapping("/episodes/{id}")
+    public ResponseEntity<EpisodeFullResponse> getEpisodeInfo(@PathVariable String id) {
 
         Episode ep = episodeRepository.findById(id)
                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given id does not exist!")
@@ -77,7 +78,7 @@ public class EpisodeController {
         return ResponseEntity.ok(episodeService.episodeFullResponseFromEpisode(ep));
     }
 
-    @PostMapping("/episode")
+    @PostMapping("/episodes")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> addEpisode(@Valid @RequestBody EpisodeRequest request) {
 
@@ -85,54 +86,57 @@ public class EpisodeController {
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!"));
 
 
-
-
         if(episodeRepository.existsEpisodeByEpisodeNumberAndSeasonNumber(request.getEpisodeNumber(),request.getSeasonNumber())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given number already exists");
         }
 
         Episode episode = episodeService.episodeFromEpisodeRequest(request);
-        episodeRepository.save(episode);
+        Episode savedEpisode = episodeRepository.save(episode);
 
-        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),request,episode));
+        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),x,savedEpisode));
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(new EpisodeLightResponse(savedEpisode),HttpStatus.CREATED);
     }
 
-    @PatchMapping("/episode")
+    @PatchMapping("/episodes/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> updateEpisode(
-            @RequestParam String id,
-            @Valid @RequestBody(required = false) EpisodeRequest request
+            @PathVariable String id,
+            @RequestBody(required = false) EpisodePatchRequest request
             ){
 
-        if(!episodeRepository.existsById(id)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given id does not exist!");
-        }
+        Episode requestEpisode = episodeRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given id does not exist!")
+        );
 
-        Series series = seriesRepository.findById(request.getSeriesId()).orElseThrow(
+        request.getSeriesId().ifPresent(requestEpisode::setSeriesId);
+        request.getEpisodeNumber().ifPresent(requestEpisode::setEpisodeNumber);
+        request.getName().ifPresent(requestEpisode::setName);
+        request.getReleaseDate().ifPresent(requestEpisode::setReleaseDate);
+        request.getSeasonNumber().ifPresent(requestEpisode::setSeasonNumber);
+
+
+        Series series = seriesRepository.findById(requestEpisode.getSeriesId()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!")
         );
 
-        Optional<Episode> match = episodeRepository.findByEpisodeNumberAndSeasonNumber(request.getEpisodeNumber(),request.getSeasonNumber());
+        Optional<Episode> match = episodeRepository.findByEpisodeNumberAndSeasonNumber(requestEpisode.getEpisodeNumber(),requestEpisode.getSeasonNumber());
 
         if(match.isPresent() && !match.get().getId().equals(id)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given number already exists");
         }
 
-        Episode episode = episodeService.episodeFromEpisodeRequest(request);
-        episodeRepository.save(episode);
+        Episode savedEpisode = episodeRepository.save(requestEpisode);
 
-        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),request,episode));
+        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),x,savedEpisode));
 
-        return ResponseEntity.ok(episodeRepository.save(episodeService.episodeFromEpisodeRequest(request)));
+        return ResponseEntity.ok(new EpisodeLightResponse(savedEpisode));
     }
 
-    @DeleteMapping("/episode")
+    @DeleteMapping("/episodes/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<?> deleteEpisode(@RequestParam String id){
-        episodeRepository.deleteById(id);
-
+    public ResponseEntity<?> deleteEpisode(@PathVariable String id){
+        episodeService.deleteEpisode(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

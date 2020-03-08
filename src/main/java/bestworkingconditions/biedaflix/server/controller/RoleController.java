@@ -51,7 +51,7 @@ public class RoleController {
         return ResponseEntity.ok(types);
     }
 
-    @PostMapping("/role")
+    @PostMapping(value = "/roles",consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> addRole(@Valid @RequestBody RoleDTO roleDTO){
 
@@ -77,9 +77,9 @@ public class RoleController {
         return ResponseEntity.ok(roleDTOS);
     }
 
-    @PutMapping("/role")
+    @PutMapping(value = "/roles/{id}", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
-    public ResponseEntity<?> updateRole(@NotBlank @RequestParam String id,@Valid @RequestBody RoleDTO roleDTO){
+    public ResponseEntity<?> updateRole(@PathVariable String id,@Valid @RequestBody RoleDTO roleDTO){
         Role r = createNewRoleFromDTO(roleDTO);
 
         Optional<Role> match = roleRepository.findByName(roleDTO.getName());
@@ -94,9 +94,9 @@ public class RoleController {
         return ResponseEntity.ok(new RoleDTO(r));
     }
 
-    @DeleteMapping("/role")
+    @DeleteMapping("/roles/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
-    public ResponseEntity<?> deleteRole(@NotBlank @RequestParam String id){
+    public ResponseEntity<?> deleteRole(@PathVariable String id){
         List<User> usersContainingRole =  userRepository.findAllByRolesContaining(id);
 
         for(User u : usersContainingRole){

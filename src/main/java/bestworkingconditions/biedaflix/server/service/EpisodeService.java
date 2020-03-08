@@ -7,18 +7,28 @@ import bestworkingconditions.biedaflix.server.model.EpisodeVideo;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.model.response.EpisodeFullResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
+import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
 public class EpisodeService {
 
     private final SeriesService seriesService;
+    private final EpisodeRepository episodeRepository;
 
     @Autowired
-    public EpisodeService(SeriesService seriesService) {this.seriesService = seriesService;}
+    public EpisodeService(@Lazy SeriesService seriesService, EpisodeRepository episodeRepository) {this.seriesService = seriesService;
+        this.episodeRepository = episodeRepository;
+    }
 
 
     public Episode episodeFromEpisodeRequest(EpisodeRequest episode){
@@ -63,6 +73,54 @@ public class EpisodeService {
                 subtitles,
                 thumbs
         );
+    }
+
+    public void deleteEpisode(String episodeId){
+
+        Episode episode = episodeRepository.findById(episodeId).orElseThrow(
+                () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of id name does not exist in database")
+        );
+
+        File parent = new File(System.getProperty("user.dir") + "/files/series/" + episode.getSeriesId() + "/" +episode.getId());
+
+        try {
+            FileUtils.deleteDirectory(parent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        episodeRepository.delete(episode);
+    }
+
+    public void deleteVideoAndThumbs(Episode episode){
+
+        List<File> filesToDelete = new ArrayList<>();
+
+        String baseFilePath = System.getProperty("user.dir") + "/files/series/" + episode.getSeriesId() + "/" +episode.getId() + "/";
+
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.LOW+".mp4"));
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.MEDIUM+".mp4"));
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.HIGH+".mp4"));
+
+        for(File f : filesToDelete){
+            try {
+                if(f.exists()){
+                    FileUtils.forceDelete(f);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            File thumbs = new File(baseFilePath+"thumbs");
+            if(thumbs.exists()){
+                FileUtils.deleteDirectory(thumbs);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
