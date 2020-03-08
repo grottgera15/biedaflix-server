@@ -16,7 +16,7 @@ public class Episode {
     private int episodeNumber;
 
     private String name;
-    private boolean available;
+    private EpisodeStatus episodeStatus;
     private Date releaseDate;
 
     private List<EpisodeVideo> videoFiles = new ArrayList<>();
@@ -32,15 +32,16 @@ public class Episode {
         this.episodeNumber = episodeNumber;
         this.name = name;
         this.releaseDate = releaseDate;
+        this.episodeStatus = EpisodeStatus.UNAVAILABLE;
     }
 
-    public Episode(String id, String seriesId, int seasonNumber, int episodeNumber, String name, boolean available, Date releaseDate, List<EpisodeVideo> videoFiles, List<EpisodeSubtitles> episodeSubtitles, List<EpisodeThumbs> episodeThumbs) {
+    public Episode(String id, String seriesId, int seasonNumber, int episodeNumber, String name, EpisodeStatus episodeStatus, Date releaseDate, List<EpisodeVideo> videoFiles, List<EpisodeSubtitles> episodeSubtitles, List<EpisodeThumbs> episodeThumbs) {
         this.id = id;
         this.seriesId = seriesId;
         this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
         this.name = name;
-        this.available = available;
+        this.episodeStatus = episodeStatus;
         this.releaseDate = releaseDate;
         this.videoFiles = videoFiles;
         this.episodeSubtitles = episodeSubtitles;
@@ -87,12 +88,12 @@ public class Episode {
         this.name = name;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public EpisodeStatus getEpisodeStatus() {
+        return episodeStatus;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setEpisodeStatus(EpisodeStatus episodeStatus) {
+        this.episodeStatus = episodeStatus;
     }
 
     public Date getReleaseDate() {

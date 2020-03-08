@@ -51,7 +51,7 @@ public class UserController {
             u.setRoles(administrateRequest.getRoles());
             u.setAccepted(administrateRequest.isAccepted());
 
-            repository.save(u);
+            u = repository.save(u);
             return ResponseEntity.ok(userService.CreateUserAdministrateResponseFromUser(u));
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"username or email already taken!");
@@ -66,6 +66,16 @@ public class UserController {
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value= "/administrateUser")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
+    public ResponseEntity<?> GetSingleAdministrativeUser(
+            @RequestParam String id
+    ){
+        return ResponseEntity.ok(repository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!")
+        ));
     }
 
     @GetMapping(value = "/administrateUsers")

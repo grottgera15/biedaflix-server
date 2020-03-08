@@ -185,8 +185,6 @@ public class TorrentServiceImpl implements TorrentService {
             currentlyDownloading.getTarget().setVideoFiles(episodeVideos);
             currentlyDownloading.getTarget().setEpisodeThumbs(episodeThumbs);
 
-            currentlyDownloading.getTarget().setAvailable(true);
-
             episodeRepository.save(currentlyDownloading.getTarget());
 
             deleteLeftoverFilesFromDirectory(currentlyDownloading);
@@ -231,7 +229,7 @@ public class TorrentServiceImpl implements TorrentService {
         String downloadName = seriesNameWithoutSpaces + "_S" + episodeRequest.getSeasonNumber() + "_E" + episodeRequest.getEpisodeNumber();
 
         HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder()
-                .addKeyValuePair("urls",episodeRequest.getMagnetLink())
+                .addKeyValuePair("urls",episodeRequest.getMagnetLink().get())
                 .addKeyValuePair("category","biedaflix")
                 .addKeyValuePair("rename",downloadName)
                 .addKeyValuePair("root_folder","true")

@@ -24,11 +24,11 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
-
+    //TODO NAPISAC TESTY
 
     public UserAdministrateResponse CreateUserAdministrateResponseFromUser(User u){
 
-        List<Role> userRoles =  roleRepository.findAllById(u.getRoles());
+        List<Role> userRoles = (List<Role>) roleRepository.findAllById(u.getRoles());
         List<RoleDTO> userRolesDTOList = new ArrayList<>();
 
         userRoles.forEach(x -> userRolesDTOList.add(new RoleDTO(x)));

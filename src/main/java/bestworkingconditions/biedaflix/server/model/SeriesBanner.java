@@ -13,6 +13,9 @@ public class SeriesBanner extends SeriesMediaFile {
 
     @Override
     public String getFilePath() {
+        if(this.fileExtension.isEmpty()){
+
+        }
         return super.getFilePath() + "banner" + "." + getFileExtension();
     }
 }

@@ -38,7 +38,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
 
-        List<Role> userRoles = roleRepository.findAllById(user.getRoles());
+        List<Role> userRoles = (List<Role>) roleRepository.findAllById(user.getRoles());
 
         for ( Role role : userRoles ){
             grantedAuthorityList.add(role);
