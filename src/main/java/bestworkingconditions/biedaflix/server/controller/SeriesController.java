@@ -164,8 +164,7 @@ public class SeriesController {
     @DeleteMapping("/series")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> deleteSeries(@RequestParam String id){
-        seriesRepository.deleteById(id);
-
+        seriesService.deleteSeries(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

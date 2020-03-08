@@ -10,9 +10,13 @@ import bestworkingconditions.biedaflix.server.model.response.SeriesLightResponse
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.properties.StoreProperties;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +28,15 @@ public class SeriesService {
     private final AppProperties appProperties;
     private final StoreProperties storeProperties;
     private final EpisodeRepository episodeRepository;
+    private final EpisodeService episodeService;
+    private final SeriesRepository seriesRepository;
 
     @Autowired
-    public SeriesService(AppProperties appProperties, StoreProperties storeProperties, EpisodeRepository episodeRepository) {this.appProperties = appProperties;
+    public SeriesService(AppProperties appProperties, StoreProperties storeProperties, EpisodeRepository episodeRepository, EpisodeService episodeService, SeriesRepository seriesRepository) {this.appProperties = appProperties;
         this.storeProperties = storeProperties;
         this.episodeRepository = episodeRepository;
+        this.episodeService = episodeService;
+        this.seriesRepository = seriesRepository;
     }
 
     public String getSeriesResourceURL(SeriesMediaFile mediaFile) {
@@ -86,5 +94,24 @@ public class SeriesService {
                 series.getStreamingServiceId(),
                 series.getStatus()
         );
+    }
+
+    public void deleteSeries(String seriesId){
+
+        List<Episode> episodes = episodeRepository.findAllBySeriesId(seriesId);
+
+        for (Episode e : episodes){
+            episodeService.deleteEpisode(e.getId());
+        }
+
+        File parent = new File(System.getProperty("user.dir") + "/files/series/" + seriesId);
+
+        try {
+            FileUtils.deleteDirectory(parent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        seriesRepository.deleteById(seriesId);
     }
 }

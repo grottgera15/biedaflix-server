@@ -14,6 +14,7 @@ import bestworkingconditions.biedaflix.server.service.SeriesService;
 import bestworkingconditions.biedaflix.server.service.TorrentService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,16 +35,14 @@ public class EpisodeController {
     private final SeriesRepository seriesRepository;
     private final FileResourceContentStore fileResourceContentStore;
     private final TorrentService torrentService;
-    private final SeriesService seriesService;
     private final EpisodeService episodeService;
 
     @Autowired
-    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, TorrentService torrentService, SeriesService seriesService, EpisodeService episodeService) {
+    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, TorrentService torrentService, EpisodeService episodeService) {
         this.episodeRepository = episodeRepository;
         this.seriesRepository = seriesRepository;
         this.fileResourceContentStore = fileResourceContentStore;
         this.torrentService = torrentService;
-        this.seriesService = seriesService;
         this.episodeService = episodeService;
     }
 
@@ -137,8 +136,7 @@ public class EpisodeController {
     @DeleteMapping("/episode")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> deleteEpisode(@RequestParam String id){
-        episodeRepository.deleteById(id);
-
+        episodeService.deleteEpisode(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

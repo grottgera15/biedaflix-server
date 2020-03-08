@@ -2,6 +2,7 @@ package bestworkingconditions.biedaflix.server.model;
 
 public enum SeriesStatus {
 
+    UNAVAILABLE("unavailable"),
     ANNOUNCED("announced"),
     ONGOING("ongoing"),
     FINISHED("finished"),
