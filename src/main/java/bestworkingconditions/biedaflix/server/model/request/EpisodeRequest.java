@@ -1,7 +1,12 @@
 package bestworkingconditions.biedaflix.server.model.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
@@ -19,6 +24,7 @@ public class EpisodeRequest implements Serializable {
     @NotBlank(message = "name must not be blank!")
     private String name;
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date releaseDate;
 
     private Optional<String> magnetLink;

@@ -37,9 +37,9 @@ public class SeriesController {
         this.seriesService = seriesService;
     }
 
-    @PostMapping("/series")
+    @PostMapping(value = "/series", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<Series> AddSeries(@Valid SeriesRequest request,
+    public ResponseEntity<?> AddSeries(@Valid SeriesRequest request,
                                             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
                                             @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo) throws IOException {
 
@@ -56,7 +56,7 @@ public class SeriesController {
 
         newSeries = seriesRepository.save(newSeries);
 
-        if(logo.isPresent()){
+        if(logo.isPresent() && !logo.get().isEmpty()){
             SeriesLogo seriesLogo = new SeriesLogo(FilenameUtils.getExtension(logo.get().getOriginalFilename()),newSeries.getFolderName());
             newSeries.setLogo(seriesLogo);
 
@@ -64,21 +64,21 @@ public class SeriesController {
             fileResourceContentStore.setContent(seriesLogo,logo.get().getInputStream());
         }
 
-        if(banner.isPresent()){
+        if(banner.isPresent() && !banner.get().isEmpty()){
             SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),newSeries.getFolderName());
             newSeries.setSeriesBanner(seriesBanner);
 
             fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
         }
 
-        seriesRepository.save(newSeries);
+        newSeries = seriesRepository.save(newSeries);
 
-        return ResponseEntity.ok(newSeries);
+        return ResponseEntity.ok(seriesService.seriesLightResponseFromSeries(newSeries));
     }
 
-    @PatchMapping(name = "/series", consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/series", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<?> UpdateSeries(
+    public ResponseEntity<?> patchSeries(
             @RequestParam String id,
             @RequestParam(required = false) Optional<String> name,
             @RequestParam(required = false) Optional<String> description,
@@ -86,7 +86,7 @@ public class SeriesController {
             @RequestParam(required = false) Optional<SeriesStatus> status,
             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
             @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo
-    ){
+    ) throws IOException {
 
         Series requestedSeries = seriesRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name does not exist in database")
@@ -97,8 +97,19 @@ public class SeriesController {
         sourceId.ifPresent(requestedSeries::setStreamingServiceId);
         status.ifPresent(requestedSeries::setStatus);
 
-        banner.ifPresent( x -> requestedSeries.setSeriesBanner(new SeriesBanner(FilenameUtils.getExtension(x.getOriginalFilename()), requestedSeries.getFolderName())));
-        logo.ifPresent( x -> requestedSeries.setLogo(new SeriesLogo(FilenameUtils.getExtension(x.getOriginalFilename()), requestedSeries.getFolderName())));
+        if(banner.isPresent() && !banner.get().isEmpty()) {
+            SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),requestedSeries.getFolderName());
+            requestedSeries.setSeriesBanner(seriesBanner);
+
+            fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
+        }
+
+        if(logo.isPresent() && !logo.get().isEmpty()){
+            SeriesLogo seriesLogo = new SeriesLogo(FilenameUtils.getExtension(logo.get().getOriginalFilename()),requestedSeries.getFolderName());
+            requestedSeries.setLogo(seriesLogo);
+
+            fileResourceContentStore.setContent(seriesLogo,logo.get().getInputStream());
+        }
 
         Series s = seriesRepository.save(requestedSeries);
 
