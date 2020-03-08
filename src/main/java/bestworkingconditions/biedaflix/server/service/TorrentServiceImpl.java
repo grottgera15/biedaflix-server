@@ -88,7 +88,7 @@ public class TorrentServiceImpl implements TorrentService {
             FileUtils.deleteDirectory(parent);
         }
         else
-            FileUtils.deleteDirectory(new File(System.getProperty("user.dir") + currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath() ));
+            FileUtils.forceDelete(new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath() ));
     }
 
     private void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {

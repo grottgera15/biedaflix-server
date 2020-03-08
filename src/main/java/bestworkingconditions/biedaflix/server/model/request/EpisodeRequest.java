@@ -23,8 +23,7 @@ public class EpisodeRequest implements Serializable {
     @NotNull
     @NotBlank(message = "name must not be blank!")
     private String name;
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
+    @JsonFormat(pattern = "s" ,shape = JsonFormat.Shape.NUMBER)
     private Date releaseDate;
 
     private Optional<String> magnetLink;
