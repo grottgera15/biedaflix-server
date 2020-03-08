@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.*;
 
@@ -76,17 +77,17 @@ public class SeriesController {
         return ResponseEntity.ok(seriesService.seriesLightResponseFromSeries(newSeries));
     }
 
-    @PatchMapping(value = "/series", consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/series/{id}", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> patchSeries(
-            @RequestParam String id,
+            @PathVariable String id,
             @RequestParam(required = false) Optional<String> name,
             @RequestParam(required = false) Optional<String> description,
             @RequestParam(required = false) Optional<String> sourceId,
             @RequestParam(required = false) Optional<SeriesStatus> status,
             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
             @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo
-    ) throws IOException {
+            ) throws IOException {
 
         Series requestedSeries = seriesRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name does not exist in database")
@@ -117,11 +118,11 @@ public class SeriesController {
         return ResponseEntity.ok(seriesService.seriesLightResponseFromSeries(s));
     }
 
-    @GetMapping("/series")
+    @GetMapping("/series/{id}")
     public ResponseEntity<?> getSeries(
-            @RequestParam String id,
-            @RequestParam(required = false, defaultValue = "false") Boolean showSeasons
-    ){
+            @PathVariable("id") String id,
+            @RequestParam(required = false, defaultValue = "false") Boolean showSeasons){
+
         Series series = seriesRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name does not exist in database")
         );
@@ -134,7 +135,7 @@ public class SeriesController {
 
     }
 
-    @GetMapping("/allSeries")
+    @GetMapping("/series")
     public ResponseEntity<?> GetAll(
             @RequestParam(required = false, defaultValue = "false") Boolean showSeasons,
             @RequestParam(required = false) Optional<SeriesStatus> status,
@@ -161,9 +162,9 @@ public class SeriesController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/series")
+    @DeleteMapping(value = "/series/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<?> deleteSeries(@RequestParam String id){
+    public ResponseEntity<?> deleteSeries(@PathVariable String id){
         seriesService.deleteSeries(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }

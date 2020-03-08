@@ -2,8 +2,6 @@ package bestworkingconditions.biedaflix.server.service;
 
 
 import bestworkingconditions.biedaflix.server.model.*;
-import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
-import bestworkingconditions.biedaflix.server.properties.TorrentProperties;
 import bestworkingconditions.biedaflix.server.repository.CurrentlyDownloadingRepository;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
@@ -47,19 +45,21 @@ public class TorrentServiceImpl implements TorrentService {
     private final SeriesRepository seriesRepository;
     private final File filesystemRoot;
     private final EpisodeRepository episodeRepository;
+    private final EpisodeService episodeService;
     private final RestTemplate restTemplate;
 
     Logger logger = LoggerFactory.getLogger(TorrentServiceImpl.class);
 
     public TorrentServiceImpl(TorrentUriRepository torrentUriRepository,
                               FileSystemResourceLoader fileSystemResourceLoader, CurrentlyDownloadingRepository currentlyDownloadingRepository,
-                              SeriesRepository seriesRepository, File filesystemRoot, EpisodeRepository episodeRepository, RestTemplate restTemplate) {
+                              SeriesRepository seriesRepository, File filesystemRoot, EpisodeRepository episodeRepository, EpisodeService episodeService, RestTemplate restTemplate) {
         this.torrentUriRepository = torrentUriRepository;
         this.fileSystemResourceLoader = fileSystemResourceLoader;
         this.currentlyDownloadingRepository = currentlyDownloadingRepository;
         this.seriesRepository = seriesRepository;
         this.filesystemRoot = filesystemRoot;
         this.episodeRepository = episodeRepository;
+        this.episodeService = episodeService;
         this.restTemplate = restTemplate;
     }
 
@@ -224,6 +224,8 @@ public class TorrentServiceImpl implements TorrentService {
 
     @Override
     public void addTorrent(String seriesName, String magnetLink , Episode episode) {
+
+        episodeService.deleteVideoAndThumbs(episode);
 
         String seriesNameWithoutSpaces = seriesName.replaceAll("\\s+", "");
         String downloadName = seriesNameWithoutSpaces + "_S" + episode.getSeasonNumber() + "_E" + episode.getEpisodeNumber();

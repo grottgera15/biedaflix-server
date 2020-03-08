@@ -46,13 +46,13 @@ public class EpisodeController {
         this.episodeService = episodeService;
     }
 
-    @PostMapping(value = "/addSubtitles", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/episodes/{id}/subtitles", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<Object> addSubtitles(@NotBlank @RequestParam  String episodeId,
-                                                @NotNull @RequestParam EpisodeSubtitles.SubtitlesLanguage language,
-                                                @NotNull @RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity<Object> addSubtitles(@PathVariable String id,
+                                               @NotNull @RequestParam EpisodeSubtitles.SubtitlesLanguage language,
+                                               @NotNull @RequestParam MultipartFile file ) throws IOException {
 
-        Optional<Episode> optionalEpisode = episodeRepository.findById(episodeId);
+        Optional<Episode> optionalEpisode = episodeRepository.findById(id);
         Episode episode = optionalEpisode.orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given id does not exist!"));
 
         Series episodeSeries = seriesRepository.findById(episode.getSeriesId()).get();
@@ -68,8 +68,8 @@ public class EpisodeController {
 
     }
 
-    @GetMapping("/episode")
-    public ResponseEntity<EpisodeFullResponse> getEpisodeInfo(@NotBlank @RequestParam String id) {
+    @GetMapping("/episodes/{id}")
+    public ResponseEntity<EpisodeFullResponse> getEpisodeInfo(@PathVariable String id) {
 
         Episode ep = episodeRepository.findById(id)
                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given id does not exist!")
@@ -78,7 +78,7 @@ public class EpisodeController {
         return ResponseEntity.ok(episodeService.episodeFullResponseFromEpisode(ep));
     }
 
-    @PostMapping("/episode")
+    @PostMapping("/episodes")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> addEpisode(@Valid @RequestBody EpisodeRequest request) {
 
@@ -98,10 +98,10 @@ public class EpisodeController {
         return new ResponseEntity<>(new EpisodeLightResponse(savedEpisode),HttpStatus.CREATED);
     }
 
-    @PatchMapping("/episode")
+    @PatchMapping("/episodes/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> updateEpisode(
-            @RequestParam String id,
+            @PathVariable String id,
             @RequestBody(required = false) EpisodePatchRequest request
             ){
 
@@ -133,9 +133,9 @@ public class EpisodeController {
         return ResponseEntity.ok(new EpisodeLightResponse(savedEpisode));
     }
 
-    @DeleteMapping("/episode")
+    @DeleteMapping("/episodes/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<?> deleteEpisode(@RequestParam String id){
+    public ResponseEntity<?> deleteEpisode(@PathVariable String id){
         episodeService.deleteEpisode(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }

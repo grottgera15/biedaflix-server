@@ -92,4 +92,35 @@ public class EpisodeService {
         episodeRepository.delete(episode);
     }
 
+    public void deleteVideoAndThumbs(Episode episode){
+
+        List<File> filesToDelete = new ArrayList<>();
+
+        String baseFilePath = System.getProperty("user.dir") + "/files/series/" + episode.getSeriesId() + "/" +episode.getId() + "/";
+
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.LOW+".mp4"));
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.MEDIUM+".mp4"));
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.HIGH+".mp4"));
+
+        for(File f : filesToDelete){
+            try {
+                if(f.exists()){
+                    FileUtils.forceDelete(f);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            File thumbs = new File(baseFilePath+"thumbs");
+            if(thumbs.exists()){
+                FileUtils.deleteDirectory(thumbs);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

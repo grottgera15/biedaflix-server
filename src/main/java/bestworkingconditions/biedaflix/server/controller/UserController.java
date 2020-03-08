@@ -39,9 +39,9 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PutMapping(value = "/administrateUser")
+    @PutMapping(value = "/admin/users/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
-    public ResponseEntity<?> updateUser(@RequestParam @NotBlank String id, @Valid @RequestBody UserAdministrateRequest administrateRequest){
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserAdministrateRequest administrateRequest, @PathVariable String id){
 
         Optional<User> match = repository.findById(id);
 
@@ -58,27 +58,26 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(value = "/administrateUser")
+    @DeleteMapping(value = "/admin/users/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> deleteUser(
-            @RequestParam String id
-    ){
+            @PathVariable String id){
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value= "/administrateUser")
+    @GetMapping(value= "/admin/users/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> GetSingleAdministrativeUser(
-            @RequestParam String id
+            @PathVariable String id
     ){
         return ResponseEntity.ok(userService.CreateUserAdministrateResponseFromUser(repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!")
         )));
     }
 
-    @GetMapping(value = "/administrateUsers")
+    @GetMapping(value = "/admin/users")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> getAllUsers(
             @RequestParam(required = false) Optional<String> roleId,
@@ -99,12 +98,12 @@ public class UserController {
         return ResponseEntity.ok(userAdministrateResponses);
     }
 
-    @PatchMapping(value = "/user", consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/users/{id}", consumes = {"multipart/form-data"})
     @PreAuthorize("authentication.name == #id")
     public ResponseEntity<?> patchUser(
-            @RequestParam String id,
+            @PathVariable String id,
             @RequestParam(required = false) Optional<String> username,
-            @RequestParam(required = false)Optional<String> email,
+            @RequestParam(required = false) Optional<String> email,
             @RequestParam(required = false) Optional<String> password
             ){
 
@@ -137,14 +136,13 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/users/{id}")
     public ResponseEntity<?> getUser(
-            @RequestParam() String id
-    ){
+            @PathVariable String id){
         return ResponseEntity.ok(new UserResponse(repository.findById(id).orElseThrow( ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!"))));
     }
 
-    @PostMapping(value = "/register")
+    @PostMapping(value = "/users", consumes = {"application/json"})
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterRequest userRequest) {
 
         List<User> repositoryAll = repository.findAll();
