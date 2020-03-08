@@ -97,6 +97,7 @@ public class SeriesController {
         sourceId.ifPresent(requestedSeries::setStreamingServiceId);
         status.ifPresent(requestedSeries::setStatus);
 
+
         if(banner.isPresent() && !banner.get().isEmpty()) {
             SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),requestedSeries.getFolderName());
             requestedSeries.setSeriesBanner(seriesBanner);

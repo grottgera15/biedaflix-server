@@ -1,8 +1,10 @@
 package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.*;
+import bestworkingconditions.biedaflix.server.model.request.EpisodePatchRequest;
 import bestworkingconditions.biedaflix.server.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.model.response.EpisodeFullResponse;
+import bestworkingconditions.biedaflix.server.model.response.EpisodeLightResponse;
 import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
@@ -45,7 +47,7 @@ public class EpisodeController {
         this.episodeService = episodeService;
     }
 
-    @PostMapping(name = "/addSubtitles", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/addSubtitles", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<Object> addSubtitles(@NotBlank @RequestParam  String episodeId,
                                                 @NotNull @RequestParam EpisodeSubtitles.SubtitlesLanguage language,
@@ -85,47 +87,51 @@ public class EpisodeController {
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!"));
 
 
-
-
         if(episodeRepository.existsEpisodeByEpisodeNumberAndSeasonNumber(request.getEpisodeNumber(),request.getSeasonNumber())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Episode of given number already exists");
         }
 
         Episode episode = episodeService.episodeFromEpisodeRequest(request);
-        episodeRepository.save(episode);
+        Episode savedEpisode = episodeRepository.save(episode);
 
-        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),request,episode));
+        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),x,savedEpisode));
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(new EpisodeLightResponse(savedEpisode),HttpStatus.CREATED);
     }
 
     @PatchMapping("/episode")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> updateEpisode(
             @RequestParam String id,
-            @Valid @RequestBody(required = false) EpisodeRequest request
+            @RequestBody(required = false) EpisodePatchRequest request
             ){
 
-        if(!episodeRepository.existsById(id)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given id does not exist!");
-        }
+        Episode requestEpisode = episodeRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given id does not exist!")
+        );
 
-        Series series = seriesRepository.findById(request.getSeriesId()).orElseThrow(
+        request.getSeriesId().ifPresent(requestEpisode::setSeriesId);
+        request.getEpisodeNumber().ifPresent(requestEpisode::setEpisodeNumber);
+        request.getName().ifPresent(requestEpisode::setName);
+        request.getReleaseDate().ifPresent(requestEpisode::setReleaseDate);
+        request.getSeasonNumber().ifPresent(requestEpisode::setSeasonNumber);
+
+
+        Series series = seriesRepository.findById(requestEpisode.getSeriesId()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Series of given id does not exist!")
         );
 
-        Optional<Episode> match = episodeRepository.findByEpisodeNumberAndSeasonNumber(request.getEpisodeNumber(),request.getSeasonNumber());
+        Optional<Episode> match = episodeRepository.findByEpisodeNumberAndSeasonNumber(requestEpisode.getEpisodeNumber(),requestEpisode.getSeasonNumber());
 
         if(match.isPresent() && !match.get().getId().equals(id)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Episode of given number already exists");
         }
 
-        Episode episode = episodeService.episodeFromEpisodeRequest(request);
-        episodeRepository.save(episode);
+        Episode savedEpisode = episodeRepository.save(requestEpisode);
 
-        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),request,episode));
+        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),x,savedEpisode));
 
-        return ResponseEntity.ok(episodeRepository.save(episodeService.episodeFromEpisodeRequest(request)));
+        return ResponseEntity.ok(new EpisodeLightResponse(savedEpisode));
     }
 
     @DeleteMapping("/episode")

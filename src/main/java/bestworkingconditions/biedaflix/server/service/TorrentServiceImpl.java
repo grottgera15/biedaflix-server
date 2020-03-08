@@ -223,13 +223,13 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Override
-    public void addTorrent(String seriesName, EpisodeRequest episodeRequest , Episode episode) {
+    public void addTorrent(String seriesName, String magnetLink , Episode episode) {
 
         String seriesNameWithoutSpaces = seriesName.replaceAll("\\s+", "");
-        String downloadName = seriesNameWithoutSpaces + "_S" + episodeRequest.getSeasonNumber() + "_E" + episodeRequest.getEpisodeNumber();
+        String downloadName = seriesNameWithoutSpaces + "_S" + episode.getSeasonNumber() + "_E" + episode.getEpisodeNumber();
 
         HttpEntity<MultiValueMap<String,String>> request = new TorrentHttpEntityBuilder()
-                .addKeyValuePair("urls",episodeRequest.getMagnetLink().get())
+                .addKeyValuePair("urls",magnetLink)
                 .addKeyValuePair("category","biedaflix")
                 .addKeyValuePair("rename",downloadName)
                 .addKeyValuePair("root_folder","true")

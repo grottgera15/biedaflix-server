@@ -73,9 +73,9 @@ public class UserController {
     public ResponseEntity<?> GetSingleAdministrativeUser(
             @RequestParam String id
     ){
-        return ResponseEntity.ok(repository.findById(id).orElseThrow(
+        return ResponseEntity.ok(userService.CreateUserAdministrateResponseFromUser(repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!")
-        ));
+        )));
     }
 
     @GetMapping(value = "/administrateUsers")
