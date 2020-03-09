@@ -98,9 +98,9 @@ public class EpisodeService {
 
         String baseFilePath = System.getProperty("user.dir") + "/files/series/" + episode.getSeriesId() + "/" +episode.getId() + "/";
 
-        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.LOW+".mp4"));
-        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.MEDIUM+".mp4"));
-        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.HIGH+".mp4"));
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.LOW.getQuality()+".mp4"));
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.MEDIUM.getQuality()+".mp4"));
+        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.HIGH.getQuality()+".mp4"));
 
         for(File f : filesToDelete){
             try {
