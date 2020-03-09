@@ -17,6 +17,7 @@ EXPOSE 8081
 
 RUN apt-get update
 RUN apt-get -y install ffmpeg
+RUN apt-get -y install bc
 RUN apt-get -y install rename
 RUN apt-get -y install tree
 RUN tree
