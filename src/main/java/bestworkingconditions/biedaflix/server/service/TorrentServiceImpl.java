@@ -82,9 +82,15 @@ public class TorrentServiceImpl implements TorrentService {
         return Optional.empty();
     }
 
+    public static File getCurrentlyDownloadingDirectory(CurrentlyDownloading currentlyDownloading){
+
+        File ending = new File(currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath()).getParentFile();
+        return new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + ending.toString());
+    }
+
     private void deleteLeftoverFilesFromDirectory(CurrentlyDownloading currentlyDownloading) throws IOException {
         if(currentlyDownloading.getTorrentFileInfoList().size() > 1){
-            File parent = new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0)).getParentFile();
+            File parent = getCurrentlyDownloadingDirectory(currentlyDownloading);
             FileUtils.deleteDirectory(parent);
         }
         else
@@ -108,6 +114,8 @@ public class TorrentServiceImpl implements TorrentService {
             else
                 info.setRelativePath(info.getRelativePath().replaceAll("\\s+","_"));
         }
+
+        currentlyDownloadingRepository.save(currentlyDownloading);
     }
 
 
@@ -125,21 +133,21 @@ public class TorrentServiceImpl implements TorrentService {
                                                                           .getSeriesId()).get();
 
             normalizeRequestedFiles(currentlyDownloading);
-            Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(currentlyDownloading);
+            Optional<File> relativeVideoOptionalFile = getBiggestFileFromDirectory(currentlyDownloading);
 
-            File relativeVideoFile = relativeVideoOptionaloFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
+            File relativeVideoFile = relativeVideoOptionalFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
 
-            File aboluteVideoFile = new File(relativeVideoFile.getAbsolutePath());
+            File absoluteVideoFile = new File(relativeVideoFile.getAbsolutePath());
 
             File resource = fileSystemResourceLoader.getResource("ffmpeg-converter.sh").getFile();
 
-            logger.info("VIDEO FILE" + "\"" + aboluteVideoFile.getAbsolutePath() + "\"");
+            logger.info("VIDEO FILE" + "\"" + absoluteVideoFile.getAbsolutePath() + "\"");
             logger.info("ROOT " + filesystemRoot.getAbsolutePath() + "/series");
 
             List<String> commands = new ArrayList<>();
             commands.add(resource.getAbsolutePath());
             commands.add("-i");
-            commands.add(aboluteVideoFile.getAbsolutePath());
+            commands.add(absoluteVideoFile.getAbsolutePath());
             commands.add("-n");
             commands.add(series.getFolderName());
             commands.add("-e");
