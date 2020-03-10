@@ -28,10 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,16 +79,23 @@ public class TorrentServiceImpl implements TorrentService {
         return Optional.empty();
     }
 
+    public static File getCurrentlyDownloadingDirectory(CurrentlyDownloading currentlyDownloading){
+
+        TorrentFileInfo biggestFile = currentlyDownloading.getTorrentFileInfoList().stream().max(Comparator.comparingLong(TorrentFileInfo::getFileSize)).get();
+        File file = new File(biggestFile.getRelativePath()).getParentFile();
+        return new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + file.toString());
+    }
+
     private void deleteLeftoverFilesFromDirectory(CurrentlyDownloading currentlyDownloading) throws IOException {
         if(currentlyDownloading.getTorrentFileInfoList().size() > 1){
-            File parent = new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0)).getParentFile();
+            File parent = getCurrentlyDownloadingDirectory(currentlyDownloading);
             FileUtils.deleteDirectory(parent);
         }
         else
             FileUtils.forceDelete(new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath() ));
     }
 
-    private void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
+    public void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
         File renamer = fileSystemResourceLoader.getResource("renamer.sh").getFile();
 
         String[] commands = {
@@ -102,16 +106,17 @@ public class TorrentServiceImpl implements TorrentService {
         Process rename = processBuilder.start();
         rename.waitFor();
 
+        renameTorrentFileInfos(currentlyDownloading);
+        currentlyDownloadingRepository.save(currentlyDownloading);
+    }
+
+    public static void renameTorrentFileInfos(CurrentlyDownloading currentlyDownloading){
         for(TorrentFileInfo info : currentlyDownloading.getTorrentFileInfoList()){
-            if(currentlyDownloading.getTorrentFileInfoList().size() > 1)
-                info.setRelativePath("/" + info.getRelativePath().replaceAll("\\s+","_"));
-            else
-                info.setRelativePath(info.getRelativePath().replaceAll("\\s+","_"));
+            info.setRelativePath(info.getRelativePath().replaceAll("\\s+","_"));
         }
     }
 
-
-    @Scheduled(initialDelay = 45000,fixedRate = 30000)
+    @Scheduled(initialDelay = 45000,fixedDelay = 30000)
     private void parseFinishedTorrents() throws Exception {
 
         List<CurrentlyDownloading> currentlyDownloadingList = currentlyDownloadingRepository.findAll();
@@ -125,21 +130,21 @@ public class TorrentServiceImpl implements TorrentService {
                                                                           .getSeriesId()).get();
 
             normalizeRequestedFiles(currentlyDownloading);
-            Optional<File> relativeVideoOptionaloFile = getBiggestFileFromDirectory(currentlyDownloading);
+            Optional<File> relativeVideoOptionalFile = getBiggestFileFromDirectory(currentlyDownloading);
 
-            File relativeVideoFile = relativeVideoOptionaloFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
+            File relativeVideoFile = relativeVideoOptionalFile.orElseThrow(() -> new Exception("cannot find biggest file in directory"));
 
-            File aboluteVideoFile = new File(relativeVideoFile.getAbsolutePath());
+            File absoluteVideoFile = new File(relativeVideoFile.getAbsolutePath());
 
             File resource = fileSystemResourceLoader.getResource("ffmpeg-converter.sh").getFile();
 
-            logger.info("VIDEO FILE" + "\"" + aboluteVideoFile.getAbsolutePath() + "\"");
+            logger.info("VIDEO FILE" + "\"" + absoluteVideoFile.getAbsolutePath() + "\"");
             logger.info("ROOT " + filesystemRoot.getAbsolutePath() + "/series");
 
             List<String> commands = new ArrayList<>();
             commands.add(resource.getAbsolutePath());
             commands.add("-i");
-            commands.add(aboluteVideoFile.getAbsolutePath());
+            commands.add(absoluteVideoFile.getAbsolutePath());
             commands.add("-n");
             commands.add(series.getFolderName());
             commands.add("-e");
@@ -161,7 +166,6 @@ public class TorrentServiceImpl implements TorrentService {
 
             deleteTorrent(currentlyDownloading.getTorrentInfo().getHash(), true);
 
-            //FIXME: ADD EPISODE TO DATABASE PROPERLY
             List<EpisodeVideo> episodeVideos = new ArrayList<>();
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(),EpisodeVideo.VideoQuality.HIGH));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.MEDIUM));
@@ -207,7 +211,7 @@ public class TorrentServiceImpl implements TorrentService {
         }
     }
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedDelay = 30000)
     private void checkTorrentsStatus() throws Exception {
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());

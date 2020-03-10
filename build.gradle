@@ -76,19 +76,11 @@ dependencies {
     // https://mvnrepository.com/artifact/com.sun.activation/javax.activation
     compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'junit', module: 'junit' //by both name and group
-    }
-    testCompile "org.junit.jupiter:junit-jupiter-api:5.2.0"
-    testCompile "org.junit.jupiter:junit-jupiter-params:5.2.0"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.2.0"
-    testImplementation 'org.mockito:mockito-core:2.+'
-    testImplementation 'org.mockito:mockito-junit-jupiter:2.18.3'
+    compile('org.springframework.boot:spring-boot-starter')
+    compile group: 'org.mockito', name: 'mockito-core', version: '2.13.0'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 test {
-    useJUnitPlatform {
-        includeTags 'fast'
-        excludeTags 'slow'
-    }
+    useJUnitPlatform()
 }
