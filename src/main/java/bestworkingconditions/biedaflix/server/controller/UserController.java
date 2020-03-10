@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.Series;
 import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.model.request.UserAdministrateRequest;
 import bestworkingconditions.biedaflix.server.model.request.UserRegisterRequest;
@@ -8,7 +7,6 @@ import bestworkingconditions.biedaflix.server.model.response.UserAdministrateRes
 import bestworkingconditions.biedaflix.server.model.response.UserResponse;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
 import bestworkingconditions.biedaflix.server.service.UserService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -17,12 +15,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.swing.text.html.Option;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin()
