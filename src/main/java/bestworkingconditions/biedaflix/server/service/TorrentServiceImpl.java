@@ -28,10 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,8 +81,9 @@ public class TorrentServiceImpl implements TorrentService {
 
     public static File getCurrentlyDownloadingDirectory(CurrentlyDownloading currentlyDownloading){
 
-        File ending = new File(currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath()).getParentFile();
-        return new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + ending.toString());
+        TorrentFileInfo biggestFile = currentlyDownloading.getTorrentFileInfoList().stream().max(Comparator.comparingLong(TorrentFileInfo::getFileSize)).get();
+        File file = new File(biggestFile.getRelativePath()).getParentFile();
+        return new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + file.toString());
     }
 
     private void deleteLeftoverFilesFromDirectory(CurrentlyDownloading currentlyDownloading) throws IOException {
@@ -97,7 +95,7 @@ public class TorrentServiceImpl implements TorrentService {
             FileUtils.forceDelete(new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath() ));
     }
 
-    private void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
+    public void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
         File renamer = fileSystemResourceLoader.getResource("renamer.sh").getFile();
 
         String[] commands = {
@@ -108,18 +106,17 @@ public class TorrentServiceImpl implements TorrentService {
         Process rename = processBuilder.start();
         rename.waitFor();
 
-        for(TorrentFileInfo info : currentlyDownloading.getTorrentFileInfoList()){
-            if(currentlyDownloading.getTorrentFileInfoList().size() > 1)
-                info.setRelativePath("/" + info.getRelativePath().replaceAll("\\s+","_"));
-            else
-                info.setRelativePath(info.getRelativePath().replaceAll("\\s+","_"));
-        }
-
+        renameTorrentFileInfos(currentlyDownloading);
         currentlyDownloadingRepository.save(currentlyDownloading);
     }
 
+    public static void renameTorrentFileInfos(CurrentlyDownloading currentlyDownloading){
+        for(TorrentFileInfo info : currentlyDownloading.getTorrentFileInfoList()){
+            info.setRelativePath(info.getRelativePath().replaceAll("\\s+","_"));
+        }
+    }
 
-    @Scheduled(initialDelay = 45000,fixedRate = 30000)
+    @Scheduled(initialDelay = 45000,fixedDelay = 30000)
     private void parseFinishedTorrents() throws Exception {
 
         List<CurrentlyDownloading> currentlyDownloadingList = currentlyDownloadingRepository.findAll();
@@ -169,7 +166,6 @@ public class TorrentServiceImpl implements TorrentService {
 
             deleteTorrent(currentlyDownloading.getTorrentInfo().getHash(), true);
 
-            //FIXME: ADD EPISODE TO DATABASE PROPERLY
             List<EpisodeVideo> episodeVideos = new ArrayList<>();
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(),EpisodeVideo.VideoQuality.HIGH));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.MEDIUM));
@@ -215,7 +211,7 @@ public class TorrentServiceImpl implements TorrentService {
         }
     }
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedDelay = 30000)
     private void checkTorrentsStatus() throws Exception {
         List<TorrentInfo> status = getTorrentsInfo();
         logger.info("SCHEDULED FUNCTION CALL " + status.toString());
