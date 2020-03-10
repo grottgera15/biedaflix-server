@@ -74,7 +74,7 @@ public class SeriesController {
 
         newSeries = seriesRepository.save(newSeries);
 
-        return ResponseEntity.ok(seriesService.seriesLightResponseFromSeries(newSeries));
+        return new ResponseEntity<>(seriesService.seriesLightResponseFromSeries(newSeries),HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/series/{id}", consumes = {"multipart/form-data"})

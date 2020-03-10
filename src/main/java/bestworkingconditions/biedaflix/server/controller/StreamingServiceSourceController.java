@@ -49,23 +49,25 @@ public class StreamingServiceSourceController {
         return new  URL(url);
     }
 
-    private void checkIfNameIsAvailable(String name){
-        List<StreamingServiceSource> streamingServiceSources = repository.findAll();
+    private void checkIfNameIsAvailable(String name,Optional<String> requestId){
 
-        if(streamingServiceSources.stream().anyMatch(t-> t.getName().equals(name)))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"streamingSource of given name already exists in the database!");
+        Optional<StreamingServiceSource> match = repository.findByName(name);
 
+        if(match.isPresent()){
+           if(!match.get().getId().equals(requestId)){
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"streamingSource of given name already exists in the database!");
+           }
+        }
     }
 
     @PostMapping(value = "/streamingSources", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> addStreamingServiceSource(@RequestParam(name="name") String name, @RequestParam(name="logo")MultipartFile logo) throws IOException {
-        checkIfNameIsAvailable(name);
+        checkIfNameIsAvailable(name,Optional.empty());
 
-        StreamingServiceSource newSource = new StreamingServiceSource(FilenameUtils.getExtension(logo.getOriginalFilename()), name);
+        StreamingServiceSource newSource = repository.save(new StreamingServiceSource(FilenameUtils.getExtension(logo.getOriginalFilename()), name));
 
         contentStore.setContent(newSource, logo.getInputStream());
-        repository.save(newSource);
 
         return new ResponseEntity<>(new StreamingServiceSourceResponse(newSource.getId(),newSource.getName(),getStreamingServiceURL(newSource)),HttpStatus.CREATED);
     }
@@ -76,24 +78,25 @@ public class StreamingServiceSourceController {
                                                           @RequestParam(name = "name") Optional<String> name,
                                                           @RequestParam(name = "logo") Optional<MultipartFile> logo) throws IOException{
 
-        name.ifPresent(this::checkIfNameIsAvailable);
-
         StreamingServiceSource source = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "StreamingServiceSource of given id does not exist!"));
+
+        source = repository.save(source);
+
+        if(name.isPresent()){
+            checkIfNameIsAvailable(name.get(),Optional.of(id));
+            source.setName(name.get());
+        }
 
         if(logo.isPresent()){
             contentStore.setContent(source,logo.get().getInputStream());
         }
 
-        name.ifPresent(source::setName);
-
-        repository.save(source);
-
         return new ResponseEntity<>(new StreamingServiceSourceResponse(source.getId(),source.getName(),getStreamingServiceURL(source)),HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/streamingSource")
+    @DeleteMapping(value = "/streamingSources/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
-    public ResponseEntity<?> deleteStreamingServiceSource(@RequestParam String id) {
+    public ResponseEntity<?> deleteStreamingServiceSource(@PathVariable String id) {
 
         List<Series> associatedSeries = seriesRepository.findAllByStreamingServiceId(id);
 

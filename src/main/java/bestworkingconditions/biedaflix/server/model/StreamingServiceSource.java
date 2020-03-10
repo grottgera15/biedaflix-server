@@ -37,6 +37,6 @@ public class StreamingServiceSource extends FileResource{
 
     @Override
     public String getFilePath() {
-        return  "/" + getClass().getSimpleName() + "/" + name + "." + getFileExtension() ;
+        return  "/" + getClass().getSimpleName() + "/" + id + "." + getFileExtension() ;
     }
 }
