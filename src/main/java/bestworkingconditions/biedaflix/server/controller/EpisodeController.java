@@ -78,7 +78,7 @@ public class EpisodeController {
         return ResponseEntity.ok(episodeService.episodeFullResponseFromEpisode(ep));
     }
 
-    @PostMapping(value = "/episodes", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/episodes", consumes = {"multipart/form-data","application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> addEpisode(@Valid @RequestBody EpisodeRequest request) {
 
@@ -98,7 +98,7 @@ public class EpisodeController {
         return new ResponseEntity<>(new EpisodeLightResponse(savedEpisode),HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/episodes/{id}", consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/episodes/{id}", consumes = {"multipart/form-data","application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> updateEpisode(
             @PathVariable String id,

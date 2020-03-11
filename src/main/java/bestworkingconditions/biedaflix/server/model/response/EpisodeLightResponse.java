@@ -10,6 +10,7 @@ public class EpisodeLightResponse implements Serializable {
 
     private String id;
     private int episodeNumber;
+    private int episodeSeason;
 
     private String name;
     private EpisodeStatus status;
@@ -18,9 +19,10 @@ public class EpisodeLightResponse implements Serializable {
     public EpisodeLightResponse() {
     }
 
-    public EpisodeLightResponse(String id, int episodeNumber, String name,EpisodeStatus status, Date releaseDate) {
+    public EpisodeLightResponse(String id, int episodeNumber, int episodeSeason, String name, EpisodeStatus status, Date releaseDate) {
         this.id = id;
         this.episodeNumber = episodeNumber;
+        this.episodeSeason = episodeSeason;
         this.name = name;
         this.status = status;
         this.releaseDate = releaseDate;
@@ -29,6 +31,7 @@ public class EpisodeLightResponse implements Serializable {
     public EpisodeLightResponse(Episode episode){
         this.id = episode.getId();
         this.episodeNumber = episode.getEpisodeNumber();
+        this.episodeSeason = episode.getSeasonNumber();
         this.name = episode.getName();
         this.status = episode.getEpisodeStatus();
         this.releaseDate = episode.getReleaseDate();
@@ -48,6 +51,14 @@ public class EpisodeLightResponse implements Serializable {
 
     public void setEpisodeNumber(int episodeNumber) {
         this.episodeNumber = episodeNumber;
+    }
+
+    public int getEpisodeSeason() {
+        return episodeSeason;
+    }
+
+    public void setEpisodeSeason(int episodeSeason) {
+        this.episodeSeason = episodeSeason;
     }
 
     public String getName() {

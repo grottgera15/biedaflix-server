@@ -12,5 +12,6 @@ public interface EpisodeRepository extends MongoRepository<Episode,String> {
     List<Episode> findAllBySeriesIdOrderByEpisodeNumber(String seriesId);
     Boolean existsEpisodeByEpisodeNumberAndSeasonNumber (int episodeNumber, int seasinNumber);
     Optional<Episode> findByEpisodeNumberAndSeasonNumber(int episodeNumber, int seasonNumber);
+    Optional<Episode> findBySeriesIdAndSeasonNumberAndEpisodeNumber(String seriesId,int seasonNumber,int episodeNumber);
     Optional<Episode> findById(String episodeId);
 }
