@@ -96,7 +96,7 @@ public class LoginController {
 
         if(appProperties.getRequireUserAcceptance()){
             if(requestedUser.isPresent()){
-                if(!requestedUser.get().isAccepted())
+                if(!requestedUser.get().getAccepted())
                     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user is not accepted!");
             }
         }

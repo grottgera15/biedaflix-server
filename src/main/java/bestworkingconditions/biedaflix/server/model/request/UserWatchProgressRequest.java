@@ -1,9 +1,16 @@
 package bestworkingconditions.biedaflix.server.model.request;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserWatchProgressRequest implements Serializable {
 
     @NotBlank
@@ -11,27 +18,8 @@ public class UserWatchProgressRequest implements Serializable {
     @NotNull
     private Double time;
 
-    public UserWatchProgressRequest() {
-    }
-
     public UserWatchProgressRequest(String episodeId, Double time) {
         this.episodeId = episodeId;
-        this.time = time;
-    }
-
-    public String getEpisodeId() {
-        return episodeId;
-    }
-
-    public void setEpisodeId(String episodeId) {
-        this.episodeId = episodeId;
-    }
-
-    public Double getTime() {
-        return time;
-    }
-
-    public void setTime(Double time) {
         this.time = time;
     }
 }

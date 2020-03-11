@@ -38,7 +38,7 @@ public class UserService {
                 u.getEmail(),
                 u.getUsername(),
                 userRolesDTOList,
-                u.isAccepted()
+                u.getAccepted()
         );
     }
 }

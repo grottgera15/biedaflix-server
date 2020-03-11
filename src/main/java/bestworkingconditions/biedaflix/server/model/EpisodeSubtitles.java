@@ -1,7 +1,14 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class EpisodeSubtitles extends EpisodeMediaFile {
 
     public enum SubtitlesLanguage{
@@ -21,19 +28,8 @@ public class EpisodeSubtitles extends EpisodeMediaFile {
 
     private SubtitlesLanguage language;
 
-    public EpisodeSubtitles() {
-    }
-
     public EpisodeSubtitles(String extension, @NotNull String seriesId, String episodeId, SubtitlesLanguage language) {
         super(extension, seriesId, episodeId);
-        this.language = language;
-    }
-
-    public SubtitlesLanguage getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(SubtitlesLanguage language) {
         this.language = language;
     }
 

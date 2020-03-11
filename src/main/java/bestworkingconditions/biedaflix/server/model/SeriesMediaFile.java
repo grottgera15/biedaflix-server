@@ -1,25 +1,21 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public abstract class SeriesMediaFile extends  FileResource {
 
     @NotNull
     protected String seriesId;
 
-    public SeriesMediaFile() {
-    }
-
     public SeriesMediaFile(String extension, @NotNull String seriesId) {
         super(extension);
-        this.seriesId = seriesId;
-    }
-
-    public String getSeriesId() {
-        return seriesId;
-    }
-
-    public void setSeriesId(String seriesId) {
         this.seriesId = seriesId;
     }
 

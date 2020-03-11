@@ -1,6 +1,9 @@
 package bestworkingconditions.biedaflix.server.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 
@@ -11,6 +14,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
 
+@Getter
+@Setter
 public class EpisodeRequest implements Serializable {
 
     @NotNull
@@ -38,54 +43,6 @@ public class EpisodeRequest implements Serializable {
         this.episodeNumber = episodeNumber;
         this.name = name;
         this.releaseDate = releaseDate;
-        this.magnetLink = Optional.of(magnetLink);
-    }
-
-    public String getSeriesId() {
-        return seriesId;
-    }
-
-    public void setSeriesId(String seriesId) {
-        this.seriesId = seriesId;
-    }
-
-    public int getSeasonNumber() {
-        return seasonNumber;
-    }
-
-    public void setSeasonNumber(int seasonNumber) {
-        this.seasonNumber = seasonNumber;
-    }
-
-    public int getEpisodeNumber() {
-        return episodeNumber;
-    }
-
-    public void setEpisodeNumber(int episodeNumber) {
-        this.episodeNumber = episodeNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public Optional<String> getMagnetLink() {
-        return magnetLink;
-    }
-
-    public void setMagnetLink(String magnetLink) {
         this.magnetLink = Optional.of(magnetLink);
     }
 }

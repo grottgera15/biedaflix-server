@@ -2,10 +2,16 @@ package bestworkingconditions.biedaflix.server.model.response;
 
 import bestworkingconditions.biedaflix.server.model.Episode;
 import bestworkingconditions.biedaflix.server.model.EpisodeStatus;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class EpisodeLightResponse implements Serializable {
 
     private String id;
@@ -15,9 +21,6 @@ public class EpisodeLightResponse implements Serializable {
     private String name;
     private EpisodeStatus status;
     private Date releaseDate;
-
-    public EpisodeLightResponse() {
-    }
 
     public EpisodeLightResponse(String id, int episodeNumber, int episodeSeason, String name, EpisodeStatus status, Date releaseDate) {
         this.id = id;
@@ -35,53 +38,5 @@ public class EpisodeLightResponse implements Serializable {
         this.name = episode.getName();
         this.status = episode.getEpisodeStatus();
         this.releaseDate = episode.getReleaseDate();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public int getEpisodeNumber() {
-        return episodeNumber;
-    }
-
-    public void setEpisodeNumber(int episodeNumber) {
-        this.episodeNumber = episodeNumber;
-    }
-
-    public int getSeasonNumber() {
-        return seasonNumber;
-    }
-
-    public void setSeasonNumber(int seasonNumber) {
-        this.seasonNumber = seasonNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public EpisodeStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EpisodeStatus status) {
-        this.status = status;
-    }
-
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
     }
 }

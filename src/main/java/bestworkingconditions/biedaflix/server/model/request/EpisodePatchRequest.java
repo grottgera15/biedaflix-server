@@ -1,12 +1,17 @@
 package bestworkingconditions.biedaflix.server.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.swing.text.html.Option;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
 
+@Getter
+@Setter
 public class EpisodePatchRequest implements Serializable {
 
     private Optional<String> seriesId;
@@ -36,51 +41,4 @@ public class EpisodePatchRequest implements Serializable {
         this.magnetLink = magnetLink;
     }
 
-    public Optional<String> getSeriesId() {
-        return seriesId;
-    }
-
-    public void setSeriesId(Optional<String> seriesId) {
-        this.seriesId = seriesId;
-    }
-
-    public Optional<Integer> getSeasonNumber() {
-        return seasonNumber;
-    }
-
-    public void setSeasonNumber(Optional<Integer> seasonNumber) {
-        this.seasonNumber = seasonNumber;
-    }
-
-    public Optional<Integer> getEpisodeNumber() {
-        return episodeNumber;
-    }
-
-    public void setEpisodeNumber(Optional<Integer> episodeNumber) {
-        this.episodeNumber = episodeNumber;
-    }
-
-    public Optional<String> getName() {
-        return name;
-    }
-
-    public void setName(Optional<String> name) {
-        this.name = name;
-    }
-
-    public Optional<Date> getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(Optional<Date> releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public Optional<String> getMagnetLink() {
-        return magnetLink;
-    }
-
-    public void setMagnetLink(Optional<String> magnetLink) {
-        this.magnetLink = magnetLink;
-    }
 }

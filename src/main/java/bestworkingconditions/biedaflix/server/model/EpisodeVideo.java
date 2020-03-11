@@ -1,7 +1,14 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class EpisodeVideo extends EpisodeMediaFile {
 
     public enum VideoQuality{
@@ -22,19 +29,8 @@ public class EpisodeVideo extends EpisodeMediaFile {
 
     private VideoQuality videoQuality;
 
-    public EpisodeVideo() {
-    }
-
     public EpisodeVideo(String extension, @NotNull String seriesId, String episodeId, VideoQuality videoQuality) {
         super(extension, seriesId, episodeId);
-        this.videoQuality = videoQuality;
-    }
-
-    public VideoQuality getVideoQuality() {
-        return videoQuality;
-    }
-
-    public void setVideoQuality(VideoQuality videoQuality) {
         this.videoQuality = videoQuality;
     }
 
