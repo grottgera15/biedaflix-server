@@ -38,7 +38,7 @@ public class SeriesController {
         this.seriesService = seriesService;
     }
 
-    @PostMapping(value = "/series", consumes = {"multipart/form-data","application/json"})
+    @PostMapping(value = "/series", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> AddSeries(@Valid SeriesRequest request,
                                             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,

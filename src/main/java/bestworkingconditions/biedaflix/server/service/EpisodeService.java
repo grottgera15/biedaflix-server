@@ -109,6 +109,7 @@ public class EpisodeService {
 
     public void deleteVideoAndThumbs(Episode episode){
 
+        episode.getVideoFiles().clear();
         List<File> filesToDelete = new ArrayList<>();
 
         String baseFilePath = System.getProperty("user.dir") + "/files/series/" + episode.getSeriesId() + "/" +episode.getId() + "/";

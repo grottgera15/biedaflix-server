@@ -65,7 +65,6 @@ public class EpisodeController {
         episodeRepository.save(episode);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
-
     }
 
     @GetMapping("/episodes/{id}")
@@ -78,7 +77,7 @@ public class EpisodeController {
         return ResponseEntity.ok(episodeService.episodeFullResponseFromEpisode(ep));
     }
 
-    @PostMapping(value = "/episodes", consumes = {"multipart/form-data","application/json"})
+    @PostMapping(value = "/episodes", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> addEpisode(@Valid @RequestBody EpisodeRequest request) {
 
@@ -93,12 +92,16 @@ public class EpisodeController {
         Episode episode = episodeService.episodeFromEpisodeRequest(request);
         Episode savedEpisode = episodeRepository.save(episode);
 
-        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),x,savedEpisode));
+        if(request.getMagnetLink().isPresent()){
+            if(request.getMagnetLink().get().length() > 0) {
+                torrentService.addTorrent(series.getName(),request.getMagnetLink().get(),savedEpisode);
+            }
+        }
 
         return new ResponseEntity<>(new EpisodeLightResponse(savedEpisode),HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/episodes/{id}", consumes = {"multipart/form-data","application/json"})
+    @PatchMapping(value = "/episodes/{id}", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> updateEpisode(
             @PathVariable String id,
@@ -128,9 +131,14 @@ public class EpisodeController {
 
         Episode savedEpisode = episodeRepository.save(requestEpisode);
 
-        request.getMagnetLink().ifPresent(x -> torrentService.addTorrent(series.getName(),x,savedEpisode));
+        if(request.getMagnetLink().isPresent()){
+            if(request.getMagnetLink().get().length() > 0) {
+                torrentService.addTorrent(series.getName(),request.getMagnetLink().get(),savedEpisode);
+            }
 
-        return ResponseEntity.ok(new EpisodeLightResponse(savedEpisode));
+        }
+
+        return ResponseEntity.ok(episodeService.episodeFullResponseFromEpisode(savedEpisode));
     }
 
     @DeleteMapping("/episodes/{id}")

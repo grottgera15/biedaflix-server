@@ -159,6 +159,7 @@ public class TorrentServiceImpl implements TorrentService {
                 process.waitFor();
             }
             catch (Exception e){
+                deleteLeftoverFilesFromDirectory(currentlyDownloading);
                 throw new Exception(e);
             }
 
@@ -183,6 +184,7 @@ public class TorrentServiceImpl implements TorrentService {
 
 
             }catch(IOException e){
+                deleteLeftoverFilesFromDirectory(currentlyDownloading);
                 throw new IOException(e);
             }
 
