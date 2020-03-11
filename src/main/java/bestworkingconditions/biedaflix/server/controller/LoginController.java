@@ -129,7 +129,7 @@ public class LoginController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/login" , consumes = {"multipart/form-data"})
+    @PostMapping(value = "/login" , consumes = {"multipart/form-data","application/json"})
     public ResponseEntity<?> Login(
             @RequestBody() AuthenticationRequest authenticationRequest,
             HttpServletResponse response) {

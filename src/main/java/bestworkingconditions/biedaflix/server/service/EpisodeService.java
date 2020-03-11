@@ -11,6 +11,7 @@ import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,6 +42,23 @@ public class EpisodeService {
         );
     }
 
+    public Optional<Episode> getNextEpisode(Episode episode){
+
+        Optional<Episode> match = episodeRepository.findBySeriesIdAndSeasonNumberAndEpisodeNumber(episode.getSeriesId(),episode.getSeasonNumber(),episode.getEpisodeNumber()+1);
+
+        if(match.isPresent()){
+            return match;
+        }else{
+            match = episodeRepository.findBySeriesIdAndSeasonNumberAndEpisodeNumber(episode.getSeriesId(),episode.getSeasonNumber()+1,1);
+
+            if(match.isPresent()){
+                return match;
+            }
+        }
+
+        return Optional.empty();
+    }
+
     public EpisodeFullResponse episodeFullResponseFromEpisode(Episode ep){
 
         Map<String, String> videoSources = new HashMap<>();
@@ -64,14 +82,11 @@ public class EpisodeService {
 
 
         return new EpisodeFullResponse(
-                ep.getId(),
-                ep.getEpisodeNumber(),
-                ep.getName(),
-                ep.getEpisodeStatus(),
-                ep.getReleaseDate(),
+                ep,
                 videoSources,
                 subtitles,
-                thumbs
+                thumbs,
+                getNextEpisode(ep)
         );
     }
 
