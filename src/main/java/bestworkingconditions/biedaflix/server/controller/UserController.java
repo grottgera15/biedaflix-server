@@ -96,7 +96,7 @@ public class UserController {
         return ResponseEntity.ok(userAdministrateResponses);
     }
 
-    @PatchMapping(value = "/users/{id}", consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/users/{id}" , consumes = {"multipart/form-data"})
     @PreAuthorize("authentication.name == #id")
     public ResponseEntity<?> patchUser(
             @PathVariable String id,
@@ -140,7 +140,7 @@ public class UserController {
         return ResponseEntity.ok(new UserResponse(repository.findById(id).orElseThrow( ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!"))));
     }
 
-    @PostMapping(value = "/users", consumes = {"application/json"})
+    @PostMapping(value = "/users", consumes = {"multipart/form-data"})
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterRequest userRequest) {
 
         List<User> repositoryAll = repository.findAll();
