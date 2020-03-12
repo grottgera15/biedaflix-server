@@ -45,9 +45,5 @@ public class UserService extends GenericServiceImpl<User,UserRepository> {
         );
     }
 
-    /*
-    public UserResponse saveUser(UserRequest request){
 
-    }
-     */
 }

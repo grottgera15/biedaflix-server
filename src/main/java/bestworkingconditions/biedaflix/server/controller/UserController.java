@@ -33,7 +33,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PatchMapping(value = "/users/{id}" , consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/users/{id}" , consumes = {"application/json","multipart/form-data"})
     @PreAuthorize("authentication.name == #id")
     public ResponseEntity<?> patchUser(
             @PathVariable String id,
@@ -77,16 +77,10 @@ public class UserController {
         return ResponseEntity.ok(new UserResponse(repository.findById(id).orElseThrow( ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!"))));
     }
 
-    @PostMapping(value = "/users", consumes = {"application/json"})
-    public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRequest userRequest) {
+    @PostMapping(value = "/users",consumes = {"application/json","multipart/form-data"})
+    public ResponseEntity<?> registerNewUser(@Valid @RequestParam UserRequest userRequest) {
 
         List<User> repositoryAll = repository.findAll();
-
-        //if(repositoryAll.stream().anyMatch(t-> t.getEmail().equals(userRequest.getEmail())))
-        //    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given email already exists in the database!");
-
-        //if(repositoryAll.stream().anyMatch(t-> t.getUsername().equals(userRequest.getUsername())))
-        //   throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given username already exists in the database!");
 
         String plainText = userRequest.getPassword();
         userRequest.setPassword(passwordEncoder.encode(plainText));
