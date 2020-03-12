@@ -3,7 +3,9 @@ package bestworkingconditions.biedaflix.server.service;
 import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.model.authority.Role;
 import bestworkingconditions.biedaflix.server.model.dto.RoleDTO;
+import bestworkingconditions.biedaflix.server.model.request.UserRequest;
 import bestworkingconditions.biedaflix.server.model.response.UserAdministrateResponse;
+import bestworkingconditions.biedaflix.server.model.response.UserResponse;
 import bestworkingconditions.biedaflix.server.repository.RoleRepository;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,6 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
-    //TODO NAPISAC TESTY
-
-
     public UserAdministrateResponse CreateUserAdministrateResponseFromUser(User u){
 
         List<Role> userRoles = (List<Role>) roleRepository.findAllById(u.getRoles());
@@ -42,4 +41,10 @@ public class UserService {
                 u.getAccepted()
         );
     }
+
+    /*
+    public UserResponse saveUser(UserRequest request){
+
+    }
+     */
 }

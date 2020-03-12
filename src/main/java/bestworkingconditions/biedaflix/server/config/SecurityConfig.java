@@ -3,6 +3,7 @@ package bestworkingconditions.biedaflix.server.config;
 import bestworkingconditions.biedaflix.server.filter.JwtFilter;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.service.MongoUserDetailsService;
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -69,7 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                     .cors().and()
                     .authorizeRequests()
-                    .antMatchers("/login", "/register", "/refreshToken")
+                    .antMatchers(HttpMethod.POST,"/users").permitAll()
+                    .antMatchers("/login", "/refreshToken")
                     .permitAll()
                     .anyRequest()
                     .authenticated()

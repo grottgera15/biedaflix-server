@@ -10,7 +10,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserRegisterRequest {
+public class UserRequest {
 
     @NotBlank
     @Pattern(regexp="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" +
@@ -29,7 +29,7 @@ public class UserRegisterRequest {
     @NotBlank
     private String password;
 
-    public UserRegisterRequest(@NotBlank String email, @NotBlank String username, @NotBlank String password) {
+    public UserRequest(@NotBlank String email, @NotBlank String username, @NotBlank String password) {
         this.email = email;
         this.username = username;
         this.password = password;

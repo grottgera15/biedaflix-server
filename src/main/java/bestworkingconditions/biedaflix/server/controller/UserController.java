@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.controller;
 
 import bestworkingconditions.biedaflix.server.model.User;
-import bestworkingconditions.biedaflix.server.model.request.UserRegisterRequest;
+import bestworkingconditions.biedaflix.server.model.request.UserRequest;
 import bestworkingconditions.biedaflix.server.model.response.UserResponse;
 import bestworkingconditions.biedaflix.server.repository.UserRepository;
 import bestworkingconditions.biedaflix.server.service.UserService;
@@ -78,7 +78,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/users", consumes = {"application/json"})
-    public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterRequest userRequest) {
+    public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRequest userRequest) {
 
         List<User> repositoryAll = repository.findAll();
 
