@@ -82,11 +82,11 @@ public class UserController {
 
         List<User> repositoryAll = repository.findAll();
 
-        if(repositoryAll.stream().anyMatch(t-> t.getEmail().equals(userRequest.getEmail())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given email already exists in the database!");
+        //if(repositoryAll.stream().anyMatch(t-> t.getEmail().equals(userRequest.getEmail())))
+        //    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given email already exists in the database!");
 
-        if(repositoryAll.stream().anyMatch(t-> t.getUsername().equals(userRequest.getUsername())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given username already exists in the database!");
+        //if(repositoryAll.stream().anyMatch(t-> t.getUsername().equals(userRequest.getUsername())))
+        //   throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given username already exists in the database!");
 
         String plainText = userRequest.getPassword();
         userRequest.setPassword(passwordEncoder.encode(plainText));
