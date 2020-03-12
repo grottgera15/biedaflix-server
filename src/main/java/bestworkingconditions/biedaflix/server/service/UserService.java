@@ -15,13 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService extends GenericServiceImpl<User,UserRepository> {
 
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository repository, UserRepository userRepository, RoleRepository roleRepository) {
+        super(repository);
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
@@ -32,6 +33,8 @@ public class UserService {
         List<RoleDTO> userRolesDTOList = new ArrayList<>();
 
         userRoles.forEach(x -> userRolesDTOList.add(new RoleDTO(x)));
+
+        User found = findById(u.getId());
 
         return new UserAdministrateResponse(
                 u.getId(),

@@ -1,6 +1,9 @@
-package bestworkingconditions.biedaflix.server.errorHandling.model;
+package bestworkingconditions.biedaflix.server.errorHandling;
 
 
+import bestworkingconditions.biedaflix.server.errorHandling.model.ApiError;
+import bestworkingconditions.biedaflix.server.errorHandling.model.ApiErrorUtils;
+import bestworkingconditions.biedaflix.server.errorHandling.model.ApiValidationError;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
