@@ -43,4 +43,12 @@ public class Role implements GrantedAuthority {
         return prefix + name;
     }
 
+    public Collection<? extends GrantedAuthority> getAllowedOperations(){
+        return allowedOperations;
+    }
+
+    public List<Operation> getOperationEnumList(){
+        return allowedOperations;
+    }
+
 }

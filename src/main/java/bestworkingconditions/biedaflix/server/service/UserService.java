@@ -26,6 +26,7 @@ public class UserService {
 
     //TODO NAPISAC TESTY
 
+
     public UserAdministrateResponse CreateUserAdministrateResponseFromUser(User u){
 
         List<Role> userRoles = (List<Role>) roleRepository.findAllById(u.getRoles());
