@@ -4,17 +4,16 @@ import bestworkingconditions.biedaflix.server.controller.GenericController;
 import bestworkingconditions.biedaflix.server.user.model.User;
 import bestworkingconditions.biedaflix.server.user.model.UserRequest;
 import bestworkingconditions.biedaflix.server.user.model.UserResponse;
-import org.modelmapper.ModelMapper;
+import bestworkingconditions.biedaflix.server.util.ModelMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 
 @RestController
@@ -23,57 +22,41 @@ public class UserController extends GenericController<User,UserResponse,UserServ
 
     private final UserRepository repository;
     private final UserService userService;
-    private final ModelMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService service, ModelMapper mapper, UserRepository repository, UserService userService, ModelMapper mapper1) {
-        super(User.class, UserResponse.class, service, mapper);
+    public UserController(UserService service, UserRepository repository, UserService userService, ModelMapperUtils modelMapperUtils, PasswordEncoder passwordEncoder) {
+        super(User.class, UserResponse.class, service,modelMapperUtils);
         this.repository = repository;
         this.userService = userService;
-        this.mapper = mapper1;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PatchMapping(value = "/{id}" , consumes = {"application/json","multipart/form-data"})
     @PreAuthorize("authentication.name == #id")
     public ResponseEntity<?> patchUser(
             @PathVariable String id,
-            @RequestParam(required = false) Optional<String> username,
-            @RequestParam(required = false) Optional<String> email,
-            @RequestParam(required = false) Optional<String> password
+            @RequestParam(required = false) @NotBlank Optional<String> username,
+            @RequestParam(required = false) @NotBlank Optional<String> email,
+            @RequestParam(required = false) @NotBlank Optional<String> password
             ){
 
-        Optional<User> match = repository.findById(id);
+        User match = service.findById(id);
 
-        if(match.isPresent()){
+        username.ifPresent(match::setUsername);
+        email.ifPresent(match::setEmail);
+        password.ifPresent(x -> match.setPassword(passwordEncoder.encode(x)));
 
-            User u = match.get();
+        repository.save(match);
 
-            username.ifPresent(u::setUsername);
-            email.ifPresent(u::setEmail);
-            //password.ifPresent(x -> u.setPassword(passwordEncoder.encode(x)));
+        return ResponseEntity.ok(new UserResponse(match));
 
-            repository.save(u);
-
-            return ResponseEntity.ok(new UserResponse(u));
-
-        }else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!");
-        }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> getUsers(
-    ){
-        List<UserResponse> response = new ArrayList<>();
-
-        repository.findAll().forEach(x -> response.add(new UserResponse(x)));
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping(value = "/",consumes = {"application/json","multipart/form-data"})
-    public ResponseEntity<?> registerNewUser(@Valid @RequestParam UserRequest userRequest) {
-        return new ResponseEntity<>(userService.create(mapper.map(userRequest,User.class)),HttpStatus.OK);
+    @PostMapping(consumes = {"application/json","multipart/form-data"})
+    public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRequest userRequest) {
+        User newUser = userService.create(mapper.map(userRequest,User.class));
+        return new ResponseEntity<>(mapper.map(newUser,UserResponse.class),HttpStatus.OK);
     }
 
 }
