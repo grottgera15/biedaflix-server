@@ -1,6 +1,6 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
-import bestworkingconditions.biedaflix.server.episode.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.common.model.TorrentCategory;
 import bestworkingconditions.biedaflix.server.common.model.TorrentFileInfo;
 import bestworkingconditions.biedaflix.server.common.model.TorrentInfo;

@@ -1,10 +1,10 @@
 package bestworkingconditions.biedaflix.server.common.controller;
 
-import bestworkingconditions.biedaflix.server.user.model.User;
-import bestworkingconditions.biedaflix.server.user.model.UserAdministrateRequest;
-import bestworkingconditions.biedaflix.server.user.model.UserAdministrateResponse;
-import bestworkingconditions.biedaflix.server.user.UserRepository;
-import bestworkingconditions.biedaflix.server.user.UserService;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateRequest;
+import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateResponse;
+import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
+import bestworkingconditions.biedaflix.server.identity.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;

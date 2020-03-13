@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.user;
+package bestworkingconditions.biedaflix.server.identity.user;
 
 import bestworkingconditions.biedaflix.server.common.conversion.ConverterConfigurator;
 import org.modelmapper.ModelMapper;

@@ -1,6 +1,6 @@
 package bestworkingconditions.biedaflix.server.episode.eventListener;
 
-import bestworkingconditions.biedaflix.server.episode.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.episode.EpisodeStatus;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;

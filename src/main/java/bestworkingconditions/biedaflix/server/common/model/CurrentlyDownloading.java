@@ -1,6 +1,6 @@
 package bestworkingconditions.biedaflix.server.common.model;
 
-import bestworkingconditions.biedaflix.server.episode.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

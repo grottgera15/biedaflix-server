@@ -1,11 +1,9 @@
-package bestworkingconditions.biedaflix.server.user.model;
+package bestworkingconditions.biedaflix.server.identity.user.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 

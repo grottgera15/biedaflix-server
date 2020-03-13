@@ -1,11 +1,11 @@
-package bestworkingconditions.biedaflix.server.user;
+package bestworkingconditions.biedaflix.server.identity.user;
 
-import bestworkingconditions.biedaflix.server.role.Role;
-import bestworkingconditions.biedaflix.server.role.RoleDTO;
-import bestworkingconditions.biedaflix.server.role.RoleRepository;
+import bestworkingconditions.biedaflix.server.identity.role.Role;
+import bestworkingconditions.biedaflix.server.identity.role.RoleDTO;
+import bestworkingconditions.biedaflix.server.identity.role.RoleRepository;
 import bestworkingconditions.biedaflix.server.common.service.GenericServiceImpl;
-import bestworkingconditions.biedaflix.server.user.model.User;
-import bestworkingconditions.biedaflix.server.user.model.UserAdministrateResponse;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -4,6 +4,7 @@ package bestworkingconditions.biedaflix.server.common.service;
 import bestworkingconditions.biedaflix.server.episode.*;
 import bestworkingconditions.biedaflix.server.common.model.*;
 import bestworkingconditions.biedaflix.server.common.repository.CurrentlyDownloadingRepository;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.series.Series;
 import bestworkingconditions.biedaflix.server.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.common.repository.TorrentUriRepository;

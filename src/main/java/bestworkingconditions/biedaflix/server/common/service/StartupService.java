@@ -1,12 +1,12 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
-import bestworkingconditions.biedaflix.server.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.common.model.authority.Operation;
 import bestworkingconditions.biedaflix.server.common.model.authority.OperationType;
-import bestworkingconditions.biedaflix.server.role.Role;
+import bestworkingconditions.biedaflix.server.identity.role.Role;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.role.RoleRepository;
-import bestworkingconditions.biedaflix.server.user.UserRepository;
+import bestworkingconditions.biedaflix.server.identity.role.RoleRepository;
+import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

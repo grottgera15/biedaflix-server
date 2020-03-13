@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.common.repository;
 
 import bestworkingconditions.biedaflix.server.common.model.CurrentlyDownloading;
-import bestworkingconditions.biedaflix.server.episode.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.common.model.TorrentInfo;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

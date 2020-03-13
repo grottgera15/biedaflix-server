@@ -1,6 +1,6 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
-import bestworkingconditions.biedaflix.server.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 

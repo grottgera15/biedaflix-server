@@ -1,6 +1,6 @@
-package bestworkingconditions.biedaflix.server.user;
+package bestworkingconditions.biedaflix.server.identity.user;
 
-import bestworkingconditions.biedaflix.server.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

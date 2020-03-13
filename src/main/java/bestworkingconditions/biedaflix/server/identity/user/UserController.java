@@ -1,9 +1,9 @@
-package bestworkingconditions.biedaflix.server.user;
+package bestworkingconditions.biedaflix.server.identity.user;
 
 import bestworkingconditions.biedaflix.server.common.controller.GenericController;
-import bestworkingconditions.biedaflix.server.user.model.User;
-import bestworkingconditions.biedaflix.server.user.model.UserRequest;
-import bestworkingconditions.biedaflix.server.user.model.UserResponse;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.UserRequest;
+import bestworkingconditions.biedaflix.server.identity.user.model.UserResponse;
 import bestworkingconditions.biedaflix.server.common.util.ModelMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

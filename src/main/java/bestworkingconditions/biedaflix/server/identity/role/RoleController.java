@@ -1,9 +1,9 @@
-package bestworkingconditions.biedaflix.server.role;
+package bestworkingconditions.biedaflix.server.identity.role;
 
-import bestworkingconditions.biedaflix.server.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.common.model.authority.Operation;
 import bestworkingconditions.biedaflix.server.common.model.authority.OperationType;
-import bestworkingconditions.biedaflix.server.user.UserRepository;
+import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

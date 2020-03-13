@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.episode;
+package bestworkingconditions.biedaflix.server.episode.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

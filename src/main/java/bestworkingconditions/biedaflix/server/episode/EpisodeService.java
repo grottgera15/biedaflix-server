@@ -1,6 +1,9 @@
 package bestworkingconditions.biedaflix.server.episode;
 
 import bestworkingconditions.biedaflix.server.common.model.response.MediaFilesResponse;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.EpisodeFullResponse;
+import bestworkingconditions.biedaflix.server.episode.model.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.series.SeriesService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;

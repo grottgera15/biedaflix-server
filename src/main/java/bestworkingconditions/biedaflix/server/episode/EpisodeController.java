@@ -1,6 +1,10 @@
 package bestworkingconditions.biedaflix.server.episode;
 
 import bestworkingconditions.biedaflix.server.common.repository.FileResourceContentStore;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.EpisodeFullResponse;
+import bestworkingconditions.biedaflix.server.episode.model.EpisodeLightResponse;
+import bestworkingconditions.biedaflix.server.episode.model.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.series.Series;
 import bestworkingconditions.biedaflix.server.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.common.service.TorrentService;

@@ -1,9 +1,9 @@
 package bestworkingconditions.biedaflix.server.common.controller;
 
-import bestworkingconditions.biedaflix.server.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.common.model.auth.AuthenticationRequest;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.user.UserRepository;
+import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.common.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
 import bestworkingconditions.biedaflix.server.episode.EpisodeService;
-import bestworkingconditions.biedaflix.server.episode.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.episode.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.series.SeriesService;
 import org.junit.jupiter.api.BeforeEach;

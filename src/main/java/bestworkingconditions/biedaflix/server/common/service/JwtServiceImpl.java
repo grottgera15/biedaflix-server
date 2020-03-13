@@ -1,8 +1,8 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
-import bestworkingconditions.biedaflix.server.user.model.User;
-import bestworkingconditions.biedaflix.server.user.model.UserAdministrateResponse;
-import bestworkingconditions.biedaflix.server.user.UserService;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
+import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateResponse;
+import bestworkingconditions.biedaflix.server.identity.user.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

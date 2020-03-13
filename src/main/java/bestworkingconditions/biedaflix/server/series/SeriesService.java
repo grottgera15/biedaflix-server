@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.series;
 
-import bestworkingconditions.biedaflix.server.episode.Episode;
-import bestworkingconditions.biedaflix.server.episode.EpisodeLightResponse;
+import bestworkingconditions.biedaflix.server.episode.model.Episode;
+import bestworkingconditions.biedaflix.server.episode.model.EpisodeLightResponse;
 import bestworkingconditions.biedaflix.server.common.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.common.properties.StoreProperties;

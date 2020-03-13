@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.user.model;
+package bestworkingconditions.biedaflix.server.identity.user.model;
 
 import bestworkingconditions.biedaflix.server.common.model.BaseDTO;
 import lombok.Getter;

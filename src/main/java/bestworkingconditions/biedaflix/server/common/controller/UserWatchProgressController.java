@@ -3,7 +3,7 @@ package bestworkingconditions.biedaflix.server.common.controller;
 import bestworkingconditions.biedaflix.server.common.model.UserWatchProgress;
 import bestworkingconditions.biedaflix.server.common.model.request.UserWatchProgressRequest;
 import bestworkingconditions.biedaflix.server.episode.EpisodeRepository;
-import bestworkingconditions.biedaflix.server.user.UserRepository;
+import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.common.repository.UserWatchProgressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
