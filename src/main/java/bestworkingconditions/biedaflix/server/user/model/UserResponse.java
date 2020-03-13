@@ -1,6 +1,6 @@
-package bestworkingconditions.biedaflix.server.model.response;
+package bestworkingconditions.biedaflix.server.user.model;
 
-import bestworkingconditions.biedaflix.server.model.User;
+import bestworkingconditions.biedaflix.server.user.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

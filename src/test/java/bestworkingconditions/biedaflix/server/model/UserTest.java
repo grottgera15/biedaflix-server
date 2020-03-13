@@ -1,6 +1,7 @@
 package bestworkingconditions.biedaflix.server.model;
 
-import bestworkingconditions.biedaflix.server.model.request.UserRequest;
+import bestworkingconditions.biedaflix.server.user.model.UserRequest;
+import bestworkingconditions.biedaflix.server.user.model.User;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

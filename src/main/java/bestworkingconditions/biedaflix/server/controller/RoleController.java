@@ -1,12 +1,12 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.User;
+import bestworkingconditions.biedaflix.server.user.model.User;
 import bestworkingconditions.biedaflix.server.model.authority.Operation;
 import bestworkingconditions.biedaflix.server.model.authority.OperationType;
 import bestworkingconditions.biedaflix.server.model.authority.Role;
 import bestworkingconditions.biedaflix.server.model.dto.RoleDTO;
 import bestworkingconditions.biedaflix.server.repository.RoleRepository;
-import bestworkingconditions.biedaflix.server.repository.UserRepository;
+import bestworkingconditions.biedaflix.server.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

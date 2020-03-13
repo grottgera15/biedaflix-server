@@ -1,6 +1,6 @@
-package bestworkingconditions.biedaflix.server.model;
+package bestworkingconditions.biedaflix.server.user.model;
 
-import bestworkingconditions.biedaflix.server.model.request.UserRequest;
+import bestworkingconditions.biedaflix.server.model.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,10 +13,8 @@ import java.util.List;
 
 @Document(collection = "users")
 @Getter @Setter @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
-    @Id
-    private String id;
     private String refreshToken;
 
     @Indexed(unique = true)
@@ -29,8 +27,8 @@ public class User {
 
     private List<String> roles = new ArrayList<>();
 
-    public User(String id, String refreshToken, String email, String username, String password, boolean accepted, List<String> roles) {
-        this.id = id;
+    public User(String id, String refreshToken, String email, String username, String password, Boolean accepted, List<String> roles) {
+        super(id);
         this.refreshToken = refreshToken;
         this.email = email;
         this.username = username;

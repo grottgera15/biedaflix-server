@@ -1,13 +1,12 @@
-package bestworkingconditions.biedaflix.server.service;
+package bestworkingconditions.biedaflix.server.user;
 
-import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.model.authority.Role;
 import bestworkingconditions.biedaflix.server.model.dto.RoleDTO;
-import bestworkingconditions.biedaflix.server.model.request.UserRequest;
-import bestworkingconditions.biedaflix.server.model.response.UserAdministrateResponse;
-import bestworkingconditions.biedaflix.server.model.response.UserResponse;
 import bestworkingconditions.biedaflix.server.repository.RoleRepository;
-import bestworkingconditions.biedaflix.server.repository.UserRepository;
+import bestworkingconditions.biedaflix.server.service.GenericServiceImpl;
+import bestworkingconditions.biedaflix.server.user.UserRepository;
+import bestworkingconditions.biedaflix.server.user.model.User;
+import bestworkingconditions.biedaflix.server.user.model.UserAdministrateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService extends GenericServiceImpl<User,UserRepository> {
+public class UserService extends GenericServiceImpl<User, UserRepository> {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -46,4 +45,13 @@ public class UserService extends GenericServiceImpl<User,UserRepository> {
     }
 
 
+    @Override
+    public User create(User resource) {
+        return null;
+    }
+
+    @Override
+    public User update(User resource) {
+        return null;
+    }
 }

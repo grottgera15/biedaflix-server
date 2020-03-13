@@ -18,4 +18,9 @@ public abstract class GenericServiceImpl<T, R extends MongoRepository<T,String>>
                 () -> new EntityNotFoundException()
         );
     }
+
+    @Override
+    public void deleteById(String id) {
+        repository.deleteById(id);
+    }
 }

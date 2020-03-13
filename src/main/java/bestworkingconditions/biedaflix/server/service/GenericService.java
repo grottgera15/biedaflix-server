@@ -5,4 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface GenericService<T, R extends MongoRepository<?,?>> {
 
     T findById(String id);
+    T create(T resource);
+    T update(T resource);
+    void deleteById(String id);
 }

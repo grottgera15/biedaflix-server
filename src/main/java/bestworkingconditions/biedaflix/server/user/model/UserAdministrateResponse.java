@@ -1,8 +1,7 @@
-package bestworkingconditions.biedaflix.server.model.response;
+package bestworkingconditions.biedaflix.server.user.model;
 
-import bestworkingconditions.biedaflix.server.model.User;
 import bestworkingconditions.biedaflix.server.model.dto.RoleDTO;
-import bestworkingconditions.biedaflix.server.model.request.UserAdministrateRequest;
+import bestworkingconditions.biedaflix.server.user.model.UserResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserAdministrateResponse extends  UserResponse implements Serializable {
+public class UserAdministrateResponse extends UserResponse implements Serializable {
 
     private List<RoleDTO> roles = new ArrayList<>();
     private  boolean accepted;

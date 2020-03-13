@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.model.request;
+package bestworkingconditions.biedaflix.server.user.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
