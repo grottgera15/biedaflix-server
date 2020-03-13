@@ -2,6 +2,7 @@ package bestworkingconditions.biedaflix.server.service;
 
 
 import bestworkingconditions.biedaflix.server.model.*;
+import bestworkingconditions.biedaflix.server.model.EpisodeVideo.VideoQuality;
 import bestworkingconditions.biedaflix.server.repository.CurrentlyDownloadingRepository;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
@@ -95,6 +96,17 @@ public class TorrentServiceImpl implements TorrentService {
             FileUtils.forceDelete(new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath() ));
     }
 
+    //UWAGA Funkcja zwraca liste plikow video z jednego epizodu
+    public List<File> getEpisodeFiles(Episode episode){
+        List<File> response = new ArrayList<>();
+
+        for(VideoQuality q : VideoQuality.values()){
+            response.add(new File(System.getProperty("user.dir") + "/files/series/"+ episode.getSeriesId() + "/" + episode.getId() + "/" + q.getQuality() + ".mp4"));
+        }
+
+        return response;
+    }
+
     public void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
         File renamer = fileSystemResourceLoader.getResource("renamer.sh").getFile();
 
@@ -170,6 +182,14 @@ public class TorrentServiceImpl implements TorrentService {
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(),EpisodeVideo.VideoQuality.HIGH));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.MEDIUM));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.LOW));
+
+            //pobieram liste plikow ktore zostaly stworzone na gorze, sumuje wartosc wielkosci
+            double size = 0;
+            for(File episodeFile : getEpisodeFiles(currentlyDownloading.getTarget())){
+                size += (double)episodeFile.length() / (1024 * 1024 * 1024); //TO DZIALA
+            }
+            currentlyDownloading.getTarget().setSize(size); //zapisuje sume wielkosci
+            
 
             List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
 

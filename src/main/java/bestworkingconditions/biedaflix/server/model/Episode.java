@@ -18,6 +18,7 @@ public class Episode {
     private String name;
     private EpisodeStatus episodeStatus;
     private Date releaseDate;
+    private double size ; //dodalem size
 
     private List<EpisodeVideo> videoFiles = new ArrayList<>();
     private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
@@ -126,5 +127,13 @@ public class Episode {
 
     public void setEpisodeSubtitles(List<EpisodeSubtitles> episodeSubtitles) {
         this.episodeSubtitles = episodeSubtitles;
+    }
+
+    public double getSize(){
+        return size;
+    }
+
+    public void setSize(double size){
+        this.size = size;
     }
 }
