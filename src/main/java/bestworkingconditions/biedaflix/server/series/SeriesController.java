@@ -1,10 +1,7 @@
 package bestworkingconditions.biedaflix.server.series;
 
-import bestworkingconditions.biedaflix.server.series.SeriesRequest;
-import bestworkingconditions.biedaflix.server.series.SeriesLightResponse;
-import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
-import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
-import bestworkingconditions.biedaflix.server.series.*;
+import bestworkingconditions.biedaflix.server.episode.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.common.repository.FileResourceContentStore;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

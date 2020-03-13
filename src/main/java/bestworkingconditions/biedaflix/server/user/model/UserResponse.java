@@ -1,12 +1,9 @@
 package bestworkingconditions.biedaflix.server.user.model;
 
-import bestworkingconditions.biedaflix.server.model.BaseDTO;
-import bestworkingconditions.biedaflix.server.user.model.User;
+import bestworkingconditions.biedaflix.server.common.model.BaseDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 @Getter
 @Setter

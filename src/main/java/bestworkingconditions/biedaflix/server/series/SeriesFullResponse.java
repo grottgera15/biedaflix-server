@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.series;
 
-import bestworkingconditions.biedaflix.server.model.response.EpisodeLightResponse;
-import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
+import bestworkingconditions.biedaflix.server.episode.EpisodeLightResponse;
+import bestworkingconditions.biedaflix.server.common.model.response.MediaFilesResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,12 +1,12 @@
 package bestworkingconditions.biedaflix.server.series;
 
-import bestworkingconditions.biedaflix.server.model.Episode;
-import bestworkingconditions.biedaflix.server.model.response.EpisodeLightResponse;
-import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
-import bestworkingconditions.biedaflix.server.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.properties.StoreProperties;
-import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
-import bestworkingconditions.biedaflix.server.service.EpisodeService;
+import bestworkingconditions.biedaflix.server.episode.Episode;
+import bestworkingconditions.biedaflix.server.episode.EpisodeLightResponse;
+import bestworkingconditions.biedaflix.server.common.model.response.MediaFilesResponse;
+import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
+import bestworkingconditions.biedaflix.server.common.properties.StoreProperties;
+import bestworkingconditions.biedaflix.server.episode.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.episode.EpisodeService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

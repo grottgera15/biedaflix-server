@@ -3,7 +3,7 @@ package bestworkingconditions.biedaflix.server.user;
 import bestworkingconditions.biedaflix.server.role.Role;
 import bestworkingconditions.biedaflix.server.role.RoleDTO;
 import bestworkingconditions.biedaflix.server.role.RoleRepository;
-import bestworkingconditions.biedaflix.server.service.GenericServiceImpl;
+import bestworkingconditions.biedaflix.server.common.service.GenericServiceImpl;
 import bestworkingconditions.biedaflix.server.user.model.User;
 import bestworkingconditions.biedaflix.server.user.model.UserAdministrateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
