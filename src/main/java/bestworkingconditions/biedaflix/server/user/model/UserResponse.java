@@ -1,5 +1,6 @@
 package bestworkingconditions.biedaflix.server.user.model;
 
+import bestworkingconditions.biedaflix.server.model.BaseDTO;
 import bestworkingconditions.biedaflix.server.user.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserResponse implements Serializable {
+public class UserResponse extends BaseDTO {
 
     private String id;
     private String email;

@@ -1,13 +1,14 @@
 package bestworkingconditions.biedaflix.server.user;
 
+import bestworkingconditions.biedaflix.server.controller.GenericController;
 import bestworkingconditions.biedaflix.server.user.model.User;
 import bestworkingconditions.biedaflix.server.user.model.UserRequest;
 import bestworkingconditions.biedaflix.server.user.model.UserResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,21 +18,22 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin()
-public class UserController {
+@RequestMapping("/users")
+public class UserController extends GenericController<User,UserResponse,UserService> {
 
     private final UserRepository repository;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper mapper;
 
     @Autowired
-    public UserController(UserRepository repository, UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService service, ModelMapper mapper, UserRepository repository, UserService userService, ModelMapper mapper1) {
+        super(User.class, UserResponse.class, service, mapper);
         this.repository = repository;
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
+        this.mapper = mapper1;
     }
 
-    @PatchMapping(value = "/users/{id}" , consumes = {"application/json","multipart/form-data"})
+    @PatchMapping(value = "/{id}" , consumes = {"application/json","multipart/form-data"})
     @PreAuthorize("authentication.name == #id")
     public ResponseEntity<?> patchUser(
             @PathVariable String id,
@@ -48,7 +50,7 @@ public class UserController {
 
             username.ifPresent(u::setUsername);
             email.ifPresent(u::setEmail);
-            password.ifPresent(x -> u.setPassword(passwordEncoder.encode(x)));
+            //password.ifPresent(x -> u.setPassword(passwordEncoder.encode(x)));
 
             repository.save(u);
 
@@ -59,7 +61,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users")
+    @GetMapping("/")
     public ResponseEntity<?> getUsers(
     ){
         List<UserResponse> response = new ArrayList<>();
@@ -69,26 +71,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUser(
-            @PathVariable String id){
-        return ResponseEntity.ok(new UserResponse(repository.findById(id).orElseThrow( ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!"))));
-    }
-
-    @PostMapping(value = "/users",consumes = {"application/json","multipart/form-data"})
+    @PostMapping(value = "/",consumes = {"application/json","multipart/form-data"})
     public ResponseEntity<?> registerNewUser(@Valid @RequestParam UserRequest userRequest) {
-
-        List<User> repositoryAll = repository.findAll();
-
-        String plainText = userRequest.getPassword();
-        userRequest.setPassword(passwordEncoder.encode(plainText));
-
-        User newUser = new User(userRequest);
-
-        newUser.setAccepted(false);
-        repository.save(newUser);
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.create(mapper.map(userRequest,User.class)),HttpStatus.OK);
     }
 
 }

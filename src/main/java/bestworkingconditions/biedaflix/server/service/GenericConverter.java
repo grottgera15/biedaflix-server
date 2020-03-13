@@ -10,4 +10,7 @@ public abstract class GenericConverter<T extends BaseEntity> {
     public GenericConverter(ModelMapper mapper) {
         this.mapper = mapper;
     }
+
+
+
 }
