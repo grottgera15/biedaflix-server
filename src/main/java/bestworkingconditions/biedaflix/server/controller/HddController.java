@@ -13,10 +13,16 @@ import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 @RestController
 public class HddController {
 
-    @Autowired
-    private EpisodeRepository episodeRepository;
+    
+    private final EpisodeRepository episodeRepository;
+
     @Value("${biedaflix.hdd.max-size}")
     private double maxSize;
+
+    @Autowired
+    HddController(EpisodeRepository episodeRepository){
+        this.episodeRepository = episodeRepository;
+    }
 
     public double getAllEpisodesSize(){
         double size = 0;
