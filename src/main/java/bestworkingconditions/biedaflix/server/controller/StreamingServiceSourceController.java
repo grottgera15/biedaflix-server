@@ -80,8 +80,6 @@ public class StreamingServiceSourceController {
 
         StreamingServiceSource source = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "StreamingServiceSource of given id does not exist!"));
 
-        source = repository.save(source);
-
         if(name.isPresent()){
             checkIfNameIsAvailable(name.get(),Optional.of(id));
             source.setName(name.get());
@@ -91,6 +89,7 @@ public class StreamingServiceSourceController {
             contentStore.setContent(source,logo.get().getInputStream());
         }
 
+        source = repository.save(source);
         return new ResponseEntity<>(new StreamingServiceSourceResponse(source.getId(),source.getName(),getStreamingServiceURL(source)),HttpStatus.CREATED);
     }
 

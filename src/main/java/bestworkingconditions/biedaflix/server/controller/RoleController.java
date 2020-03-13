@@ -51,7 +51,7 @@ public class RoleController {
         return ResponseEntity.ok(types);
     }
 
-    @PostMapping(value = "/roles",consumes = {"application/json"})
+    @PostMapping(value = "/roles", consumes = {"multipart/form-data","application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> addRole(@Valid @RequestBody RoleDTO roleDTO){
 
@@ -77,7 +77,7 @@ public class RoleController {
         return ResponseEntity.ok(roleDTOS);
     }
 
-    @PutMapping(value = "/roles/{id}", consumes = {"application/json"})
+    @PutMapping(value = "/roles/{id}", consumes = {"multipart/form-data","application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> updateRole(@PathVariable String id,@Valid @RequestBody RoleDTO roleDTO){
         Role r = createNewRoleFromDTO(roleDTO);
