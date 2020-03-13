@@ -1,5 +1,6 @@
-package bestworkingconditions.biedaflix.server.model.authority;
+package bestworkingconditions.biedaflix.server.role;
 
+import bestworkingconditions.biedaflix.server.model.authority.Operation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

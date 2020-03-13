@@ -1,8 +1,8 @@
 package bestworkingconditions.biedaflix.server.service;
 
 import bestworkingconditions.biedaflix.server.user.model.User;
-import bestworkingconditions.biedaflix.server.model.authority.Role;
-import bestworkingconditions.biedaflix.server.repository.RoleRepository;
+import bestworkingconditions.biedaflix.server.role.Role;
+import bestworkingconditions.biedaflix.server.role.RoleRepository;
 import bestworkingconditions.biedaflix.server.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;

@@ -1,7 +1,6 @@
 package bestworkingconditions.biedaflix.server.user.model;
 
-import bestworkingconditions.biedaflix.server.model.dto.RoleDTO;
-import bestworkingconditions.biedaflix.server.user.model.UserResponse;
+import bestworkingconditions.biedaflix.server.role.RoleDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

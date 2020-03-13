@@ -1,6 +1,5 @@
-package bestworkingconditions.biedaflix.server.repository;
+package bestworkingconditions.biedaflix.server.role;
 
-import bestworkingconditions.biedaflix.server.model.authority.Role;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
