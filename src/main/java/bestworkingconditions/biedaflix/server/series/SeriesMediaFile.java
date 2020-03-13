@@ -1,5 +1,6 @@
-package bestworkingconditions.biedaflix.server.model;
+package bestworkingconditions.biedaflix.server.series;
 
+import bestworkingconditions.biedaflix.server.model.FileResource;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class SeriesMediaFile extends  FileResource {
+public abstract class SeriesMediaFile extends FileResource {
 
     @NotNull
     protected String seriesId;

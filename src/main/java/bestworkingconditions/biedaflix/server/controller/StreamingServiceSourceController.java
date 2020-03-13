@@ -1,15 +1,14 @@
 package bestworkingconditions.biedaflix.server.controller;
 
-import bestworkingconditions.biedaflix.server.model.Series;
+import bestworkingconditions.biedaflix.server.series.Series;
 import bestworkingconditions.biedaflix.server.model.StreamingServiceSource;
-import bestworkingconditions.biedaflix.server.model.response.MediaFilesResponse;
-import bestworkingconditions.biedaflix.server.model.response.SeriesLightResponse;
+import bestworkingconditions.biedaflix.server.series.SeriesLightResponse;
 import bestworkingconditions.biedaflix.server.model.response.StreamingServiceSourceResponse;
 import bestworkingconditions.biedaflix.server.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
-import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
+import bestworkingconditions.biedaflix.server.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.repository.StreamingServiceSourceRepository;
-import bestworkingconditions.biedaflix.server.service.SeriesService;
+import bestworkingconditions.biedaflix.server.series.SeriesService;
 import net.minidev.json.JSONObject;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;

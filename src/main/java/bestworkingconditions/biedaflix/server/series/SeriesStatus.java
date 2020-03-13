@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.model;
+package bestworkingconditions.biedaflix.server.series;
 
 public enum SeriesStatus {
 

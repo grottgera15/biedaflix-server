@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.model;
+package bestworkingconditions.biedaflix.server.series;
 
 import javax.validation.constraints.NotNull;
 

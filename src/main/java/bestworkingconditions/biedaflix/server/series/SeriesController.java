@@ -1,12 +1,10 @@
-package bestworkingconditions.biedaflix.server.controller;
+package bestworkingconditions.biedaflix.server.series;
 
-import bestworkingconditions.biedaflix.server.model.*;
-import bestworkingconditions.biedaflix.server.model.request.SeriesRequest;
-import bestworkingconditions.biedaflix.server.model.response.SeriesLightResponse;
+import bestworkingconditions.biedaflix.server.series.SeriesRequest;
+import bestworkingconditions.biedaflix.server.series.SeriesLightResponse;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.repository.FileResourceContentStore;
-import bestworkingconditions.biedaflix.server.repository.SeriesRepository;
-import bestworkingconditions.biedaflix.server.service.SeriesService;
+import bestworkingconditions.biedaflix.server.series.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -18,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.*;
 

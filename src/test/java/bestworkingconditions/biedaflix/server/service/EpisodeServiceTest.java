@@ -2,11 +2,11 @@ package bestworkingconditions.biedaflix.server.service;
 
 import bestworkingconditions.biedaflix.server.model.Episode;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.series.SeriesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 class EpisodeServiceTest {
 

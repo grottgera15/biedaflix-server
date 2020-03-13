@@ -1,9 +1,5 @@
 package bestworkingconditions.biedaflix.server.model.response;
 
-import bestworkingconditions.biedaflix.server.model.SeriesMediaFile;
-
-import java.net.URL;
-
 
 public class MediaFilesResponse {
 

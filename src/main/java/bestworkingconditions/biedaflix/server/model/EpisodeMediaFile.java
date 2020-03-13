@@ -1,5 +1,6 @@
 package bestworkingconditions.biedaflix.server.model;
 
+import bestworkingconditions.biedaflix.server.series.SeriesMediaFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
