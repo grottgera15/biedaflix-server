@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import bestworkingconditions.biedaflix.server.common.controller.HddController;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import bestworkingconditions.biedaflix.server.model.Episode;
 import bestworkingconditions.biedaflix.server.repository.EpisodeRepository;
 
 
