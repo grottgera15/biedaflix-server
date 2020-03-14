@@ -1,8 +1,8 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
-import bestworkingconditions.biedaflix.server.common.model.authority.Operation;
-import bestworkingconditions.biedaflix.server.common.model.authority.OperationType;
+import bestworkingconditions.biedaflix.server.identity.role.Operation;
+import bestworkingconditions.biedaflix.server.identity.role.OperationType;
 import bestworkingconditions.biedaflix.server.identity.role.Role;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.identity.role.RoleRepository;

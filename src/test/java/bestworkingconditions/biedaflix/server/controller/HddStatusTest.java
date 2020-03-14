@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import bestworkingconditions.biedaflix.server.common.controller.HddController;
+import bestworkingconditions.biedaflix.server.vod.episode.hdd.HddController;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

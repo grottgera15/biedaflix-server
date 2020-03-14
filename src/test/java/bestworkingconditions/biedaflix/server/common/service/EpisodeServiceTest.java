@@ -1,9 +1,9 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
-import bestworkingconditions.biedaflix.server.episode.EpisodeService;
-import bestworkingconditions.biedaflix.server.episode.model.Episode;
-import bestworkingconditions.biedaflix.server.episode.EpisodeRepository;
-import bestworkingconditions.biedaflix.server.series.SeriesService;
+import bestworkingconditions.biedaflix.server.vod.episode.service.EpisodeService;
+import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
+import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.vod.series.SeriesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

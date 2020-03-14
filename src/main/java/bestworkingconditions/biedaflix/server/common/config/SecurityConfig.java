@@ -1,8 +1,8 @@
 package bestworkingconditions.biedaflix.server.common.config;
 
-import bestworkingconditions.biedaflix.server.common.filter.JwtFilter;
+import bestworkingconditions.biedaflix.server.identity.filter.JwtFilter;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.common.service.MongoUserDetailsService;
+import bestworkingconditions.biedaflix.server.identity.user.MongoUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

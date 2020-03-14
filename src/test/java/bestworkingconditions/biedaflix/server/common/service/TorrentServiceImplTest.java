@@ -1,7 +1,8 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
-import bestworkingconditions.biedaflix.server.common.model.CurrentlyDownloading;
-import bestworkingconditions.biedaflix.server.common.model.TorrentFileInfo;
+import bestworkingconditions.biedaflix.server.torrent.model.CurrentlyDownloading;
+import bestworkingconditions.biedaflix.server.torrent.model.TorrentFileInfo;
+import bestworkingconditions.biedaflix.server.torrent.TorrentServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
