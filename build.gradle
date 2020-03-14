@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id "io.freefair.lombok" version "5.0.0-rc4"
     id 'java'
 }
 
@@ -56,6 +57,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.6'
 
     //spring content
     // https://mvnrepository.com/artifact/com.github.paulcwarren/content-fs-spring-boot-starter
