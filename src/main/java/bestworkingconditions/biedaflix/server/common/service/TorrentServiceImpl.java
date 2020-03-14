@@ -1,19 +1,24 @@
 package bestworkingconditions.biedaflix.server.common.service;
 
-
-import bestworkingconditions.biedaflix.server.episode.*;
-import bestworkingconditions.biedaflix.server.common.model.*;
+import bestworkingconditions.biedaflix.server.common.model.CurrentlyDownloading;
+import bestworkingconditions.biedaflix.server.common.model.TorrentCategory;
+import bestworkingconditions.biedaflix.server.common.model.TorrentFileInfo;
+import bestworkingconditions.biedaflix.server.common.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.common.repository.CurrentlyDownloadingRepository;
+import bestworkingconditions.biedaflix.server.common.repository.TorrentUriRepository;
+import bestworkingconditions.biedaflix.server.common.util.TorrentHttpEntityBuilder;
+import bestworkingconditions.biedaflix.server.episode.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.episode.EpisodeService;
+import bestworkingconditions.biedaflix.server.episode.EpisodeThumbs;
+import bestworkingconditions.biedaflix.server.episode.EpisodeVideo;
 import bestworkingconditions.biedaflix.server.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.series.Series;
 import bestworkingconditions.biedaflix.server.series.SeriesRepository;
-import bestworkingconditions.biedaflix.server.common.repository.TorrentUriRepository;
-import bestworkingconditions.biedaflix.server.common.util.TorrentHttpEntityBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.content.fs.io.FileSystemResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -97,6 +102,17 @@ public class TorrentServiceImpl implements TorrentService {
             FileUtils.forceDelete(new File(System.getProperty("user.dir") + "/downloads/biedaflix_finished/" + currentlyDownloading.getTorrentFileInfoList().get(0).getRelativePath() ));
     }
 
+    //UWAGA Funkcja zwraca liste plikow video z jednego epizodu
+    public List<File> getEpisodeFiles(Episode episode){
+        List<File> response = new ArrayList<>();
+
+        for(EpisodeVideo.VideoQuality q : EpisodeVideo.VideoQuality.values()){
+            response.add(new File(System.getProperty("user.dir") + "/files/series/"+ episode.getSeriesId() + "/" + episode.getId() + "/" + q.getQuality() + ".mp4"));
+        }
+
+        return response;
+    }
+
     public void normalizeRequestedFiles(CurrentlyDownloading currentlyDownloading) throws Exception {
         File renamer = fileSystemResourceLoader.getResource("renamer.sh").getFile();
 
@@ -173,6 +189,14 @@ public class TorrentServiceImpl implements TorrentService {
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(),EpisodeVideo.VideoQuality.HIGH));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.MEDIUM));
             episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.LOW));
+
+            //pobieram liste plikow ktore zostaly stworzone na gorze, sumuje wartosc wielkosci
+            double size = 0;
+            for(File episodeFile : getEpisodeFiles(currentlyDownloading.getTarget())){
+                size += (double)episodeFile.length() / (1024 * 1024 * 1024); //TO DZIALA
+            }
+            currentlyDownloading.getTarget().setSize(size); //zapisuje sume wielkosci
+
 
             List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
 
@@ -284,8 +308,8 @@ public class TorrentServiceImpl implements TorrentService {
     @Override
     public void deleteTorrent(String torrentHash,boolean deleteFiles) {
         HttpEntity<MultiValueMap<String, String>> request = new TorrentHttpEntityBuilder(MediaType.APPLICATION_FORM_URLENCODED).addKeyValuePair("hashes", torrentHash)
-                                                                                          .addKeyValuePair("deleteFiles", Boolean.toString(deleteFiles))
-                                                                                          .build();
+                                                                                                                               .addKeyValuePair("deleteFiles", Boolean.toString(deleteFiles))
+                                                                                                                               .build();
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(torrentUriRepository.getTorrentUri("delete"),request, String.class);
     }
@@ -332,7 +356,7 @@ public class TorrentServiceImpl implements TorrentService {
     }
 
     @Override
-    public List<TorrentFileInfo> getFilesInfo(@NotBlank  String torrentHash) {
+    public List<TorrentFileInfo> getFilesInfo(@NotBlank String torrentHash) {
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(torrentUriRepository.getTorrentUri("files"))
                 .queryParam("hash",torrentHash);

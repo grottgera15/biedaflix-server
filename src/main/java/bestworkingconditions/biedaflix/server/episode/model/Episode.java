@@ -28,6 +28,7 @@ public class Episode {
     private String name;
     private EpisodeStatus episodeStatus;
     private Date releaseDate;
+    private Double size;
 
     private List<EpisodeVideo> videoFiles = new ArrayList<>();
     private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
