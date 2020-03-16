@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.common.config;
+package bestworkingconditions.biedaflix.server.file;
 
 import bestworkingconditions.biedaflix.server.common.model.FileResource;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
