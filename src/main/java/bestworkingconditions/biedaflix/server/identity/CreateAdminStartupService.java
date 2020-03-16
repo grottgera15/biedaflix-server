@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.common.service;
+package bestworkingconditions.biedaflix.server.identity;
 
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.identity.role.Operation;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class StartupService {
+public class CreateAdminStartupService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -24,7 +24,7 @@ public class StartupService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public StartupService(UserRepository userRepository, RoleRepository roleRepository, AppProperties appProperties, PasswordEncoder passwordEncoder) {
+    public CreateAdminStartupService(UserRepository userRepository, RoleRepository roleRepository, AppProperties appProperties, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.appProperties = appProperties;

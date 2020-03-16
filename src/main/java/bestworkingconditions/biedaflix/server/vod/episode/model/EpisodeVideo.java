@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.vod.episode.model;
 
-import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeMediaFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EpisodeVideo extends EpisodeMediaFile {
+public class EpisodeVideo {
 
     public enum VideoQuality{
         HIGH("1080"),

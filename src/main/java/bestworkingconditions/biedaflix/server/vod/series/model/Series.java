@@ -1,7 +1,6 @@
-package bestworkingconditions.biedaflix.server.vod.series;
+package bestworkingconditions.biedaflix.server.vod.series.model;
 
-import bestworkingconditions.biedaflix.server.vod.series.model.SeriesBanner;
-import bestworkingconditions.biedaflix.server.vod.series.model.SeriesLogo;
+import bestworkingconditions.biedaflix.server.file.FileResource;
 import bestworkingconditions.biedaflix.server.vod.series.model.SeriesStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +20,8 @@ public class Series {
     private String name;
     private String description;
 
-    private SeriesBanner seriesBanner;
-    private SeriesLogo logo;
+    private FileResource seriesBanner;
+    private FileResource logo;
 
     private String streamingServiceId;
     private SeriesStatus status;

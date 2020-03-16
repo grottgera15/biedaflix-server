@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.file;
 
-import bestworkingconditions.biedaflix.server.common.model.FileResource;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.common.properties.StoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;

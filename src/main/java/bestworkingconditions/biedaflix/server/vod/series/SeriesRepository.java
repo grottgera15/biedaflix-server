@@ -1,5 +1,6 @@
 package bestworkingconditions.biedaflix.server.vod.series;
 
+import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

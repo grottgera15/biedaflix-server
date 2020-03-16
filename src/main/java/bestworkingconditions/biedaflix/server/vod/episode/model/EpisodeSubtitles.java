@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.vod.episode.model;
 
-import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeMediaFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EpisodeSubtitles extends EpisodeMediaFile {
+public class EpisodeSubtitles {
 
     public enum SubtitlesLanguage{
         PL("PL"),
@@ -28,14 +27,4 @@ public class EpisodeSubtitles extends EpisodeMediaFile {
     }
 
     private SubtitlesLanguage language;
-
-    public EpisodeSubtitles(String extension, @NotNull String seriesId, String episodeId, SubtitlesLanguage language) {
-        super(extension, seriesId, episodeId);
-        this.language = language;
-    }
-
-    @Override
-    public String getFilePath() {
-        return super.getFilePath() + "sub"+language.getValue() + "." +fileExtension;
-    }
 }

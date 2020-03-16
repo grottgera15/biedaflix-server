@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.vod.series;
 
+import bestworkingconditions.biedaflix.server.file.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
-import bestworkingconditions.biedaflix.server.common.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.vod.series.model.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;

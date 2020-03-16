@@ -3,7 +3,6 @@ package bestworkingconditions.biedaflix.server.vod.episode.service;
 import bestworkingconditions.biedaflix.server.common.model.response.MediaFilesResponse;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeSubtitles;
-import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeThumbs;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeVideo;
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.vod.episode.model.response.EpisodeFullResponse;

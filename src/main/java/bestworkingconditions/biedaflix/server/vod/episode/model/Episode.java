@@ -1,4 +1,5 @@
 package bestworkingconditions.biedaflix.server.vod.episode.model;
+import bestworkingconditions.biedaflix.server.file.FileResource;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,27 +29,5 @@ public class Episode {
 
     private List<EpisodeVideo> videoFiles = new ArrayList<>();
     private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
-    private List<EpisodeThumbs> episodeThumbs = new ArrayList<>();
-
-    public Episode(String seriesId, int seasonNumber, int episodeNumber, String name, Date releaseDate) {
-        this.seriesId = seriesId;
-        this.seasonNumber = seasonNumber;
-        this.episodeNumber = episodeNumber;
-        this.name = name;
-        this.releaseDate = releaseDate;
-        this.episodeStatus = EpisodeStatus.UNAVAILABLE;
-    }
-
-    public Episode(String id, String seriesId, int seasonNumber, int episodeNumber, String name, EpisodeStatus episodeStatus, Date releaseDate, List<EpisodeVideo> videoFiles, List<EpisodeSubtitles> episodeSubtitles, List<EpisodeThumbs> episodeThumbs) {
-        this.id = id;
-        this.seriesId = seriesId;
-        this.seasonNumber = seasonNumber;
-        this.episodeNumber = episodeNumber;
-        this.name = name;
-        this.episodeStatus = episodeStatus;
-        this.releaseDate = releaseDate;
-        this.videoFiles = videoFiles;
-        this.episodeSubtitles = episodeSubtitles;
-        this.episodeThumbs = episodeThumbs;
-    }
+    private List<FileResource> episodeThumbs = new ArrayList<>();
 }

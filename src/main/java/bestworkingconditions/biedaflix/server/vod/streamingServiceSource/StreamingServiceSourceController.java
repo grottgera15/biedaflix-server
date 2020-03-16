@@ -1,13 +1,10 @@
 package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
 
-import bestworkingconditions.biedaflix.server.vod.series.Series;
-import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.StreamingServiceSource;
+import bestworkingconditions.biedaflix.server.file.FileResourceContentStore;
+import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import bestworkingconditions.biedaflix.server.vod.series.model.SeriesLightResponse;
-import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.StreamingServiceSourceResponse;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.common.repository.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
-import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.StreamingServiceSourceRepository;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesService;
 import net.minidev.json.JSONObject;
 import org.apache.commons.io.FilenameUtils;

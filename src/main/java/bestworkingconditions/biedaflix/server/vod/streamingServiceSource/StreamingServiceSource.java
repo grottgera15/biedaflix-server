@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
 
-import bestworkingconditions.biedaflix.server.common.model.FileResource;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

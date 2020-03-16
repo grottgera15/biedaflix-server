@@ -1,6 +1,6 @@
 package bestworkingconditions.biedaflix.server.vod.episode.controller;
 
-import bestworkingconditions.biedaflix.server.common.repository.FileResourceContentStore;
+import bestworkingconditions.biedaflix.server.file.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.vod.episode.model.request.EpisodePatchRequest;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.service.EpisodeService;
@@ -9,7 +9,7 @@ import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.vod.episode.model.response.EpisodeFullResponse;
 import bestworkingconditions.biedaflix.server.vod.episode.model.response.EpisodeLightResponse;
 import bestworkingconditions.biedaflix.server.vod.episode.model.request.EpisodeRequest;
-import bestworkingconditions.biedaflix.server.vod.series.Series;
+import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.torrent.TorrentService;
 import org.apache.commons.io.FilenameUtils;
@@ -26,6 +26,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.*;
 
+
 @RestController
 public class EpisodeController {
 
@@ -36,10 +37,11 @@ public class EpisodeController {
     private final EpisodeService episodeService;
 
     @Autowired
-    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, TorrentService torrentService, EpisodeService episodeService) {
+    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, FileResourceContentStore fileResourceContentStore1, TorrentService torrentService, EpisodeService episodeService) {
         this.episodeRepository = episodeRepository;
         this.seriesRepository = seriesRepository;
-        this.fileResourceContentStore = fileResourceContentStore;
+        this.fileResourceContentStore = fileResourceContentStore1;
+        //this.fileResourceContentStore = fileResourceContentStore;
         this.torrentService = torrentService;
         this.episodeService = episodeService;
     }

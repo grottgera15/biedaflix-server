@@ -4,13 +4,13 @@ import bestworkingconditions.biedaflix.server.common.controller.GenericControlle
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.identity.user.model.UserRequest;
 import bestworkingconditions.biedaflix.server.identity.user.model.UserResponse;
-import bestworkingconditions.biedaflix.server.common.util.ModelMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -25,8 +25,8 @@ public class UserController extends GenericController<User,UserResponse,UserServ
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService service, UserRepository repository, UserService userService, ModelMapperUtils modelMapperUtils, PasswordEncoder passwordEncoder) {
-        super(User.class, UserResponse.class, service,modelMapperUtils);
+    public UserController(UserService service, UserRepository repository, UserService userService,PasswordEncoder passwordEncoder) {
+        super(User.class, UserResponse.class, service);
         this.repository = repository;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -55,8 +55,11 @@ public class UserController extends GenericController<User,UserResponse,UserServ
 
     @PostMapping(consumes = {"application/json","multipart/form-data"})
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRequest userRequest) {
-        User newUser = userService.create(mapper.map(userRequest,User.class));
-        return new ResponseEntity<>(mapper.map(newUser,UserResponse.class),HttpStatus.OK);
+
+        throw new NotImplementedException();
+
+        //User newUser = userService.create(mapper.map(userRequest,User.class));
+        //return new ResponseEntity<>(mapper.map(newUser,UserResponse.class),HttpStatus.OK);
     }
 
 }

@@ -8,10 +8,9 @@ import bestworkingconditions.biedaflix.server.torrent.repository.CurrentlyDownlo
 import bestworkingconditions.biedaflix.server.torrent.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.service.EpisodeService;
-import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeThumbs;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeVideo;
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
-import bestworkingconditions.biedaflix.server.vod.series.Series;
+import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
