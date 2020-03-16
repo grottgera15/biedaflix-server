@@ -57,9 +57,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
-    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.6'
+    
 
     //spring content
     // https://mvnrepository.com/artifact/com.github.paulcwarren/content-fs-spring-boot-starter
