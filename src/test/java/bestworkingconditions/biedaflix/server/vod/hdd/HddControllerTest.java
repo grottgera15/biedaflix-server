@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.vod.episode.hdd;
+package bestworkingconditions.biedaflix.server.vod.hdd;
 
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;

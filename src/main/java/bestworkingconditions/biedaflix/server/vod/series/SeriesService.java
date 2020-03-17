@@ -38,17 +38,6 @@ public class SeriesService {
         this.seriesRepository = seriesRepository;
     }
 
-    public String getSeriesResourceURL(SeriesMediaFile mediaFile) {
-
-        String url = null;
-
-        if(mediaFile != null){
-            url = appProperties.getApiDomain() + storeProperties.getPath() + mediaFile.getFilePath();
-        }
-
-        return url;
-    }
-
     public Map<Integer,List<EpisodeLightResponse>> constructSeasons(Series series){
         Map<Integer,List<EpisodeLightResponse>> seasonsResponse = new HashMap<>();
 
@@ -67,32 +56,6 @@ public class SeriesService {
         }
 
         return seasonsResponse;
-    }
-
-    public SeriesFullResponse seriesFullResponseFromSeries(Series series) {
-
-        return new SeriesFullResponse(
-                series.getId(),
-                series.getName(),
-                series.getDescription(),
-                new MediaFilesResponse(getSeriesResourceURL(series.getSeriesBanner())),
-                new MediaFilesResponse(getSeriesResourceURL(series.getLogo())),
-                series.getStreamingServiceId(),
-                series.getStatus(),
-                constructSeasons(series)
-        );
-    }
-
-    public SeriesLightResponse seriesLightResponseFromSeries(Series series) {
-        return new SeriesLightResponse(
-                series.getId(),
-                series.getName(),
-                series.getDescription(),
-                new MediaFilesResponse(getSeriesResourceURL(series.getSeriesBanner())),
-                new MediaFilesResponse(getSeriesResourceURL(series.getLogo())),
-                series.getStreamingServiceId(),
-                series.getStatus()
-        );
     }
 
     public void deleteSeries(String seriesId){

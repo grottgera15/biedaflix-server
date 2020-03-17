@@ -8,6 +8,10 @@ import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.vod.episode.model.response.EpisodeFullResponse;
 import bestworkingconditions.biedaflix.server.vod.episode.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesService;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -19,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+
 @Service
 public class EpisodeService {
 
@@ -28,17 +33,6 @@ public class EpisodeService {
     @Autowired
     public EpisodeService(@Lazy SeriesService seriesService, EpisodeRepository episodeRepository) {this.seriesService = seriesService;
         this.episodeRepository = episodeRepository;
-    }
-
-
-    public Episode episodeFromEpisodeRequest(EpisodeRequest episode){
-        return new Episode(
-                episode.getSeriesId(),
-                episode.getSeasonNumber(),
-                episode.getEpisodeNumber(),
-                episode.getName(),
-                episode.getReleaseDate()
-        );
     }
 
     public Optional<Episode> getNextEpisode(Episode episode){

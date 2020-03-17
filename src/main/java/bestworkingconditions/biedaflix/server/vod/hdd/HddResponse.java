@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.vod.episode.hdd;
+package bestworkingconditions.biedaflix.server.vod.hdd;
 
 public class HddResponse {
 

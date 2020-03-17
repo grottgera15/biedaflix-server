@@ -5,26 +5,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.Locale;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class EpisodeSubtitles {
-
-    public enum SubtitlesLanguage{
-        PL("PL"),
-        ENG("ENG");
-
-        private String value;
-
-        SubtitlesLanguage(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    private SubtitlesLanguage language;
+    private Locale language;
 }

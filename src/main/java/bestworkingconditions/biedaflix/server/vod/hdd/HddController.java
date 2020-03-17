@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.vod.episode.hdd;
+package bestworkingconditions.biedaflix.server.vod.hdd;
 
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import bestworkingconditions.biedaflix.server.vod.episode.hdd.HddResponse;
 
 @RestController
 public class HddController {

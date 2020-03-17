@@ -1,14 +1,14 @@
 package bestworkingconditions.biedaflix.server.vod.episode.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class EpisodeVideo {
 
     public enum VideoQuality{
@@ -29,15 +29,6 @@ public class EpisodeVideo {
 
     private VideoQuality videoQuality;
 
-    public EpisodeVideo(String extension, @NotNull String seriesId, String episodeId, VideoQuality videoQuality) {
-        super(extension, seriesId, episodeId);
-        this.videoQuality = videoQuality;
-    }
-
-    @Override
-    public String getFilePath() {
-        return super.getFilePath() + videoQuality.getQuality() + "." + fileExtension;
-    }
 }
 
 
