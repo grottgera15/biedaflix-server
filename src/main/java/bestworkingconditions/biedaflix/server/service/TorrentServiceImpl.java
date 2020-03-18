@@ -128,9 +128,13 @@ public class TorrentServiceImpl implements TorrentService {
         }
     }
 
+    //kurwa no wyrzucilem to do publicznej funkcji
     @Scheduled(initialDelay = 45000,fixedDelay = 30000)
     private void parseFinishedTorrents() throws Exception {
+        parseFinishedTorrentsExecutor();
+    }
 
+    public void parseFinishedTorrentsExecutor() throws Exception {
         List<CurrentlyDownloading> currentlyDownloadingList = currentlyDownloadingRepository.findAll();
 
         for(CurrentlyDownloading currentlyDownloading : currentlyDownloadingList){
@@ -213,7 +217,7 @@ public class TorrentServiceImpl implements TorrentService {
 
             deleteLeftoverFilesFromDirectory(currentlyDownloading);
             currentlyDownloadingRepository.delete(currentlyDownloading);
-            }
+            } 
 
         }
     }
