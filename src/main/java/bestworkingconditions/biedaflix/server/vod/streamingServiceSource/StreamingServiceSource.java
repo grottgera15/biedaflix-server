@@ -1,5 +1,6 @@
 package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,19 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-public class StreamingServiceSource extends FileResource {
+@AllArgsConstructor
+public class StreamingServiceSource {
 
     @Id
     private String id;
     private String name;
-
-    public StreamingServiceSource(String extension, String name) {
-        super(extension);
-        this.name = name;
-    }
-
-    @Override
-    public String getFilePath() {
-        return  "/" + getClass().getSimpleName() + "/" + id + "." + getFileExtension() ;
-    }
 }

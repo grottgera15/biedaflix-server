@@ -1,7 +1,6 @@
 package bestworkingconditions.biedaflix.server.vod.episode.controller;
 
 import bestworkingconditions.biedaflix.server.file.FileResourceContentStore;
-import bestworkingconditions.biedaflix.server.vod.episode.model.request.EpisodePatchRequest;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.service.EpisodeService;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeSubtitles;

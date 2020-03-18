@@ -1,17 +1,13 @@
 package bestworkingconditions.biedaflix.server.vod.episode.service;
 
 import bestworkingconditions.biedaflix.server.common.model.response.MediaFilesResponse;
+import bestworkingconditions.biedaflix.server.vod.episode.model.VideoQuality;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeSubtitles;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeVideo;
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.vod.episode.model.response.EpisodeFullResponse;
-import bestworkingconditions.biedaflix.server.vod.episode.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesService;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -107,9 +103,9 @@ public class EpisodeService {
 
         String baseFilePath = System.getProperty("user.dir") + "/files/series/" + episode.getSeriesId() + "/" +episode.getId() + "/";
 
-        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.LOW.getQuality()+".mp4"));
-        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.MEDIUM.getQuality()+".mp4"));
-        filesToDelete.add(new File(baseFilePath+EpisodeVideo.VideoQuality.HIGH.getQuality()+".mp4"));
+        filesToDelete.add(new File(baseFilePath+ VideoQuality.LOW.getQuality()+".mp4"));
+        filesToDelete.add(new File(baseFilePath+ VideoQuality.MEDIUM.getQuality()+".mp4"));
+        filesToDelete.add(new File(baseFilePath+ VideoQuality.HIGH.getQuality()+".mp4"));
 
         for(File f : filesToDelete){
             try {

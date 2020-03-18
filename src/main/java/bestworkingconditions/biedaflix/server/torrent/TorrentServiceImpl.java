@@ -6,6 +6,7 @@ import bestworkingconditions.biedaflix.server.torrent.model.TorrentFileInfo;
 import bestworkingconditions.biedaflix.server.torrent.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.torrent.repository.CurrentlyDownloadingRepository;
 import bestworkingconditions.biedaflix.server.torrent.repository.TorrentUriRepository;
+import bestworkingconditions.biedaflix.server.vod.episode.model.VideoQuality;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.service.EpisodeService;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeVideo;
@@ -104,7 +105,7 @@ public class TorrentServiceImpl implements TorrentService {
     public List<File> getEpisodeFiles(Episode episode){
         List<File> response = new ArrayList<>();
 
-        for(EpisodeVideo.VideoQuality q : EpisodeVideo.VideoQuality.values()){
+        for(VideoQuality q : VideoQuality.values()){
             response.add(new File(System.getProperty("user.dir") + "/files/series/"+ episode.getSeriesId() + "/" + episode.getId() + "/" + q.getQuality() + ".mp4"));
         }
 
@@ -184,9 +185,9 @@ public class TorrentServiceImpl implements TorrentService {
             deleteTorrent(currentlyDownloading.getTorrentInfo().getHash(), true);
 
             List<EpisodeVideo> episodeVideos = new ArrayList<>();
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(),EpisodeVideo.VideoQuality.HIGH));
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.MEDIUM));
-            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), EpisodeVideo.VideoQuality.LOW));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), VideoQuality.HIGH));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), VideoQuality.MEDIUM));
+            episodeVideos.add(new EpisodeVideo("mp4",series.getFolderName(),currentlyDownloading.getTarget().getId(), VideoQuality.LOW));
 
             //pobieram liste plikow ktore zostaly stworzone na gorze, sumuje wartosc wielkosci
             double size = 0;
