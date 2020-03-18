@@ -1,17 +1,14 @@
 package bestworkingconditions.biedaflix.server.vod.episode.controller;
 
 import bestworkingconditions.biedaflix.server.file.FileResourceContentStore;
+import bestworkingconditions.biedaflix.server.file.FileResourceRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.service.EpisodeService;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeSubtitles;
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
-import bestworkingconditions.biedaflix.server.vod.episode.model.response.EpisodeFullResponse;
-import bestworkingconditions.biedaflix.server.vod.episode.model.response.EpisodeLightResponse;
-import bestworkingconditions.biedaflix.server.vod.episode.model.request.EpisodeRequest;
 import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.torrent.TorrentService;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.*;
@@ -32,15 +28,16 @@ public class EpisodeController {
     private final EpisodeRepository episodeRepository;
     private final SeriesRepository seriesRepository;
     private final FileResourceContentStore fileResourceContentStore;
+    private final FileResourceRepository fileResourceRepository;
     private final TorrentService torrentService;
     private final EpisodeService episodeService;
 
     @Autowired
-    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore, FileResourceContentStore fileResourceContentStore1, TorrentService torrentService, EpisodeService episodeService) {
+    public EpisodeController(EpisodeRepository episodeRepository, SeriesRepository seriesRepository, FileResourceContentStore fileResourceContentStore2, FileResourceRepository fileResourceRepository, TorrentService torrentService, EpisodeService episodeService) {
         this.episodeRepository = episodeRepository;
         this.seriesRepository = seriesRepository;
-        this.fileResourceContentStore = fileResourceContentStore1;
-        //this.fileResourceContentStore = fileResourceContentStore;
+        this.fileResourceContentStore = fileResourceContentStore2;
+        this.fileResourceRepository = fileResourceRepository;
         this.torrentService = torrentService;
         this.episodeService = episodeService;
     }
@@ -48,7 +45,7 @@ public class EpisodeController {
     @PostMapping(value = "/episodes/{id}/subtitles", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<Object> addSubtitles(@PathVariable String id,
-                                               @NotNull @RequestParam EpisodeSubtitles.SubtitlesLanguage language,
+                                               @NotNull @RequestParam  Locale language,
                                                @NotNull @RequestParam MultipartFile file ) throws IOException {
 
         Optional<Episode> optionalEpisode = episodeRepository.findById(id);
@@ -56,16 +53,19 @@ public class EpisodeController {
 
         Series episodeSeries = seriesRepository.findById(episode.getSeriesId()).get();
 
-        EpisodeSubtitles subs = new EpisodeSubtitles(FilenameUtils.getExtension(file.getOriginalFilename()),episodeSeries.getFolderName(),episode.getId(),language);
+        EpisodeSubtitles subs = new EpisodeSubtitles(language);
+        subs.setMimeType(file.getContentType());
+
         fileResourceContentStore.setContent(subs,file.getInputStream());
 
         episode.getEpisodeSubtitles().add(subs);
+        fileResourceRepository.save(subs);
 
         episodeRepository.save(episode);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
+/*
     @GetMapping("/episodes/{id}")
     public ResponseEntity<EpisodeFullResponse> getEpisodeInfo(@PathVariable String id) {
 
@@ -146,4 +146,6 @@ public class EpisodeController {
         episodeService.deleteEpisode(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
+
+ */
 }

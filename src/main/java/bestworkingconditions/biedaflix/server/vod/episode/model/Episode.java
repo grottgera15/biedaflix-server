@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
@@ -18,7 +19,6 @@ public class Episode {
     private String id;
 
     private String seriesId;
-
     private int seasonNumber;
     private int episodeNumber;
 
@@ -27,7 +27,10 @@ public class Episode {
     private Date releaseDate;
     private Double size;
 
+    @DBRef
     private List<EpisodeVideo> videoFiles = new ArrayList<>();
+    @DBRef
     private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
+    @DBRef
     private List<FileResource> episodeThumbs = new ArrayList<>();
 }

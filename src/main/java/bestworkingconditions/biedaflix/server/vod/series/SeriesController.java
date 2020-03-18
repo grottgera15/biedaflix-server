@@ -32,7 +32,7 @@ public class SeriesController {
         this.fileResourceContentStore = fileResourceContentStore;
         this.seriesService = seriesService;
     }
-
+/*
     @PostMapping(value = "/series", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> AddSeries(@Valid SeriesRequest request,
@@ -163,5 +163,7 @@ public class SeriesController {
         seriesService.deleteSeries(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
+
+ */
 }
 

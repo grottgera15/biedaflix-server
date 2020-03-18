@@ -31,6 +31,7 @@ public class EpisodeService {
         this.episodeRepository = episodeRepository;
     }
 
+    /*
     public Optional<Episode> getNextEpisode(Episode episode){
 
         Optional<Episode> match = episodeRepository.findBySeriesIdAndSeasonNumberAndEpisodeNumber(episode.getSeriesId(),episode.getSeasonNumber(),episode.getEpisodeNumber()+1);
@@ -128,4 +129,6 @@ public class EpisodeService {
         }
     }
 
+
+     */
 }

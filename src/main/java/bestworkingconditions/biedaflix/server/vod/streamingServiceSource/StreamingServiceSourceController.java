@@ -40,11 +40,6 @@ public class StreamingServiceSourceController {
         this.appProperties = appProperties;
     }
 
-    private URL getStreamingServiceURL(StreamingServiceSource source) throws MalformedURLException {
-        String url = new StringBuilder().append(appProperties.getApiDomain()).append("files").append(source.getFilePath()).toString();
-        return new  URL(url);
-    }
-
     private void checkIfNameIsAvailable(String name,Optional<String> requestId){
 
         Optional<StreamingServiceSource> match = repository.findByName(name);
@@ -127,5 +122,7 @@ public class StreamingServiceSourceController {
 
         return ResponseEntity.ok(response);
     }
+
+
 
 }

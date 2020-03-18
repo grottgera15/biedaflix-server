@@ -22,5 +22,4 @@ public class FileResource {
     private @ContentId String contentId;
     private @ContentLength Long contentLength;
     private @MimeType String mimeType;
-
 }

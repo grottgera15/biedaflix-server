@@ -135,7 +135,7 @@ public class TorrentServiceImpl implements TorrentService {
 
     @Scheduled(initialDelay = 45000,fixedDelay = 30000)
     private void parseFinishedTorrents() throws Exception {
-
+/*
         List<CurrentlyDownloading> currentlyDownloadingList = currentlyDownloadingRepository.findAll();
 
         for(CurrentlyDownloading currentlyDownloading : currentlyDownloadingList){
@@ -223,6 +223,8 @@ public class TorrentServiceImpl implements TorrentService {
             }
 
         }
+
+ */
     }
 
     private void pauseDownloadedTorrents(List<TorrentInfo> status){
@@ -255,7 +257,7 @@ public class TorrentServiceImpl implements TorrentService {
 
     @Override
     public void addTorrent(String seriesName, String magnetLink , Episode episode) {
-
+/*
         episodeService.deleteVideoAndThumbs(episode);
 
         String seriesNameWithoutSpaces = seriesName.replaceAll("\\s+", "");
@@ -285,6 +287,8 @@ public class TorrentServiceImpl implements TorrentService {
             }
         }
 
+
+ */
     }
 
     @Override
