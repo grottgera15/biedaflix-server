@@ -21,14 +21,16 @@ public class StreamingServiceSourceController {
     private final FileResourceContentStore contentStore;
     private final FileResourceRepository fileResourceRepository;
     private final StreamingServiceSourceRepository repository;
+    private final StreamingServiceSourceMapper mapper;
     private final SeriesRepository seriesRepository;
     private final SeriesService seriesService;
     private final AppProperties appProperties;
 
     @Autowired
-    public StreamingServiceSourceController(FileResourceContentStore contentStore, FileResourceRepository fileResourceRepository, StreamingServiceSourceRepository repository, SeriesRepository seriesRepository, SeriesService seriesService, AppProperties appProperties) {this.contentStore = contentStore;
+    public StreamingServiceSourceController(FileResourceContentStore contentStore, FileResourceRepository fileResourceRepository, StreamingServiceSourceRepository repository, StreamingServiceSourceMapper mapper, SeriesRepository seriesRepository, SeriesService seriesService, AppProperties appProperties) {this.contentStore = contentStore;
         this.fileResourceRepository = fileResourceRepository;
         this.repository = repository;
+        this.mapper = mapper;
         this.seriesRepository = seriesRepository;
         this.seriesService = seriesService;
         this.appProperties = appProperties;
@@ -51,7 +53,7 @@ public class StreamingServiceSourceController {
         StreamingServiceSource newSource = repository.save(source);
 
 
-        return new ResponseEntity<>(newSource,HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.streamingServiceSourceToStreamingServiceSourceResponse(newSource),HttpStatus.CREATED);
     }
 /*
     @PatchMapping(value = "/streamingSources/{id}", consumes = {"multipart/form-data"})
