@@ -10,7 +10,7 @@ import java.util.List;
 public interface StreamingServiceSourceMapper {
 
     @Mapping(source = "logo", target = "path")
-    StreamingServiceSourceResponse streamingServiceSourceToStreamingServiceSourceResponse(StreamingServiceSource source);
+    StreamingServiceSourceResponse toDTO(StreamingServiceSource source);
 
-    List<StreamingServiceSourceResponse> streamingServiceSourcesToStreamingServiceSourceResponses(List<StreamingServiceSource> sources);
+    List<StreamingServiceSourceResponse> toDTOList(List<StreamingServiceSource> sources);
 }

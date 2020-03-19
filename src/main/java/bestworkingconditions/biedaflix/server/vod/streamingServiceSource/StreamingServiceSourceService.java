@@ -19,8 +19,8 @@ public class StreamingServiceSourceService extends GenericServiceImpl<StreamingS
 
     public StreamingServiceSource setLogo(String id, MultipartFile file){
         StreamingServiceSource request = findById(id);
-        fileService.saveFile(file);
-
+        request.setLogo(fileService.saveFile(file));
+        return repository.save(request);
     }
 
     @Override

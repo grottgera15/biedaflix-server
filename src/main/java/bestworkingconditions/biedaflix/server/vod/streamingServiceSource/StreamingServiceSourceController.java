@@ -24,21 +24,26 @@ public class StreamingServiceSourceController {
     private final StreamingServiceSourceRepository repository;
     private final StreamingServiceSourceMapper mapper;
     private final SeriesRepository seriesRepository;
+    private final StreamingServiceSourceService streamingServiceSourceService;
     private final SeriesService seriesService;
     private final AppProperties appProperties;
 
     @Autowired
-    public StreamingServiceSourceController(FileResourceContentStore contentStore, FileResourceRepository fileResourceRepository, StreamingServiceSourceRepository repository, StreamingServiceSourceMapper mapper, SeriesRepository seriesRepository, SeriesService seriesService, AppProperties appProperties) {this.contentStore = contentStore;
+    public StreamingServiceSourceController(FileResourceContentStore contentStore, FileResourceRepository fileResourceRepository, StreamingServiceSourceRepository repository, StreamingServiceSourceMapper mapper, SeriesRepository seriesRepository, StreamingServiceSourceService streamingServiceSourceService, SeriesService seriesService, AppProperties appProperties) {this.contentStore = contentStore;
         this.fileResourceRepository = fileResourceRepository;
         this.repository = repository;
         this.mapper = mapper;
         this.seriesRepository = seriesRepository;
+        this.streamingServiceSourceService = streamingServiceSourceService;
         this.seriesService = seriesService;
         this.appProperties = appProperties;
     }
 
-    public ResponseEntity<?> addLogoFile(@RequestParam(name="logo")MultipartFile logo){
-
+    @PostMapping("/{id}/logo")
+    public ResponseEntity<?> addLogoFile(
+            @PathVariable String id,
+            @RequestParam(name = "file") MultipartFile file){
+        return ResponseEntity.ok(mapper.toDTO(streamingServiceSourceService.setLogo(id,file)));
     }
 
     @PostMapping(value = "", consumes = {"application/json"})
@@ -60,12 +65,12 @@ public class StreamingServiceSourceController {
 
         return new ResponseEntity<>(mapper.streamingServiceSourceToStreamingServiceSourceResponse(newSource),HttpStatus.CREATED);
     }
-/*
-    @PatchMapping(value = "/streamingSources/{id}", consumes = {"multipart/form-data"})
+
+    @PatchMapping(value = "/{id}", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> updateStreamingServiceSource( @PathVariable String id,
-                                                          @RequestParam(name = "name") Optional<String> name,
-                                                          @RequestParam(name = "logo") Optional<MultipartFile> logo) throws IOException{
+                                                          @RequestParam(name = "name") String name,
+                                                          @RequestParam(name = "logo") MultipartFile logo) throws IOException{
 
         StreamingServiceSource source = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "StreamingServiceSource of given id does not exist!"));
 
@@ -120,7 +125,5 @@ public class StreamingServiceSourceController {
 
         return ResponseEntity.ok(response);
     }
-
- */
 
 }
