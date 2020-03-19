@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("/streamingSources")
 public class StreamingServiceSourceController {
 
     private final FileResourceContentStore contentStore;
@@ -36,9 +37,13 @@ public class StreamingServiceSourceController {
         this.appProperties = appProperties;
     }
 
-    @PostMapping(value = "/streamingSources", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> addLogoFile(@RequestParam(name="logo")MultipartFile logo){
+
+    }
+
+    @PostMapping(value = "", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
-    public ResponseEntity<?> addStreamingServiceSource(@RequestParam(name="name") String name, @RequestParam(name="logo")MultipartFile logo) throws IOException {
+    public ResponseEntity<?> addStreamingServiceSource(@RequestBody String name) {
 
         StreamingServiceSource source = new StreamingServiceSource();
         source.setName(name);
