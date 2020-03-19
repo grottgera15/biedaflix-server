@@ -40,6 +40,7 @@ public class StreamingServiceSourceController {
     }
 
     @PostMapping("/{id}/logo")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> addLogoFile(
             @PathVariable String id,
             @RequestParam(name = "file") MultipartFile file){
@@ -53,24 +54,13 @@ public class StreamingServiceSourceController {
         StreamingServiceSource source = new StreamingServiceSource();
         source.setName(name);
 
-        FileResource sourceLogo = new FileResource();
-        sourceLogo.setMimeType(logo.getContentType());
-        source.setLogo(sourceLogo);
-
-        contentStore.setContent(sourceLogo, logo.getInputStream());
-        fileResourceRepository.save(sourceLogo);
-
-        StreamingServiceSource newSource = repository.save(source);
-
-
-        return new ResponseEntity<>(mapper.streamingServiceSourceToStreamingServiceSourceResponse(newSource),HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.toDTO(streamingServiceSourceService.create(source)),HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/{id}", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> updateStreamingServiceSource( @PathVariable String id,
-                                                          @RequestParam(name = "name") String name,
-                                                          @RequestParam(name = "logo") MultipartFile logo) throws IOException{
+                                                           @RequestParam(name = "name") String name) {
 
         StreamingServiceSource source = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "StreamingServiceSource of given id does not exist!"));
 

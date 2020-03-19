@@ -22,14 +22,4 @@ public class StreamingServiceSourceService extends GenericServiceImpl<StreamingS
         request.setLogo(fileService.saveFile(file));
         return repository.save(request);
     }
-
-    @Override
-    public StreamingServiceSource create(StreamingServiceSource resource) {
-        return null;
-    }
-
-    @Override
-    public StreamingServiceSource update(StreamingServiceSource resource) {
-        return null;
-    }
 }
