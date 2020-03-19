@@ -1,6 +1,5 @@
 package bestworkingconditions.biedaflix.server.vod.episode.model.response;
 
-import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

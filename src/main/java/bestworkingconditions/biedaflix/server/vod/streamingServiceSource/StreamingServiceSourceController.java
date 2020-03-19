@@ -1,68 +1,59 @@
 package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
 
+import bestworkingconditions.biedaflix.server.file.FileResource;
 import bestworkingconditions.biedaflix.server.file.FileResourceContentStore;
-import bestworkingconditions.biedaflix.server.vod.series.model.Series;
-import bestworkingconditions.biedaflix.server.vod.series.model.SeriesLightResponse;
+import bestworkingconditions.biedaflix.server.file.FileResourceRepository;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesService;
-import net.minidev.json.JSONObject;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class StreamingServiceSourceController {
 
     private final FileResourceContentStore contentStore;
+    private final FileResourceRepository fileResourceRepository;
     private final StreamingServiceSourceRepository repository;
     private final SeriesRepository seriesRepository;
     private final SeriesService seriesService;
     private final AppProperties appProperties;
 
     @Autowired
-    public StreamingServiceSourceController(FileResourceContentStore contentStore, StreamingServiceSourceRepository repository, SeriesRepository seriesRepository, SeriesService seriesService, AppProperties appProperties) {this.contentStore = contentStore;
+    public StreamingServiceSourceController(FileResourceContentStore contentStore, FileResourceRepository fileResourceRepository, StreamingServiceSourceRepository repository, SeriesRepository seriesRepository, SeriesService seriesService, AppProperties appProperties) {this.contentStore = contentStore;
+        this.fileResourceRepository = fileResourceRepository;
         this.repository = repository;
         this.seriesRepository = seriesRepository;
         this.seriesService = seriesService;
         this.appProperties = appProperties;
     }
 
-    private void checkIfNameIsAvailable(String name,Optional<String> requestId){
-
-        Optional<StreamingServiceSource> match = repository.findByName(name);
-
-        if(match.isPresent()){
-           if(!match.get().getId().equals(requestId)){
-               throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"streamingSource of given name already exists in the database!");
-           }
-        }
-    }
-
     @PostMapping(value = "/streamingSources", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> addStreamingServiceSource(@RequestParam(name="name") String name, @RequestParam(name="logo")MultipartFile logo) throws IOException {
-        checkIfNameIsAvailable(name,Optional.empty());
 
-        StreamingServiceSource newSource = repository.save(new StreamingServiceSource(FilenameUtils.getExtension(logo.getOriginalFilename()), name));
+        StreamingServiceSource source = new StreamingServiceSource();
+        source.setName(name);
 
-        contentStore.setContent(newSource, logo.getInputStream());
+        FileResource sourceLogo = new FileResource();
+        sourceLogo.setMimeType(logo.getContentType());
+        source.setLogo(sourceLogo);
 
-        return new ResponseEntity<>(new StreamingServiceSourceResponse(newSource.getId(),newSource.getName(),getStreamingServiceURL(newSource)),HttpStatus.CREATED);
+        contentStore.setContent(sourceLogo, logo.getInputStream());
+        fileResourceRepository.save(sourceLogo);
+
+        StreamingServiceSource newSource = repository.save(source);
+
+
+        return new ResponseEntity<>(newSource,HttpStatus.CREATED);
     }
-
+/*
     @PatchMapping(value = "/streamingSources/{id}", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> updateStreamingServiceSource( @PathVariable String id,
@@ -123,6 +114,6 @@ public class StreamingServiceSourceController {
         return ResponseEntity.ok(response);
     }
 
-
+ */
 
 }

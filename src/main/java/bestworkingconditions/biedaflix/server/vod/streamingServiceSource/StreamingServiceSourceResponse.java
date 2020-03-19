@@ -1,5 +1,6 @@
 package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,9 +8,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.net.URL;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class StreamingServiceSourceResponse implements  Serializable{
     private String id;
     private String name;
