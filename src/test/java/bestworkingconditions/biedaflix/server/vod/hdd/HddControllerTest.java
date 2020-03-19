@@ -18,7 +18,7 @@ class HddControllerTest {
     HddController hddController;
 
     @Mock
-            EpisodeRepository episodeRepository;
+    EpisodeRepository episodeRepository;
 
     @BeforeEach
     public void init() {
@@ -28,7 +28,12 @@ class HddControllerTest {
 
     @Test
     void getAllEpisodesSizeTest() {
-        Episode episode = new Episode("5e68f9dd215c856ec935cc42", 1, 1, "lol", new Date(1383628031));
+        Episode episode = new Episode();
+        episode.setId("5e68f9dd215c856ec935cc42");
+        episode.setSeasonNumber(1);
+        episode.setEpisodeNumber(1);
+        episode.setName("lol");
+        episode.setReleaseDate(new Date(1383628031));
         episode.setSize(0.3);
         List<Episode> episodes = new ArrayList<>();
         episodes.add(episode);

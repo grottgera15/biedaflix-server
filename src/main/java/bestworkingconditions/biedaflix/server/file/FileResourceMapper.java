@@ -22,7 +22,7 @@ public class FileResourceMapper {
 
     @SneakyThrows
     public URL mapToURL(FileResource resource){
-        return new URL( appProperties.getApiDomain() + storeProperties.getPath() + resource.getId());
+        return resource != null ? new URL( appProperties.getApiDomain() + storeProperties.getPath() + resource.getId()) : null;
     }
 
 }
