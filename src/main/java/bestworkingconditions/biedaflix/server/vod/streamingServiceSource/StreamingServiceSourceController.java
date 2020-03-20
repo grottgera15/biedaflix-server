@@ -1,11 +1,11 @@
 package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
 
-import bestworkingconditions.biedaflix.server.file.FileResource;
 import bestworkingconditions.biedaflix.server.file.FileResourceContentStore;
 import bestworkingconditions.biedaflix.server.file.FileResourceRepository;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesService;
+import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @RestController
 @RequestMapping("/streamingSources")
@@ -60,37 +61,30 @@ public class StreamingServiceSourceController {
     @PatchMapping(value = "/{id}", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> updateStreamingServiceSource( @PathVariable String id,
-                                                           @RequestParam(name = "name") String name) {
+                                                            @NotBlank String name) {
 
-        StreamingServiceSource source = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "StreamingServiceSource of given id does not exist!"));
+        StreamingServiceSource requested = streamingServiceSourceService.findById(id);
+        requested.setName(name);
 
-        if(name.isPresent()){
-            checkIfNameIsAvailable(name.get(),Optional.of(id));
-            source.setName(name.get());
-        }
 
-        if(logo.isPresent()){
-            contentStore.setContent(source,logo.get().getInputStream());
-        }
-
-        source = repository.save(source);
-        return new ResponseEntity<>(new StreamingServiceSourceResponse(source.getId(),source.getName(),getStreamingServiceURL(source)),HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.toDTO(repository.save(requested)),HttpStatus.OK);
     }
+
+    @GetMapping(value = "")
+    public ResponseEntity<?> getListOfAllStreamingServiceSources(){
+        return ResponseEntity.ok(mapper.toDTOList(streamingServiceSourceService.findAll()));
+    }
+
 
     @DeleteMapping(value = "/streamingSources/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> deleteStreamingServiceSource(@PathVariable String id) {
 
-        List<Series> associatedSeries = seriesRepository.findAllByStreamingServiceId(id);
+        List<Series> associatedSeries = seriesRepository.findAllBySourceId(id);
 
         if(associatedSeries.size() > 0){
 
-            List<SeriesLightResponse> lightResponses = new ArrayList<>();
-
-            for(Series s : associatedSeries){
-                SeriesLightResponse lightResponse = seriesService.seriesLightResponseFromSeries(s);
-                lightResponses.add(lightResponse);
-            }
+            seriesLightResponses
 
             JSONObject response = new JSONObject();
             response.put("message","you cannot delete this StreamingSource, as it is used in the following associatedSeries");
@@ -103,17 +97,4 @@ public class StreamingServiceSourceController {
 
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
-
-    @GetMapping(value = "/streamingSources")
-    public ResponseEntity<?> getListOfAllStreamingServiceSources() throws MalformedURLException {
-        List<StreamingServiceSource> streamingServiceSources = repository.findAll();
-        List<StreamingServiceSourceResponse> response = new ArrayList<>();
-
-        for(StreamingServiceSource source : streamingServiceSources){
-            response.add(new StreamingServiceSourceResponse(source.getId(),source.getName(),getStreamingServiceURL(source)));
-        }
-
-        return ResponseEntity.ok(response);
-    }
-
 }

@@ -32,7 +32,7 @@ public abstract class GenericServiceImpl<T, R extends MongoRepository<T,String>>
     }
 
     @Override
-    public List<T> getAll() {
+    public List<T> findAll() {
         return repository.findAll();
     }
 

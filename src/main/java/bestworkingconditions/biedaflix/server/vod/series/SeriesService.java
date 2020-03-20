@@ -37,7 +37,7 @@ public class SeriesService {
         this.episodeService = episodeService;
         this.seriesRepository = seriesRepository;
     }
-/*
+
     public Map<Integer,List<EpisodeLightResponse>> constructSeasons(Series series){
         Map<Integer,List<EpisodeLightResponse>> seasonsResponse = new HashMap<>();
 
@@ -77,5 +77,4 @@ public class SeriesService {
         seriesRepository.deleteById(seriesId);
     }
 
- */
 }

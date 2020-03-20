@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GenericService<T, R extends MongoRepository<?,?>> {
     T findById(String id);
-    List<T> getAll();
+    List<T> findAll();
     T create(T resource);
     T update(T resource);
     void deleteById(String id);

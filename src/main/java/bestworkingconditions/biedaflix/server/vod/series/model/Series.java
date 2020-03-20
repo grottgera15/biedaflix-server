@@ -2,16 +2,13 @@ package bestworkingconditions.biedaflix.server.vod.series.model;
 
 import bestworkingconditions.biedaflix.server.file.FileResource;
 import bestworkingconditions.biedaflix.server.vod.series.model.SeriesStatus;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "series")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@AllArgsConstructor
 public class Series {
 
     @Id
@@ -20,13 +17,9 @@ public class Series {
     private String name;
     private String description;
 
-    private FileResource seriesBanner;
+    private FileResource banner;
     private FileResource logo;
 
-    private String streamingServiceId;
+    private String sourceId;
     private SeriesStatus status;
-
-    public String getFolderName(){
-        return this.id;
-    }
 }

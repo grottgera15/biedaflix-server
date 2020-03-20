@@ -10,5 +10,5 @@ public interface SeriesRepository extends MongoRepository<Series, String> {
     boolean existsById(String id);
     List<Series> findAll();
     Optional<Series> findById(String id);
-    List<Series> findAllByStreamingServiceId(String id);
+    List<Series> findAllBySourceId(String id);
 }
