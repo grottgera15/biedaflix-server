@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
+package bestworkingconditions.biedaflix.server.vod.streamingServiceSource.model;
 
 import bestworkingconditions.biedaflix.server.file.FileResource;
 import lombok.Data;

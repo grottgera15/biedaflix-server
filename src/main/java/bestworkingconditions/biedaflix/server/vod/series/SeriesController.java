@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.*;
 
 @RestController
+@RequestMapping(value = "/series")
 public class SeriesController {
 
     private final SeriesRepository seriesRepository;
@@ -32,8 +33,18 @@ public class SeriesController {
         this.fileResourceContentStore = fileResourceContentStore;
         this.seriesService = seriesService;
     }
-/*
-    @PostMapping(value = "/series", consumes = {"multipart/form-data"})
+
+    @PostMapping(value = "/{id}/banner")
+    public ResponseEntity<?> addBanner(@PathVariable String id ,@RequestParam MultipartFile banner){
+
+    }
+
+    @PostMapping(value = "/{id}/logo")
+    public ResponseEntity<?> addLogo(@PathVariable String id ,@RequestParam MultipartFile banner){
+
+    }
+
+    @PostMapping(value = "", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> AddSeries(@Valid SeriesRequest request,
                                             @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
@@ -71,7 +82,7 @@ public class SeriesController {
 
         return new ResponseEntity<>(seriesService.seriesLightResponseFromSeries(newSeries),HttpStatus.CREATED);
     }
-
+/*
     @PatchMapping(value = "/series/{id}", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> patchSeries(
@@ -112,7 +123,7 @@ public class SeriesController {
 
         return ResponseEntity.ok(seriesService.seriesLightResponseFromSeries(s));
     }
-
+*/
     @GetMapping("/series/{id}")
     public ResponseEntity<?> getSeries(
             @PathVariable("id") String id,
@@ -163,7 +174,5 @@ public class SeriesController {
         seriesService.deleteSeries(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
-
- */
 }
 

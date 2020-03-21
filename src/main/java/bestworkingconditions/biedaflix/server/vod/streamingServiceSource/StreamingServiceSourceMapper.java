@@ -1,6 +1,9 @@
 package bestworkingconditions.biedaflix.server.vod.streamingServiceSource;
 
 import bestworkingconditions.biedaflix.server.file.FileResourceMapper;
+import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.model.StreamingServiceSource;
+import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.model.StreamingServiceSourceRequest;
+import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.model.StreamingServiceSourceResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

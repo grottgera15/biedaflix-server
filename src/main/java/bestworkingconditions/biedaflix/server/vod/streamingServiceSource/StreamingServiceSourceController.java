@@ -4,6 +4,8 @@ import bestworkingconditions.biedaflix.server.vod.series.SeriesMapper;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
 import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import bestworkingconditions.biedaflix.server.vod.series.model.SeriesLightResponse;
+import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.model.StreamingServiceSource;
+import bestworkingconditions.biedaflix.server.vod.streamingServiceSource.model.StreamingServiceSourceRequest;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
