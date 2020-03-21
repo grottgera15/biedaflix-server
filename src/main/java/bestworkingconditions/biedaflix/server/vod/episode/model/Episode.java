@@ -23,7 +23,7 @@ public class Episode {
     private int episodeNumber;
 
     private String name;
-    private EpisodeStatus episodeStatus;
+    private EpisodeStatus status;
     private Date releaseDate;
     private Double size;
 

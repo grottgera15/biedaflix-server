@@ -14,10 +14,10 @@ public class EpisodeListener extends AbstractMongoEventListener<Episode> {
         Episode ep = event.getSource();
 
         if(ep.getEpisodeSubtitles().size() > 0 && ep.getVideoFiles().size() > 0){
-            ep.setEpisodeStatus(EpisodeStatus.AVAILABLE);
+            ep.setStatus(EpisodeStatus.AVAILABLE);
         }else if(ep.getVideoFiles().size() > 0){
-            ep.setEpisodeStatus(EpisodeStatus.NO_SUBTITLES);
+            ep.setStatus(EpisodeStatus.NO_SUBTITLES);
         }else
-            ep.setEpisodeStatus(EpisodeStatus.UNAVAILABLE);
+            ep.setStatus(EpisodeStatus.UNAVAILABLE);
     }
 }

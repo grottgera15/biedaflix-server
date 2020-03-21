@@ -17,5 +17,7 @@ public interface StreamingServiceSourceMapper {
     StreamingServiceSourceResponse toDTO(StreamingServiceSource source);
     List<StreamingServiceSourceResponse> toDTOList(List<StreamingServiceSource> sources);
 
+    @Mapping(target = "logo", ignore = true)
+    @Mapping(target = "id", ignore = true)
     StreamingServiceSource streamingServiceSourceFromRequest(StreamingServiceSourceRequest request);
 }

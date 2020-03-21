@@ -23,7 +23,7 @@ public class SeriesFullResponsePostProcessor {
     @AfterMapping
     protected void addEpisodes(@MappingTarget SeriesFullResponse fullResponse){
         fullResponse.setEpisodes(
-                episodeMapper.episodeLightResponseListFromEpisodeList(
+                episodeMapper.episodeLightResponseFromEpisode(
                         episodeRepository.findAllBySeriesIdOrderBySeasonNumberAscEpisodeNumberAsc(fullResponse.getId())
                 )
         );

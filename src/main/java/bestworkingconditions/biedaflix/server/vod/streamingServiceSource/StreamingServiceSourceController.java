@@ -77,7 +77,7 @@ public class StreamingServiceSourceController {
 
         if(associatedSeries.size() > 0){
 
-            List<SeriesLightResponse> lightResponses = seriesMapper.seriesLightResponseListFromSeriesList(associatedSeries);
+            List<SeriesLightResponse> lightResponses = seriesMapper.seriesLightResponseFromSeries(associatedSeries);
 
             JSONObject response = new JSONObject();
             response.put("message","you cannot delete this StreamingSource, as it is used in the following associatedSeries");
