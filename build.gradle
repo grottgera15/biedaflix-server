@@ -17,6 +17,14 @@ configurations {
     }
 }
 
+compileJava {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
 bootJar{
     mainClassName="bestworkingconditions.biedaflix.server.ServerApplication"
     archiveFileName="biedaflix-server.jar"
@@ -86,6 +94,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter')
     compile group: 'org.mockito', name: 'mockito-core', version: '2.13.0'
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.3.1.Final"
 }
 
 test {

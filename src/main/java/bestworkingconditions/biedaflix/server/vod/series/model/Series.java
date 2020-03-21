@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "series")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Series {
 
     @Id

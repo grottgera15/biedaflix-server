@@ -24,40 +24,17 @@ import java.util.Map;
 @Service
 public class SeriesService {
 
-    private final AppProperties appProperties;
-    private final StoreProperties storeProperties;
     private final EpisodeRepository episodeRepository;
     private final EpisodeService episodeService;
     private final SeriesRepository seriesRepository;
 
     @Autowired
-    public SeriesService(AppProperties appProperties, StoreProperties storeProperties, EpisodeRepository episodeRepository, EpisodeService episodeService, SeriesRepository seriesRepository) {this.appProperties = appProperties;
-        this.storeProperties = storeProperties;
+    public SeriesService(AppProperties appProperties, StoreProperties storeProperties, EpisodeRepository episodeRepository, EpisodeService episodeService, SeriesRepository seriesRepository) {
         this.episodeRepository = episodeRepository;
         this.episodeService = episodeService;
         this.seriesRepository = seriesRepository;
     }
-
-    public Map<Integer,List<EpisodeLightResponse>> constructSeasons(Series series){
-        Map<Integer,List<EpisodeLightResponse>> seasonsResponse = new HashMap<>();
-
-        List<Episode> seriesEpisodes = episodeRepository.findAllBySeriesIdOrderByEpisodeNumber(series.getId());
-
-        for (Episode ep : seriesEpisodes) {
-
-            int seasonNumber = ep.getSeasonNumber();
-            EpisodeLightResponse episodeLightResponse = new EpisodeLightResponse(ep);
-
-            if (!seasonsResponse.containsKey(seasonNumber))
-                seasonsResponse.put(seasonNumber, new ArrayList<>());
-
-            seasonsResponse.get(seasonNumber)
-                           .add(episodeLightResponse);
-        }
-
-        return seasonsResponse;
-    }
-
+/*
     public void deleteSeries(String seriesId){
 
         List<Episode> episodes = episodeRepository.findAllBySeriesId(seriesId);
@@ -66,15 +43,11 @@ public class SeriesService {
             episodeService.deleteEpisode(e.getId());
         }
 
-        File parent = new File(System.getProperty("user.dir") + "/files/series/" + seriesId);
 
-        try {
-            FileUtils.deleteDirectory(parent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         seriesRepository.deleteById(seriesId);
     }
 
+
+ */
 }
