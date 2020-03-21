@@ -1,6 +1,6 @@
 package bestworkingconditions.biedaflix.server.vod.hdd;
 
-import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.vod.episode.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

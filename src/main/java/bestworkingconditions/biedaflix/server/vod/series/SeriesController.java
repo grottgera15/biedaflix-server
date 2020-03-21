@@ -54,7 +54,7 @@ public class SeriesController {
     @PatchMapping(value = "/{id}", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> patchSeries(@PathVariable String id, @RequestBody SeriesRequest request) {
-        Series s = seriesService.update(seriesService.fetchAndUdateSeries(id,request));
+        Series s = seriesService.update(seriesService.fetchAndUpdateSeries(id,request));
         return ResponseEntity.ok(mapper.seriesLightResponseFromSeries(s));
     }
 

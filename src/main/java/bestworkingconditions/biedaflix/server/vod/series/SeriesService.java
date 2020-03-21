@@ -27,9 +27,9 @@ public class SeriesService extends GenericFileHandlingServiceImpl<Series,SeriesR
         return setFileReference(id,logo,Series::setBanner);
     }
 
-    public Series fetchAndUdateSeries(String id, SeriesRequest request){
+    public Series fetchAndUpdateSeries(String id, SeriesRequest request){
         Series s = findById(id);
-        return mapper.updateSeriesFromSeriesRequest(request,s);
+        return repository.save(mapper.updateSeriesFromSeriesRequest(request,s));
     }
 
 }

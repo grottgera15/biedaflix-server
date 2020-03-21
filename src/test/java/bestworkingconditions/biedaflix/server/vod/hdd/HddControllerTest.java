@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.vod.hdd;
 
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
-import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.vod.episode.EpisodeRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

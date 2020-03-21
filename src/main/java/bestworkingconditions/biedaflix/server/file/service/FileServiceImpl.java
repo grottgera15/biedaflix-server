@@ -37,4 +37,16 @@ public class FileServiceImpl implements FileService {
     public FileResource saveFile(MultipartFile file){
         return setContent(createFileResource(file),file);
     }
+
+    @Override
+    public void deleteFile(FileResource resource) {
+        fileResourceContentStore.unsetContent(resource);
+        fileResourceRepository.delete(resource);
+    }
+
+    @Override
+    public void deleteFiles(Iterable<FileResource> resources) {
+        resources.forEach(fileResourceContentStore::unsetContent);
+        fileResourceRepository.deleteAll(resources);
+    }
 }

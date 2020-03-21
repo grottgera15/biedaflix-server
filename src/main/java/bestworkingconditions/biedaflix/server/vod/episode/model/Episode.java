@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
 
+@CompoundIndex(name = "series_season_episode",def = "{'seriesId' : 1,'seasonNumber':1,'episodeNumber':1}",unique = true)
 @Document(collection = "episodes")
 @Getter
 @Setter
@@ -28,9 +30,9 @@ public class Episode {
     private Double size;
 
     @DBRef
-    private List<EpisodeVideo> videoFiles = new ArrayList<>();
+    private Map<VideoQuality,FileResource> videos = new HashMap<>();
     @DBRef
-    private List<EpisodeSubtitles> episodeSubtitles = new ArrayList<>();
+    private Map<String,FileResource> subtitles = new HashMap<>();
     @DBRef
-    private List<FileResource> episodeThumbs = new ArrayList<>();
+    private List<FileResource> thumbs = new ArrayList<>();
 }

@@ -7,14 +7,11 @@ import bestworkingconditions.biedaflix.server.torrent.model.TorrentInfo;
 import bestworkingconditions.biedaflix.server.torrent.repository.CurrentlyDownloadingRepository;
 import bestworkingconditions.biedaflix.server.torrent.repository.TorrentUriRepository;
 import bestworkingconditions.biedaflix.server.vod.episode.model.VideoQuality;
-import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
-import bestworkingconditions.biedaflix.server.vod.episode.service.EpisodeService;
-import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeVideo;
+import bestworkingconditions.biedaflix.server.vod.episode.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.vod.episode.EpisodeService;
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
-import bestworkingconditions.biedaflix.server.vod.series.model.Series;
 import bestworkingconditions.biedaflix.server.vod.series.SeriesRepository;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.content.fs.io.FileSystemResourceLoader;
@@ -31,12 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @EnableAsync

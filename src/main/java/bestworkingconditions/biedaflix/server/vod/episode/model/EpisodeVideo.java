@@ -13,5 +13,3 @@ import lombok.Setter;
 public class EpisodeVideo extends FileResource {
     private VideoQuality videoQuality;
 }
-
-

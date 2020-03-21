@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.vod.series;
 
-import bestworkingconditions.biedaflix.server.vod.episode.mapper.EpisodeMapper;
-import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.vod.episode.EpisodeMapper;
+import bestworkingconditions.biedaflix.server.vod.episode.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.vod.series.model.SeriesFullResponse;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.MappingTarget;

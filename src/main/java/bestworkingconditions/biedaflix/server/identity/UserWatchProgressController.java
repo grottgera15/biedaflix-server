@@ -2,7 +2,7 @@ package bestworkingconditions.biedaflix.server.identity;
 
 import bestworkingconditions.biedaflix.server.identity.user.UserWatchProgress;
 import bestworkingconditions.biedaflix.server.identity.user.UserWatchProgressRequest;
-import bestworkingconditions.biedaflix.server.vod.episode.repository.EpisodeRepository;
+import bestworkingconditions.biedaflix.server.vod.episode.EpisodeRepository;
 import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.identity.user.UserWatchProgressRepository;
 import org.springframework.beans.factory.annotation.Autowired;

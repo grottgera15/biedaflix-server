@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.vod.episode.repository;
+package bestworkingconditions.biedaflix.server.vod.episode;
 
 import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -13,4 +13,5 @@ public interface EpisodeRepository extends MongoRepository<Episode,String> {
     Optional<Episode> findByEpisodeNumberAndSeasonNumber(int episodeNumber, int seasonNumber);
     Optional<Episode> findBySeriesIdAndSeasonNumberAndEpisodeNumber(String seriesId,int seasonNumber,int episodeNumber);
     Optional<Episode> findById(String episodeId);
+    void deleteById(String episodeId);
 }
