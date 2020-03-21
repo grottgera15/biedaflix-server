@@ -15,8 +15,12 @@ public class SeriesService extends GenericFileHandlingServiceImpl<Series,SeriesR
         super(repository, fileService);
     }
 
-    public Series AddLogo(String id, MultipartFile logo){
+    public Series setLogo(String id, MultipartFile logo){
         return setFileReference(id,logo,Series::setLogo);
+    }
+
+    public Series setBanner(String id, MultipartFile logo){
+        return setFileReference(id,logo,Series::setBanner);
     }
 
 }

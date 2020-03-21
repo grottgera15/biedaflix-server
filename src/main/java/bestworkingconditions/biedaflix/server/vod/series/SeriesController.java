@@ -25,62 +25,35 @@ public class SeriesController {
     private final EpisodeRepository episodeRepository;
     private final FileResourceContentStore fileResourceContentStore;
     private final SeriesService seriesService;
+    private final SeriesMapper mapper;
 
     @Autowired
-    public SeriesController(SeriesRepository seriesRepository, EpisodeRepository episodeRepository, FileResourceContentStore fileResourceContentStore, SeriesService seriesService) {
+    public SeriesController(SeriesRepository seriesRepository, EpisodeRepository episodeRepository, FileResourceContentStore fileResourceContentStore, SeriesService seriesService, SeriesMapper mapper) {
         this.seriesRepository = seriesRepository;
         this.episodeRepository = episodeRepository;
         this.fileResourceContentStore = fileResourceContentStore;
         this.seriesService = seriesService;
+        this.mapper = mapper;
     }
 
     @PostMapping(value = "/{id}/banner")
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
     public ResponseEntity<?> addBanner(@PathVariable String id ,@RequestParam MultipartFile banner){
-
+        return ResponseEntity.ok(mapper.seriesLightResponseFromSeries(seriesService.setBanner(id,banner)));
     }
 
     @PostMapping(value = "/{id}/logo")
-    public ResponseEntity<?> addLogo(@PathVariable String id ,@RequestParam MultipartFile banner){
-
+    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
+    public ResponseEntity<?> addLogo(@PathVariable String id ,@RequestParam MultipartFile logo){
+        return ResponseEntity.ok(mapper.seriesLightResponseFromSeries(seriesService.setLogo(id,logo)));
     }
 
     @PostMapping(value = "", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<?> AddSeries(@Valid SeriesRequest request,
-                                            @RequestParam(name = "banner", required = false) Optional<MultipartFile> banner,
-                                            @RequestParam(name = "logo", required = false) Optional<MultipartFile> logo) throws IOException {
+    public ResponseEntity<?> AddSeries(@Valid SeriesRequest request){
 
-        List<Series> all = seriesRepository.findAll();
-
-        if(all.stream().anyMatch(t -> t.getName().equals(request.getName())))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series of given name already exists in database");
-
-        Series newSeries = new Series();
-        newSeries.setName(request.getName());
-        newSeries.setDescription(request.getDescription());
-        newSeries.setStatus(request.getStatus());
-        newSeries.setStreamingServiceId(request.getSourceId());
-
-        newSeries = seriesRepository.save(newSeries);
-
-        if(logo.isPresent() && !logo.get().isEmpty()){
-            SeriesLogo seriesLogo = new SeriesLogo(FilenameUtils.getExtension(logo.get().getOriginalFilename()),newSeries.getFolderName());
-            newSeries.setLogo(seriesLogo);
-
-
-            fileResourceContentStore.setContent(seriesLogo,logo.get().getInputStream());
-        }
-
-        if(banner.isPresent() && !banner.get().isEmpty()){
-            SeriesBanner seriesBanner = new SeriesBanner(FilenameUtils.getExtension(banner.get().getOriginalFilename()),newSeries.getFolderName());
-            newSeries.setSeriesBanner(seriesBanner);
-
-            fileResourceContentStore.setContent(seriesBanner,banner.get().getInputStream());
-        }
-
-        newSeries = seriesRepository.save(newSeries);
-
-        return new ResponseEntity<>(seriesService.seriesLightResponseFromSeries(newSeries),HttpStatus.CREATED);
+        Series createdSeries = seriesService.create(mapper.seriesFromSeriesRequest(request));
+        return new ResponseEntity<>(mapper.seriesLightResponseFromSeries(createdSeries),HttpStatus.CREATED);
     }
 /*
     @PatchMapping(value = "/series/{id}", consumes = {"multipart/form-data"})
