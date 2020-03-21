@@ -1,14 +1,10 @@
 package bestworkingconditions.biedaflix.server.identity.user;
 
-import bestworkingconditions.biedaflix.server.common.controller.GenericController;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.identity.user.model.UserRequest;
 import bestworkingconditions.biedaflix.server.identity.user.model.UserResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -18,19 +14,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
-public class UserController extends GenericController<User,UserResponse,UserService> {
+public class UserController {
 
-    private final UserRepository repository;
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserController(UserService service, UserRepository repository, UserService userService,PasswordEncoder passwordEncoder) {
-        super(User.class, UserResponse.class, service);
-        this.repository = repository;
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @PatchMapping(value = "/{id}" , consumes = {"application/json","multipart/form-data"})
     @PreAuthorize("authentication.name == #id")

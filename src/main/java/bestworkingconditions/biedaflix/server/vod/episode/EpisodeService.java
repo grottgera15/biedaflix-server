@@ -46,38 +46,4 @@ public class EpisodeService extends GenericFileHandlingServiceImpl<Episode,Episo
     public void deleteById(String id) {
         delete(findById(id));
     }
-
-    /*
-    public void deleteVideoAndThumbs(Episode episode){
-
-        episode.getVideoFiles().clear();
-        List<File> filesToDelete = new ArrayList<>();
-
-        String baseFilePath = System.getProperty("user.dir") + "/files/series/" + episode.getSeriesId() + "/" +episode.getId() + "/";
-
-        filesToDelete.add(new File(baseFilePath+ VideoQuality.LOW.getQuality()+".mp4"));
-        filesToDelete.add(new File(baseFilePath+ VideoQuality.MEDIUM.getQuality()+".mp4"));
-        filesToDelete.add(new File(baseFilePath+ VideoQuality.HIGH.getQuality()+".mp4"));
-
-        for(File f : filesToDelete){
-            try {
-                if(f.exists()){
-                    FileUtils.forceDelete(f);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            File thumbs = new File(baseFilePath+"thumbs");
-            if(thumbs.exists()){
-                FileUtils.deleteDirectory(thumbs);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-     */
 }

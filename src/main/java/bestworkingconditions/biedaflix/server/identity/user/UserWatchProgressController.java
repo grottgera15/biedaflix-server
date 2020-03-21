@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.identity;
+package bestworkingconditions.biedaflix.server.identity.user;
 
 import bestworkingconditions.biedaflix.server.identity.user.UserWatchProgress;
 import bestworkingconditions.biedaflix.server.identity.user.UserWatchProgressRequest;

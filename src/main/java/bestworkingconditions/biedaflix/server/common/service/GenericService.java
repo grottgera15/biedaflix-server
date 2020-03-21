@@ -9,5 +9,6 @@ public interface GenericService<T, R extends MongoRepository<?,?>> {
     List<T> findAll();
     T create(T resource);
     T update(T resource);
+    T fetchAndUpdate(String id,T resource);
     void deleteById(String id);
 }

@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.identity.user;
+package bestworkingconditions.biedaflix.server.identity.auth;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

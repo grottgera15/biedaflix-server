@@ -1,18 +1,14 @@
 package bestworkingconditions.biedaflix.server.identity.user;
 
-import bestworkingconditions.biedaflix.server.identity.role.Role;
-import bestworkingconditions.biedaflix.server.identity.role.RoleDTO;
 import bestworkingconditions.biedaflix.server.identity.role.RoleRepository;
 import bestworkingconditions.biedaflix.server.common.service.GenericServiceImpl;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
-import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.Valid;
 
 @Service
 public class UserService extends GenericServiceImpl<User, UserRepository> {
@@ -29,27 +25,8 @@ public class UserService extends GenericServiceImpl<User, UserRepository> {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserAdministrateResponse CreateUserAdministrateResponseFromUser(User u){
-
-        List<Role> userRoles = (List<Role>) roleRepository.findAllById(u.getRoles());
-        List<RoleDTO> userRolesDTOList = new ArrayList<>();
-
-        userRoles.forEach(x -> userRolesDTOList.add(new RoleDTO(x)));
-
-        User found = findById(u.getId());
-
-        return new UserAdministrateResponse(
-                u.getId(),
-                u.getEmail(),
-                u.getUsername(),
-                userRolesDTOList,
-                u.getAccepted()
-        );
-    }
-
-
     @Override
-    public User create(User resource) {
+    public User create(@Valid User resource) {
 
         resource.setPassword(passwordEncoder.encode(resource.getPassword()));
         resource.setAccepted(false);
@@ -58,7 +35,10 @@ public class UserService extends GenericServiceImpl<User, UserRepository> {
     }
 
     @Override
-    public User update(User resource) {
-        return null;
+    public User fetchAndUpdate(String id, User resource) {
+
+        User user = findById(id);
+
+        
     }
 }

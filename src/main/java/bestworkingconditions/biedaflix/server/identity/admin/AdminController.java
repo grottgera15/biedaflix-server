@@ -1,8 +1,8 @@
-package bestworkingconditions.biedaflix.server.identity;
+package bestworkingconditions.biedaflix.server.identity.admin;
 
+import bestworkingconditions.biedaflix.server.identity.admin.model.UserAdministrateRequest;
+import bestworkingconditions.biedaflix.server.identity.admin.model.UserAdministrateResponse;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
-import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateRequest;
-import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateResponse;
 import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.identity.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value = "/admin/users")
 public class AdminController {
 
     private final UserRepository repository;
@@ -31,9 +32,9 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @PutMapping(value = "/admin/users/{id}")
+    @PutMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody UserAdministrateRequest administrateRequest, @PathVariable String id){
+    public ResponseEntity<?> updateUser(@PathVariable String id,@Valid @RequestBody UserAdministrateRequest administrateRequest){
 
         Optional<User> match = repository.findById(id);
 
@@ -50,7 +51,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping(value = "/admin/users/{id}")
+    @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> deleteUser(
             @PathVariable String id){
@@ -68,8 +69,8 @@ public class AdminController {
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!")
         )));
     }
-
-    @GetMapping(value = "/admin/users")
+/*
+    @GetMapping(value = "")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> getAllUsers(
             @RequestParam(required = false) Optional<String> roleId,
@@ -89,5 +90,5 @@ public class AdminController {
         requestedUsers.forEach( x -> userAdministrateResponses.add(userService.CreateUserAdministrateResponseFromUser(x)));
         return ResponseEntity.ok(userAdministrateResponses);
     }
-
+ */
 }

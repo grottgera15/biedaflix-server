@@ -1,7 +1,6 @@
 package bestworkingconditions.biedaflix.server.file;
 
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.common.properties.StoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.content.fs.config.EnableFilesystemStores;
 import org.springframework.content.fs.io.FileSystemResourceLoader;

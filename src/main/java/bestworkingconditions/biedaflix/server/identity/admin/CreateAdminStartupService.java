@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.identity;
+package bestworkingconditions.biedaflix.server.identity.admin;
 
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.identity.role.Operation;

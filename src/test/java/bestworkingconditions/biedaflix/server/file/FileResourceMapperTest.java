@@ -1,18 +1,12 @@
 package bestworkingconditions.biedaflix.server.file;
 
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
-import bestworkingconditions.biedaflix.server.common.properties.StoreProperties;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 class FileResourceMapperTest {

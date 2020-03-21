@@ -1,7 +1,8 @@
-package bestworkingconditions.biedaflix.server.identity.user;
+package bestworkingconditions.biedaflix.server.identity.auth;
 
+import bestworkingconditions.biedaflix.server.identity.admin.UserAdministrativeMapper;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
-import bestworkingconditions.biedaflix.server.identity.user.model.UserAdministrateResponse;
+import bestworkingconditions.biedaflix.server.identity.admin.model.UserAdministrateResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,13 +21,13 @@ public class JwtServiceImpl implements JwtService {
 
     private final SecretKey secretKey;
     private final SignatureAlgorithm algorithm;
-    private final UserService userService;
+    private final UserAdministrativeMapper userAdministrativeMapper;
 
     @Autowired
-    public JwtServiceImpl(SecretKey secretKey, SignatureAlgorithm algorithm, UserService userService) {
+    public JwtServiceImpl(SecretKey secretKey, SignatureAlgorithm algorithm, UserAdministrativeMapper userAdministrativeMapper) {
         this.secretKey = secretKey;
         this.algorithm = algorithm;
-        this.userService = userService;
+        this.userAdministrativeMapper = userAdministrativeMapper;
     }
 
 
@@ -64,7 +65,7 @@ public class JwtServiceImpl implements JwtService {
     public String generateToken(User user, Date expiryDate) {
         Map<String, Object> claims = new HashMap<>();
 
-        UserAdministrateResponse payload = userService.CreateUserAdministrateResponseFromUser(user);
+        UserAdministrateResponse payload = userAdministrativeMapper.userAdministrateResponseFromUser(user);
 
         claims.put("user",payload);
         claims.put("sub",payload.getId());

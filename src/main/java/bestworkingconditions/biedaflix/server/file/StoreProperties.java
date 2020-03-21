@@ -1,4 +1,4 @@
-package bestworkingconditions.biedaflix.server.common.properties;
+package bestworkingconditions.biedaflix.server.file;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

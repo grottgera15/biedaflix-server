@@ -1,7 +1,11 @@
 package bestworkingconditions.biedaflix.server.identity.role;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
+@Data
+@NoArgsConstructor
 public class Operation implements GrantedAuthority {
 
     private OperationType type;
