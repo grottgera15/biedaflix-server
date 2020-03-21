@@ -22,7 +22,9 @@ jobs: # a collection of steps
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Install ffmpeg
-          command: sudo apt-get install ffmpeg
+          command: sudo sh -c 'echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list' \
+                    apt update \
+                    apt install -y ffmpeg
       - run:
           name: Run tests in parallel # See: https://circleci.com/docs/2.0/parallelism-faster-jobs/
           # Use "./gradlew test" instead if tests are not run in parallel
