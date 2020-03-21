@@ -26,7 +26,7 @@ jobs: # a collection of steps
       - run:
           name: install ffmpeg
           command: sudo apt install ffmpeg
-      -run:
+      - run:
           name: install bc
           command: sudo apt install bc
       - run:
