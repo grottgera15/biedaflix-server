@@ -25,26 +25,6 @@ public class RoleController {
         this.userRepository = userRepository;
     }
 
-    private Role createNewRoleFromDTO(RoleDTO roleDTO){
-        List<Operation> allowedOperations = new ArrayList<>();
-
-        for(OperationType ot : roleDTO.getAllowedOperations()){
-            allowedOperations.add(new Operation(ot));
-        }
-
-        Role newRole = new Role(roleDTO.getName(),allowedOperations);
-
-        return newRole;
-    }
-
-    @GetMapping("/operations")
-    @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
-    public ResponseEntity<?> getOperations(){
-
-        OperationType[] types = OperationType.class.getEnumConstants();
-        return ResponseEntity.ok(types);
-    }
-
     @PostMapping(value = "/roles", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> addRole(@Valid @RequestBody RoleDTO roleDTO){

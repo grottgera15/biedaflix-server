@@ -22,12 +22,10 @@ import java.util.List;
 public class MongoUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     @Autowired
-    public MongoUserDetailsService(UserRepository userRepository, RoleRepository roleRepository) {
+    public MongoUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
 
-        List<Role> userRoles = (List<Role>) roleRepository.findAllById(user.getRoles());
+        List<Role> userRoles = user.getRoles();
 
         for ( Role role : userRoles ){
             grantedAuthorityList.add(role);

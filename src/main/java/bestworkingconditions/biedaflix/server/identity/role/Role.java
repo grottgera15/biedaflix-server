@@ -1,5 +1,6 @@
 package bestworkingconditions.biedaflix.server.identity.role;
 
+import bestworkingconditions.biedaflix.server.file.FileResource;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,8 @@ public class Role implements GrantedAuthority {
 
     @Id
     private String id;
+
+    private FileResource image;
 
     @NotBlank
     private String name;
