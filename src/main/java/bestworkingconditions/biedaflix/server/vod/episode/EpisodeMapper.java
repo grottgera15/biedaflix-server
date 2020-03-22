@@ -38,4 +38,6 @@ public interface EpisodeMapper {
     @Mapping(target = "thumbs", ignore = true)
     @Mapping(target = "videos", ignore = true)
     Episode updateEpisodeFromEpisodeRequest(EpisodeRequest request, @MappingTarget Episode episode);
+
+    Episode updateEpisodeFromEpisode(Episode newInfo,@MappingTarget Episode episode);
 }

@@ -43,6 +43,11 @@ public class EpisodeService extends GenericFileHandlingServiceImpl<Episode,Episo
     }
 
     @Override
+    public Episode fetchAndUpdate(String id, Episode resource) {
+        return repository.save(mapper.updateEpisodeFromEpisode(resource,findById(id)));
+    }
+
+    @Override
     public void deleteById(String id) {
         delete(findById(id));
     }

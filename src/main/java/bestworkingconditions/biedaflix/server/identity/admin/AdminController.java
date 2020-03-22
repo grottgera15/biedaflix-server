@@ -1,12 +1,10 @@
 package bestworkingconditions.biedaflix.server.identity.admin;
 
 import bestworkingconditions.biedaflix.server.identity.admin.model.UserAdministrateRequest;
-import bestworkingconditions.biedaflix.server.identity.admin.model.UserAdministrateResponse;
-import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.identity.user.UserService;
+import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/admin/users")
@@ -25,51 +19,39 @@ public class AdminController {
 
     private final UserRepository repository;
     private final UserService userService;
+    private final UserAdministrativeMapper userAdministrativeMapper;
 
     @Autowired
-    public AdminController(UserRepository repository, UserService userService) {
+    public AdminController(UserRepository repository, UserService userService, UserAdministrativeMapper userAdministrativeMapper) {
         this.repository = repository;
         this.userService = userService;
+        this.userAdministrativeMapper = userAdministrativeMapper;
     }
+
 
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> updateUser(@PathVariable String id,@Valid @RequestBody UserAdministrateRequest administrateRequest){
-
-        Optional<User> match = repository.findById(id);
-
-        if( match.isPresent() && match.get().getId().equals(id)){
-
-            User u = match.get();
-            u.setRoles(administrateRequest.getRoles());
-            u.setAccepted(administrateRequest.isAccepted());
-
-            u = repository.save(u);
-            return ResponseEntity.ok(userService.CreateUserAdministrateResponseFromUser(u));
-        }else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"username or email already taken!");
-        }
+        User user = userService.fetchAndUpdate(id,userAdministrativeMapper.userFromUserAdministrativeRequest(administrateRequest));
+        return ResponseEntity.ok(userAdministrativeMapper.userAdministrateResponseFromUser(user));
     }
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> deleteUser(
             @PathVariable String id){
-        repository.deleteById(id);
-
-        return ResponseEntity.noContent().build();
+        userService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value= "/admin/users/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
-    public ResponseEntity<?> GetSingleAdministrativeUser(
-            @PathVariable String id
-    ){
-        return ResponseEntity.ok(userService.CreateUserAdministrateResponseFromUser(repository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"user of given id does not exist!")
-        )));
+    public ResponseEntity<?> GetSingleAdministrativeUser(@PathVariable String id){
+        return ResponseEntity.ok(userAdministrativeMapper.userAdministrateResponseFromUser(userService.findById(id)));
     }
 /*
+
+    //TODO: QueryDSL and pagination
     @GetMapping(value = "")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> getAllUsers(
