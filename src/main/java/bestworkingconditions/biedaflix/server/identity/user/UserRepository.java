@@ -7,7 +7,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends MongoRepository<User,String> , QuerydslPredicateExecutor<User> {
+public interface UserRepository extends MongoRepository<User,String>  {
     Optional<User> findUserByEmail(String email);
     Optional<User> findByUsername(String username);
     Optional<User> findByUsernameOrEmail(String username, String email);

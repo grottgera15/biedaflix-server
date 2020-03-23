@@ -13,4 +13,10 @@ public interface OperationMapper {
     }
 
     List<String> operationTypeFromOperation(List<Operation> operations);
+
+    default Operation operationFromString(String operation){
+        return new Operation(OperationType.valueOf(operation));
+    }
+
+    List<Operation> operationFromString(List<String> operations);
 }

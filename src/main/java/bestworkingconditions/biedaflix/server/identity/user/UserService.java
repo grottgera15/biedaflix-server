@@ -1,30 +1,31 @@
 package bestworkingconditions.biedaflix.server.identity.user;
 
-import bestworkingconditions.biedaflix.server.identity.role.RoleRepository;
-import bestworkingconditions.biedaflix.server.common.service.GenericServiceImpl;
+import bestworkingconditions.biedaflix.server.file.service.FileService;
+import bestworkingconditions.biedaflix.server.file.service.GenericFileHandlingServiceImpl;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
 @Service
-public class UserService extends GenericServiceImpl<User, UserRepository> {
+public class UserService extends GenericFileHandlingServiceImpl<User, UserRepository> {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository repository, UserRepository userRepository, RoleRepository roleRepository, @Lazy PasswordEncoder passwordEncoder, UserMapper userMapper) {
-        super(repository);
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+    public UserService(UserRepository repository, FileService fileService, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+        super(repository, fileService);
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+    }
+
+    public User setAvatar(String id, MultipartFile file){
+        return setFileReference(id,file,User::setAvatar);
     }
 
     @Override
@@ -46,6 +47,5 @@ public class UserService extends GenericServiceImpl<User, UserRepository> {
 
         return update(userMapper.updateUserFromUser(resource,requestedUser));
     }
-
 
 }

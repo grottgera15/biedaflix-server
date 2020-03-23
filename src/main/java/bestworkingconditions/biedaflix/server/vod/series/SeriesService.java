@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 @Service
 public class SeriesService extends GenericFileHandlingServiceImpl<Series,SeriesRepository> {
 
@@ -32,4 +34,9 @@ public class SeriesService extends GenericFileHandlingServiceImpl<Series,SeriesR
         return repository.save(mapper.updateSeriesFromSeriesRequest(request,s));
     }
 
+    @Override
+    public Series fetchAndUpdate(String id, @Valid Series resource) {
+        resource.setId(id);
+        return update(resource);
+    }
 }

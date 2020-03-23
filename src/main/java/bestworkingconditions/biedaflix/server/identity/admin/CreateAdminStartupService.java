@@ -60,13 +60,13 @@ public class CreateAdminStartupService {
         Optional<User> ownerUser = userRepository.findByUsername(appProperties.getOwnerUsername());
 
         if(ownerUser.isPresent()){
-            ownerUser.get().setRoles(Collections.singletonList(ownerRole.getId()));
+            ownerUser.get().setRoles(Collections.singletonList(new Role(ownerRole.getId())));
             ownerUser.get().setAccepted(true);
             userRepository.save(ownerUser.get());
         }else {
             User newOwnerUser = new User();
             newOwnerUser.setUsername(appProperties.getOwnerUsername());
-            newOwnerUser.setRoles(Collections.singletonList(ownerRole.getId()));
+            newOwnerUser.setRoles(Collections.singletonList(new Role(ownerRole.getId())));
             newOwnerUser.setPassword(passwordEncoder.encode("admin"));
             newOwnerUser.setAccepted(true);
             newOwnerUser.setEmail("example@example.com");

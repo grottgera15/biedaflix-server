@@ -1,10 +1,7 @@
 package bestworkingconditions.biedaflix.server.identity.role;
 
 import bestworkingconditions.biedaflix.server.file.FileResource;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +26,15 @@ public class Role implements GrantedAuthority {
     @NotBlank
     private String name;
     private List<Operation> allowedOperations = new ArrayList<>();
+
+    public Role(String id) {
+        this.id = id;
+    }
+
+    public Role(@NotBlank String name, List<Operation> allowedOperations) {
+        this.name = name;
+        this.allowedOperations = allowedOperations;
+    }
 
     @Override
     public String getAuthority() {
