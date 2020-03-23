@@ -1,7 +1,7 @@
 package bestworkingconditions.biedaflix.server.vod.episode.model.response;
 
-import bestworkingconditions.biedaflix.server.vod.episode.model.Episode;
 import bestworkingconditions.biedaflix.server.vod.episode.model.EpisodeStatus;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class EpisodeLightResponse implements Serializable {
 
     private String id;
@@ -21,22 +22,4 @@ public class EpisodeLightResponse implements Serializable {
     private String name;
     private EpisodeStatus status;
     private Date releaseDate;
-
-    public EpisodeLightResponse(String id, int episodeNumber, int episodeSeason, String name, EpisodeStatus status, Date releaseDate) {
-        this.id = id;
-        this.episodeNumber = episodeNumber;
-        this.episodeNumber = episodeSeason;
-        this.name = name;
-        this.status = status;
-        this.releaseDate = releaseDate;
-    }
-
-    public EpisodeLightResponse(Episode episode){
-        this.id = episode.getId();
-        this.episodeNumber = episode.getEpisodeNumber();
-        this.episodeNumber = episode.getSeasonNumber();
-        this.name = episode.getName();
-        this.status = episode.getEpisodeStatus();
-        this.releaseDate = episode.getReleaseDate();
-    }
 }

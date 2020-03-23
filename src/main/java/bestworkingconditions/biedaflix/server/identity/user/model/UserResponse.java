@@ -1,28 +1,17 @@
 package bestworkingconditions.biedaflix.server.identity.user.model;
 
-import bestworkingconditions.biedaflix.server.common.model.BaseDTO;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+import java.io.Serializable;
+
+@Data
 @NoArgsConstructor
-public class UserResponse extends BaseDTO {
+public class UserResponse implements Serializable {
 
     private String id;
     private String email;
     private String username;
-
-    public UserResponse(String id, String email, String username) {
-        this.id = id;
-        this.email = email;
-        this.username = username;
-    }
-
-    public UserResponse(User user){
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.username = user.getUsername();
-    }
 }

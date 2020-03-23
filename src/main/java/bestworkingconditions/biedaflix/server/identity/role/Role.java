@@ -1,8 +1,7 @@
 package bestworkingconditions.biedaflix.server.identity.role;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import bestworkingconditions.biedaflix.server.file.FileResource;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,8 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Document(collection = "roles")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Role implements GrantedAuthority {
 
@@ -23,17 +21,17 @@ public class Role implements GrantedAuthority {
     @Id
     private String id;
 
+    private FileResource image;
+
     @NotBlank
     private String name;
     private List<Operation> allowedOperations = new ArrayList<>();
 
-    public Role(@NotBlank String name, List<Operation> allowedOperations) {
-        this.name = name;
-        this.allowedOperations = allowedOperations;
+    public Role(String id) {
+        this.id = id;
     }
 
-    public Role(String id, @NotBlank String name, List<Operation> allowedOperations) {
-        this.id = id;
+    public Role(@NotBlank String name, List<Operation> allowedOperations) {
         this.name = name;
         this.allowedOperations = allowedOperations;
     }
@@ -46,9 +44,4 @@ public class Role implements GrantedAuthority {
     public Collection<? extends GrantedAuthority> getAllowedOperations(){
         return allowedOperations;
     }
-
-    public List<Operation> getOperationEnumList(){
-        return allowedOperations;
-    }
-
 }

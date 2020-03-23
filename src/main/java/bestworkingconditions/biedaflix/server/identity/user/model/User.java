@@ -1,45 +1,50 @@
 package bestworkingconditions.biedaflix.server.identity.user.model;
 
-import bestworkingconditions.biedaflix.server.common.model.BaseEntity;
-import lombok.Getter;
+import bestworkingconditions.biedaflix.server.file.FileResource;
+import bestworkingconditions.biedaflix.server.identity.role.Role;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "users")
-@Getter @Setter @NoArgsConstructor
-public class User extends BaseEntity {
+@Data
+@NoArgsConstructor
+public class User {
+
+    @Id
+    private String id;
 
     private String refreshToken;
 
     @Indexed(unique = true)
+    @Pattern(regexp="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*" +
+            "|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x" +
+            "01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)" +
+            "+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?" +
+            ")\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x" +
+            "08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])",
+            message = "not an email address"
+    )
     private String email;
+
     @Indexed(unique = true)
     private String username;
 
+    @NotBlank
     private String password;
+
     private Boolean accepted;
 
-    private List<String> roles = new ArrayList<>();
+    @DBRef
+    private List<Role> roles = new ArrayList<>();
 
-    public User(String id, String refreshToken, String email, String username, String password, Boolean accepted, List<String> roles) {
-        super(id);
-        this.refreshToken = refreshToken;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.accepted = accepted;
-        this.roles = roles;
-    }
-
-    public User(UserRequest registerRequest){
-        this.email = registerRequest.getEmail();
-        this.username = registerRequest.getUsername();
-        this.password = registerRequest.getPassword();
-    }
-
+    private FileResource avatar;
 }

@@ -1,7 +1,9 @@
 package bestworkingconditions.biedaflix.server.vod.episode.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
@@ -12,33 +14,26 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EpisodeRequest implements Serializable {
 
     @NotNull
-    @NotBlank(message = "seriesId must not be blank!")
+    @NotBlank()
     private String seriesId;
+
     @NotNull
     private int seasonNumber;
+
     @NotNull
     private int episodeNumber;
+
     @NotNull
-    @NotBlank(message = "name must not be blank!")
+    @NotBlank()
     private String name;
+
     @JsonFormat(pattern = "s" ,shape = JsonFormat.Shape.NUMBER)
     private Date releaseDate;
 
-    private Optional<String> magnetLink;
-
-    public EpisodeRequest() {
-        magnetLink = Optional.empty();
-    }
-
-    public EpisodeRequest(@NotNull @NotBlank(message = "seriesId must not be blank!") String seriesId, @NotNull int seasonNumber, @NotNull int episodeNumber, @NotNull @NotBlank(message = "name must not be blank!") String name, @NotNull Date releaseDate, String magnetLink) {
-        this.seriesId = seriesId;
-        this.seasonNumber = seasonNumber;
-        this.episodeNumber = episodeNumber;
-        this.name = name;
-        this.releaseDate = releaseDate;
-        this.magnetLink = Optional.of(magnetLink);
-    }
+    private String magnetLink;
 }

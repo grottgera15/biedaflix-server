@@ -8,11 +8,18 @@ public enum OperationType {
 
     private String operationName;
 
+    OperationType() {
+    }
+
     OperationType(String operationName) {
         this.operationName = operationName;
     }
 
     public String getOperationName() {
         return operationName;
+    }
+
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
     }
 }
