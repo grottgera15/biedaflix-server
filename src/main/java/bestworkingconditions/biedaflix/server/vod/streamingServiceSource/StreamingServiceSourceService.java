@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 @Service
 public class StreamingServiceSourceService extends GenericFileHandlingServiceImpl<StreamingServiceSource,StreamingServiceSourceRepository> {
 
@@ -17,5 +19,11 @@ public class StreamingServiceSourceService extends GenericFileHandlingServiceImp
 
     public StreamingServiceSource setLogo(String id, MultipartFile file){
         return setFileReference(id,file,StreamingServiceSource::setLogo);
+    }
+
+    @Override
+    public StreamingServiceSource fetchAndUpdate(String id, @Valid StreamingServiceSource resource) {
+        resource.setId(id);
+        return update(resource);
     }
 }

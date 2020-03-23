@@ -56,12 +56,9 @@ public class StreamingServiceSourceController {
     @PatchMapping(value = "/{id}", consumes = {"application/json"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SOURCES')")
     public ResponseEntity<?> updateStreamingServiceSource( @PathVariable String id,
-                                                            @Valid @RequestBody StreamingServiceSourceRequest request) {
-
-        StreamingServiceSource requested = streamingServiceSourceService.findById(id);
-        requested.setName(request.getName());
-
-        return new ResponseEntity<>(mapper.toDTO(repository.save(requested)),HttpStatus.OK);
+                                                           @RequestBody StreamingServiceSourceRequest request) {
+        StreamingServiceSource streamingServiceSource = streamingServiceSourceService.fetchAndUpdate(id,mapper.streamingServiceSourceFromRequest(request));
+        return new ResponseEntity<>(mapper.toDTO(streamingServiceSource),HttpStatus.OK);
     }
 
     @GetMapping(value = "")
