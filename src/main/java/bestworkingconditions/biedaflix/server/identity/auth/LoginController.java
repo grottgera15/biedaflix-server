@@ -2,6 +2,7 @@ package bestworkingconditions.biedaflix.server.identity.auth;
 
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
+import bestworkingconditions.biedaflix.server.identity.user.DeviceService;
 import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ public class LoginController {
     private final UserDetailsService userDetailsService;
     private final AppProperties appProperties;
     private final UserRepository userRepository;
+    //DODALEM
+    private final DeviceService deviceService;
 
     @Autowired
     public LoginController(AuthenticationManager authenticationManager, JwtService jwtService, UserDetailsService userDetailsService, AppProperties appProperties, UserRepository userRepository) {
@@ -37,6 +40,7 @@ public class LoginController {
         this.userDetailsService = userDetailsService;
         this.appProperties = appProperties;
         this.userRepository = userRepository;
+        deviceService = new DeviceService();
     }
 
     private Cookie createCookie(String name, String value, Boolean httpOnly){
@@ -126,6 +130,9 @@ public class LoginController {
     public ResponseEntity<?> Login(
             @RequestBody AuthenticationRequest authenticationRequest,
             HttpServletResponse response) {
+
+        //DODALEM
+        deviceService.extractIp(response);
 
         Optional<User> user = checkIfUserIsAccepted(authenticationRequest.getLogin(),authenticationRequest.getLogin());
 
