@@ -5,6 +5,7 @@ import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.identity.user.UserService;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,7 @@ public class AdminController {
     public ResponseEntity<?> getUsers(
             Pageable pageable
     ){
-
+        Page<User> dupa = repository.findAll(pageable);
 
         return ResponseEntity.ok(repository.findAll(pageable));
     }
