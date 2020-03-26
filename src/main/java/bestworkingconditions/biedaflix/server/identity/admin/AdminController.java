@@ -5,6 +5,8 @@ import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.identity.user.UserService;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,8 +51,17 @@ public class AdminController {
     public ResponseEntity<?> GetSingleAdministrativeUser(@PathVariable String id){
         return ResponseEntity.ok(userAdministrativeMapper.userAdministrateResponseFromUser(userService.findById(id)));
     }
-/*
 
+    @GetMapping
+    public ResponseEntity<?> getUsers(
+            Pageable pageable
+    ){
+        Page<User> dupa = repository.findAll(pageable);
+
+        return ResponseEntity.ok(repository.findAll(pageable));
+    }
+
+    /*
     //TODO: QueryDSL and pagination
     @GetMapping(value = "")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
@@ -72,5 +83,5 @@ public class AdminController {
         requestedUsers.forEach( x -> userAdministrateResponses.add(userService.CreateUserAdministrateResponseFromUser(x)));
         return ResponseEntity.ok(userAdministrateResponses);
     }
- */
+     */
 }
