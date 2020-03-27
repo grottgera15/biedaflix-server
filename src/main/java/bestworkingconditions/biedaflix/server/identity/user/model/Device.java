@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
-//ten lombok generuje automatycznie - najechac sobie np na data
 
 @Data
 @NoArgsConstructor
@@ -24,7 +23,6 @@ public class Device {
     private String deviceDetails;
 
     private List<String> ipList;
-    //private String location;
 
     private Date lastLoggedIn;
 }

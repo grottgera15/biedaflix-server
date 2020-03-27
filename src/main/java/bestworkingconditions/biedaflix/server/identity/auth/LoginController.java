@@ -141,8 +141,6 @@ public class LoginController {
         }
 
         user.ifPresent(value -> addCookies(response, generateCookies(value)));
-
-        //DODALEM
         user.ifPresent(value -> deviceService.verifyDevice(value, request));
 
         return new ResponseEntity<>(HttpStatus.OK);

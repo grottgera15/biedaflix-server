@@ -13,7 +13,6 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-//request jest z LoginController HttpServletRequest
 
 @Service
 public class DeviceService{
