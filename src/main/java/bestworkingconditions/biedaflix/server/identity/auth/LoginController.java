@@ -34,13 +34,13 @@ public class LoginController {
     private final DeviceService deviceService;
 
     @Autowired
-    public LoginController(AuthenticationManager authenticationManager, JwtService jwtService, UserDetailsService userDetailsService, AppProperties appProperties, UserRepository userRepository) {
+    public LoginController(AuthenticationManager authenticationManager, JwtService jwtService, UserDetailsService userDetailsService, AppProperties appProperties, UserRepository userRepository, DeviceService deviceService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.appProperties = appProperties;
         this.userRepository = userRepository;
-        deviceService = new DeviceService();
+        this.deviceService = deviceService;
     }
 
     private Cookie createCookie(String name, String value, Boolean httpOnly){
@@ -129,10 +129,8 @@ public class LoginController {
     @PostMapping(value = "/login" , consumes = {"application/json"})
     public ResponseEntity<?> Login(
             @RequestBody AuthenticationRequest authenticationRequest,
-            HttpServletResponse response) {
+            HttpServletResponse response, HttpServletRequest request) {
 
-        //DODALEM
-        deviceService.extractIp(response);
 
         Optional<User> user = checkIfUserIsAccepted(authenticationRequest.getLogin(),authenticationRequest.getLogin());
 
@@ -143,6 +141,9 @@ public class LoginController {
         }
 
         user.ifPresent(value -> addCookies(response, generateCookies(value)));
+
+        //DODALEM
+        user.ifPresent(value -> deviceService.verifyDevice(value, request));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

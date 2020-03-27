@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.List;
+
 //ten lombok generuje automatycznie - najechac sobie np na data
 
 @Data
@@ -13,14 +16,15 @@ import lombok.NoArgsConstructor;
 public class Device {
 
     @Id
-    @Generated //czy jest ok?
-    private Long id;
+    @Generated
+    private String id;
 
     private String userId;
 
     private String deviceDetails;
 
-    private String location;
+    private List<String> ipList;
+    //private String location;
 
-    private Data lastLoggedIn;
+    private Date lastLoggedIn;
 }
