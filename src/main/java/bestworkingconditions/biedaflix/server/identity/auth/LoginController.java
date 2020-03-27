@@ -2,6 +2,7 @@ package bestworkingconditions.biedaflix.server.identity.auth;
 
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import bestworkingconditions.biedaflix.server.common.properties.AppProperties;
+import bestworkingconditions.biedaflix.server.identity.user.DeviceService;
 import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,17 @@ public class LoginController {
     private final UserDetailsService userDetailsService;
     private final AppProperties appProperties;
     private final UserRepository userRepository;
+    //DODALEM
+    private final DeviceService deviceService;
 
     @Autowired
-    public LoginController(AuthenticationManager authenticationManager, JwtService jwtService, UserDetailsService userDetailsService, AppProperties appProperties, UserRepository userRepository) {
+    public LoginController(AuthenticationManager authenticationManager, JwtService jwtService, UserDetailsService userDetailsService, AppProperties appProperties, UserRepository userRepository, DeviceService deviceService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.appProperties = appProperties;
         this.userRepository = userRepository;
+        this.deviceService = deviceService;
     }
 
     private Cookie createCookie(String name, String value, Boolean httpOnly){
@@ -125,7 +129,8 @@ public class LoginController {
     @PostMapping(value = "/login" , consumes = {"application/json"})
     public ResponseEntity<?> Login(
             @RequestBody AuthenticationRequest authenticationRequest,
-            HttpServletResponse response) {
+            HttpServletResponse response, HttpServletRequest request) {
+
 
         Optional<User> user = checkIfUserIsAccepted(authenticationRequest.getLogin(),authenticationRequest.getLogin());
 
@@ -136,6 +141,7 @@ public class LoginController {
         }
 
         user.ifPresent(value -> addCookies(response, generateCookies(value)));
+        user.ifPresent(value -> deviceService.verifyDevice(value, request));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
