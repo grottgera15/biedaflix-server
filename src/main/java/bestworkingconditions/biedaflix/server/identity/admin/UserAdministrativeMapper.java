@@ -8,10 +8,14 @@ import bestworkingconditions.biedaflix.server.identity.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",uses = {OperationMapper.class, RoleMapper.class})
 public interface UserAdministrativeMapper {
 
     UserAdministrateResponse userAdministrateResponseFromUser(User user);
+
+    List<UserAdministrateResponse> userAdministrateResponseFromUser(List<User> userList);
 
     @Mapping(target = "avatar", ignore = true)
     @Mapping(target = "email", ignore = true)
