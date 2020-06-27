@@ -33,14 +33,14 @@ public class SeriesController {
 
     @PostMapping(value = "/{id}/banner",consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<?> addBanner(@PathVariable String id ,@Valid @NotNull @RequestParam MultipartFile banner){
-        return ResponseEntity.ok(mapper.seriesLightResponseFromSeries(seriesService.setBanner(id,banner)));
+    public ResponseEntity<?> addBanner(@PathVariable String id ,@Valid @NotNull @RequestParam MultipartFile file){
+        return ResponseEntity.ok(mapper.seriesLightResponseFromSeries(seriesService.setBanner(id,file)));
     }
 
     @PostMapping(value = "/{id}/logo", consumes = {"multipart/form-data"})
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_SERIES')")
-    public ResponseEntity<?> addLogo(@PathVariable String id ,@Valid @NotNull @RequestParam MultipartFile logo){
-        return ResponseEntity.ok(mapper.seriesLightResponseFromSeries(seriesService.setLogo(id,logo)));
+    public ResponseEntity<?> addLogo(@PathVariable String id ,@Valid @NotNull @RequestParam MultipartFile file){
+        return ResponseEntity.ok(mapper.seriesLightResponseFromSeries(seriesService.setLogo(id,file)));
     }
 
     @PostMapping(value = "", consumes = {"application/json"})
@@ -61,11 +61,11 @@ public class SeriesController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getSeries(
             @PathVariable("id") String id,
-            @RequestParam(required = false, defaultValue = "false") Boolean showSeasons){
+            @RequestParam(required = false, defaultValue = "false") Boolean showEpisodes){
 
         Series requestedSeries = seriesService.findById(id);
 
-        if(showSeasons){
+        if(showEpisodes){
             return ResponseEntity.ok(mapper.seriesFullResponseFromSeries(requestedSeries));
         }else{
             return  ResponseEntity.ok(mapper.seriesLightResponseFromSeries(requestedSeries));
@@ -74,7 +74,7 @@ public class SeriesController {
 
     @GetMapping("")
     public ResponseEntity<?> GetAll(
-            @RequestParam(required = false, defaultValue = "false") Boolean showSeasons,
+            @RequestParam(required = false, defaultValue = "false") Boolean showEpisodes,
             @RequestParam(required = false) Optional<SeriesStatus> status,
             @RequestParam(required = false) Optional<String> sourceId
     ) {
@@ -85,7 +85,7 @@ public class SeriesController {
 
         List<Series> requestedSeries = seriesRepository.findAll(Example.of(example));
 
-        if(showSeasons){
+        if(showEpisodes){
             return ResponseEntity.ok(mapper.seriesFullResponseFromSeries(requestedSeries));
         }else{
             return  ResponseEntity.ok(mapper.seriesLightResponseFromSeries(requestedSeries));

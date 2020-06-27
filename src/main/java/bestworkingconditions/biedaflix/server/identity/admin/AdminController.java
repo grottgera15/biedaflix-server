@@ -53,7 +53,7 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(value= "/admin/users/{id}")
+    @GetMapping(value= "/{id}")
     @PreAuthorize("hasAuthority('OP_ADMINISTRATE_USERS')")
     public ResponseEntity<?> GetSingleAdministrativeUser(@PathVariable String id){
         return ResponseEntity.ok(userAdministrativeMapper.userAdministrateResponseFromUser(userService.findById(id)));
