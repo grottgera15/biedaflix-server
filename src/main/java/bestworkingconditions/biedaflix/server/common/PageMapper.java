@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,22 +20,29 @@ import java.util.function.Function;
 @Component
 public class PageMapper {
 
+    private URI getPageUriWithChangedPageNumber(Integer page, HttpServletRequest request){
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+
+        for ( Map.Entry<String,String[]> entry : request.getParameterMap().entrySet() ){
+            params.put(entry.getKey(), Arrays.asList(entry.getValue()));
+        }
+
+        params.put("page", Collections.singletonList(String.valueOf(page)));
+
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString()).queryParams(params).build();
+
+        return components.toUri();
+    }
+
     @SneakyThrows
     private <T> void setLinks(PageDTO<T> pageDTO, HttpServletRequest request){
 
         if(!pageDTO.getFirst()){
-           // Map<String, String[]> params = request.getParameterMap();
-            MultiValueMap<String,String> params = new LinkedMultiValueMap<String,String>();
+            pageDTO.setPrevious(getPageUriWithChangedPageNumber(pageDTO.getNumber() - 1,request));
+        }
 
-            for ( Map.Entry<String,String[]> entry : request.getParameterMap().entrySet() ){
-
-            }
-
-            params.put("page", Collections.singletonList(String.valueOf(pageDTO.getNumber() - 1)));
-
-            UriComponents components = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString()).queryParams(params).build();
-
-            pageDTO.setPrevious(components.toUri());
+        if(!pageDTO.getLast()){
+            pageDTO.setPrevious(getPageUriWithChangedPageNumber(pageDTO.getNumber() + 1,request));
         }
     }
 
@@ -52,6 +60,4 @@ public class PageMapper {
         setLinks(pageDTO,request);
         return pageDTO;
     }
-
-
 }
