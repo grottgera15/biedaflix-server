@@ -7,9 +7,11 @@ import bestworkingconditions.biedaflix.server.identity.admin.model.UserAdministr
 import bestworkingconditions.biedaflix.server.identity.user.UserRepository;
 import bestworkingconditions.biedaflix.server.identity.user.UserService;
 import bestworkingconditions.biedaflix.server.identity.user.model.User;
+import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,12 +62,15 @@ public class AdminController {
     @GetMapping
     public ResponseEntity<?> getUsers(
             HttpServletRequest request,
+            @QuerydslPredicate(root = User.class) Predicate predicate,
             Pageable pageable
     ){
-        PageDTO<UserAdministrateResponse> responsePageDTO =
-                pageMapper.pageDTOFromPage(repository.findAll(pageable),userAdministrativeMapper::userAdministrateResponseFromUser,request);
 
-        return ResponseEntity.ok(responsePageDTO);
+        //PageDTO<UserAdministrateResponse> responsePageDTO =
+         //       pageMapper.pageDTOFromPage(repository.findAll(predicate,pageable),userAdministrativeMapper::userAdministrateResponseFromUser,request);
+
+        //return ResponseEntity.ok(responsePageDTO);
+        return null;
     }
 
     /*
@@ -75,7 +80,7 @@ public class AdminController {
     public ResponseEntity<?> getAllUsers(
             @RequestParam(required = false) Optional<String> roleId,
             @RequestParam(required = false) Optional<Boolean> accepted
-    ){
+    ) {
 
         User example = new User();
         example.setAccepted(null);
@@ -87,8 +92,9 @@ public class AdminController {
         List<User> requestedUsers = repository.findAll(Example.of(example));
         List<UserAdministrateResponse> userAdministrateResponses = new ArrayList<>();
 
-        requestedUsers.forEach( x -> userAdministrateResponses.add(userService.CreateUserAdministrateResponseFromUser(x)));
+        requestedUsers.forEach(x -> userAdministrateResponses.add(userService.CreateUserAdministrateResponseFromUser(x)));
         return ResponseEntity.ok(userAdministrateResponses);
     }
+
      */
 }
